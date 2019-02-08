@@ -15,24 +15,12 @@ axios.interceptors.request.use(function (config) {
 });
 
 const appService = {
-  getBlogInfo() {
-    return new Promise(resolve => {
-      axios.get(`${serviceRootUrl}/posts/info`).then(
-        response => {
-          resolve(response.data);
-        },
-        () => {
-          resolve('DAYUM !');
-        }
-      );
-    });
-  },
-  sendWiz() {
+  sendWiz({ verb, endpointUrl, body }) {
     return new Promise(resolve => {
       axios.post(`${serviceRootUrl}/proxy`, {
-        verb: 'POST',
-        endpoint: 'http://there',
-        body: '{content}'
+        verb,
+        endpointUrl,
+        body
       }).then(
         response => {
           resolve(response.data);

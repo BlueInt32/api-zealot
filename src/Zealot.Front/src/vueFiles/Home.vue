@@ -8,33 +8,34 @@
       <b-dropdown-item id="GET" @click="selectVerbHandler('GET')">GET</b-dropdown-item>
       <b-dropdown-item id="POST" @click="selectVerbHandler('POST')">POST</b-dropdown-item>
     </b-dropdown>
-    <b-form-input></b-form-input>
+    <b-form-input v-model="url"></b-form-input>
     <b-input-group-append >
       <b-btn variant="success" @click="sendWiz">SEND</b-btn>
     </b-input-group-append>
   </b-input-group>
-  <p>{{result}}</p>
+  <vue-json-pretty
+      :data="result"
+      @click="handleClick">
+  </vue-json-pretty>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import VueJsonPretty from 'vue-json-pretty';
 import appService from '../app.service';
-
-// import PostsList from './PostsList.vue';
-// import PostEditionModal from './PostEdition.Modal.vue';
 
 export default {
   components: {
-    // 'PostsList': PostsList,
-    // 'PostEditionModal': PostEditionModal
+    VueJsonPretty
   },
   filters: {
   },
   data() {
     return {
       selectedVerb: 'GET',
-      result: ''
+      result: '',
+      url: 'http://localhost:9500'
     };
   },
   computed: {
@@ -50,7 +51,11 @@ export default {
       this.selectedVerb = verbId;
     },
     sendWiz() {
-      appService.sendWiz().then((data) => {
+      appService.sendWiz({
+        verb: this.selectedVerb,
+        endpointUrl: this.url,
+        body: '{}'
+      }).then((data) => {
         this.result = data;
       });
     }
