@@ -10,18 +10,19 @@
     </b-dropdown>
     <b-form-input></b-form-input>
     <b-input-group-append >
-      <b-btn variant="success">SEND</b-btn>
+      <b-btn variant="success" @click="sendWiz">SEND</b-btn>
     </b-input-group-append>
   </b-input-group>
+  <p>{{result}}</p>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import appService from '../app.service';
+
 // import PostsList from './PostsList.vue';
 // import PostEditionModal from './PostEdition.Modal.vue';
-
-import image from '../img/vuejs-logo.png';
 
 export default {
   components: {
@@ -32,11 +33,8 @@ export default {
   },
   data() {
     return {
-      isGenerating: false,
-      scrollTimeout: null,
-      visible: true,
-      logo: image,
-      selectedVerb: 'GET'
+      selectedVerb: 'GET',
+      result: ''
     };
   },
   computed: {
@@ -50,6 +48,11 @@ export default {
     ...mapActions('stuffModule', []),
     selectVerbHandler(verbId) {
       this.selectedVerb = verbId;
+    },
+    sendWiz() {
+      appService.sendWiz().then((data) => {
+        this.result = data;
+      });
     }
   },
   watch: {

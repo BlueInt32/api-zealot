@@ -26,6 +26,22 @@ const appService = {
         }
       );
     });
+  },
+  sendWiz() {
+    return new Promise(resolve => {
+      axios.post(`${serviceRootUrl}/proxy`, {
+        verb: 'POST',
+        endpoint: 'http://there',
+        body: '{content}'
+      }).then(
+        response => {
+          resolve(response.data);
+        },
+        () => {
+          resolve('DAYUM !');
+        }
+      );
+    });
   }
 };
 
