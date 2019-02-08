@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RestSharp;
 using Zealot.Api.Models;
 
 namespace Zealot.Api.Controllers
@@ -9,7 +10,10 @@ namespace Zealot.Api.Controllers
     {
         public IActionResult SendWiz([FromBody] WizModel model)
         {
-            return Ok($"received wiz for {model.Endpoint}");
+            var client = new RestClient(model.EndpointUrl);
+            var request = new RestRequest("/");
+            var response = client.Execute(request);
+            return Ok($"{response.Content}");
         }
     }
 }
