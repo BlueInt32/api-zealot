@@ -15,10 +15,10 @@ axios.interceptors.request.use(function (config) {
 });
 
 const appService = {
-  sendWiz({ httpVerb, endpointUrl, body }) {
+  sendWiz({ httpMethod, endpointUrl, body }) {
     return new Promise(resolve => {
       axios.post(`${serviceRootUrl}/proxy`, {
-        httpVerb,
+        httpMethod,
         endpointUrl,
         body
       }).then(

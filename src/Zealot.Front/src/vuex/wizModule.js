@@ -2,31 +2,31 @@ import appService from '../app.service';
 import { logAction, logMutation } from '../helpers/consoleHelpers';
 
 const state = {
-  selectedHttpVerb: 'GET',
+  selectedHttpMethod: 'GET',
   requestUrl: '',
   requestResult: ''
 };
 
 const getters = {
-  selectedHttpVerb: currentState => currentState.selectedHttpVerb,
+  selectedHttpMethod: currentState => currentState.selectedHttpMethod,
   requestResult: currentState => currentState.requestResult,
   requestUrl: currentState => currentState.requestUrl
 };
 
 const actions = {
   sendWiz(context) {
-    logAction('sendWiz', context.state.selectedHttpVerb, context.state.requestUrl);
+    logAction('sendWiz', context.state.selectedHttpMethod, context.state.requestUrl);
     appService.sendWiz({
-      httpVerb: context.state.selectedHttpVerb,
+      httpMethod: context.state.selectedHttpMethod,
       endpointUrl: context.state.requestUrl,
       body: '{}'
     }).then((data) => {
       context.commit('setRequestResult', { data });
     });
   },
-  selectHttpVerb(context, { httpVerb }) {
-    logAction('selectHttpVerb', httpVerb);
-    context.commit('selectHttpVerb', { httpVerb });
+  selectHttpMethod(context, { httpMethod }) {
+    logAction('selectHttpMethod', httpMethod);
+    context.commit('selectHttpMethod', { httpMethod });
   },
   setRequestUrl(context, { requestUrl }) {
     logAction('setRequestUrl', requestUrl);
@@ -35,9 +35,9 @@ const actions = {
 };
 
 const mutations = {
-  selectHttpVerb(currentState, { httpVerb }) {
-    logMutation('selectedHttpVerb', httpVerb);
-    currentState.selectedHttpVerb = httpVerb;
+  selectHttpMethod(currentState, { httpMethod }) {
+    logMutation('selectedHttpMethod', httpMethod);
+    currentState.selectedHttpMethod = httpMethod;
   },
   setRequestResult(currentState, { data }) {
     currentState.requestResult = data;

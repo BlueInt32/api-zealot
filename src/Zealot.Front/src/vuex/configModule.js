@@ -1,5 +1,5 @@
 const state = {
-  httpVerbs: ['GET',
+  httpMethods: ['GET',
     'POST',
     'PUT',
     'PATCH',
@@ -8,7 +8,7 @@ const state = {
 };
 
 const getters = {
-  httpVerbs: currentState => currentState.httpVerbs
+  httpMethods: currentState => currentState.httpMethods
 };
 
 const actions = {

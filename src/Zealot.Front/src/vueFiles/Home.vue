@@ -3,10 +3,10 @@
   <b-input-group>
     <b-dropdown variant="outline-secondary" slot="prepend">
       <template slot="button-content">
-        {{selectedHttpVerb}}<span class="sr-only"></span>
+        {{selectedHttpMethod}}<span class="sr-only"></span>
       </template>
-      <b-dropdown-item v-for="httpVerb in httpVerbs" :key="httpVerb" :id="httpVerb"
-        @click="selectHttpVerb({httpVerb})">{{httpVerb}}</b-dropdown-item>
+      <b-dropdown-item v-for="httpMethod in httpMethods" :key="httpMethod" :id="httpMethod"
+        @click="selectHttpMethod({httpMethod})">{{httpMethod}}</b-dropdown-item>
     </b-dropdown>
     <b-form-input v-model="localRequestUrl"></b-form-input>
     <b-input-group-append >
@@ -32,8 +32,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('configModule', ['httpVerbs']),
-    ...mapGetters('wizModule', ['selectedHttpVerb',
+    ...mapGetters('configModule', ['httpMethods']),
+    ...mapGetters('wizModule', ['selectedHttpMethod',
       'requestResult',
       'requestUrl']),
     localRequestUrl: {
@@ -51,7 +51,7 @@ export default {
   mounted() {
   },
   methods: {
-    ...mapActions('wizModule', ['selectHttpVerb',
+    ...mapActions('wizModule', ['selectHttpMethod',
       'sendWiz',
       'setRequestUrl']),
   },
