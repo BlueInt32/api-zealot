@@ -8,10 +8,10 @@
       <b-dropdown-item v-for="httpMethod in httpMethods" :key="httpMethod" :id="httpMethod"
         @click="selectHttpMethod({httpMethod})">{{httpMethod}}</b-dropdown-item>
     </b-dropdown>
+    <b-input-group-prepend>
+      <b-btn variant="success" @click="sendWiz"><i class="fas fa-play"></i></b-btn>
+    </b-input-group-prepend>
     <b-form-input v-model="localRequestUrl"></b-form-input>
-    <b-input-group-append >
-      <b-btn variant="success" @click="sendWiz">SEND</b-btn>
-    </b-input-group-append>
   </b-input-group>
   <vue-json-pretty :data="requestResult"></vue-json-pretty>
   </div>
