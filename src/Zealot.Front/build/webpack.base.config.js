@@ -3,23 +3,24 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 
-// this is server path, e.g. http://localhost/boilerplate-vuejs
-// warning : this path must also be set in
-const serverAppName = '/boilerplate-vuejs/'; // start and end slashes are important !
+const serverAppName = '/api-zealot/'; // start and end slashes are important !
 let apiHost = '';
 let webpackOutputFolder = '';
 let webpackPublicPath = '';
+let displayLogs = null;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const setupConfigs = function () {
   switch (process.env.NODE_ENV) {
     case 'production':
       apiHost = '"http://localhost/path-to-api"';
+      displayLogs = false;
       webpackOutputFolder = path.resolve(__dirname, '../dist');
       webpackPublicPath = serverAppName;
       break;
     default:
       apiHost = '"https://localhost:5001/api"';
+      displayLogs = true;
       webpackOutputFolder = path.resolve(__dirname, '../dist');
       console.log('Webpack output folder', webpackOutputFolder);
       webpackPublicPath = '/';
@@ -84,7 +85,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'boilerPlate',
+      title: 'Api Zealot',
       template: 'index.prod.html',
       serverAppName,
       alwaysWriteToDisk: true
@@ -92,6 +93,7 @@ const config = {
     new HtmlWebpackHarddiskPlugin(),
     new webpack.DefinePlugin({
       __API__: apiHost,
+      __DISPLAY_LOGS__: displayLogs,
       __SERVER_APP_NAME__: serverAppName,
       'process.env': {
         NODE_ENV: `"${process.env.NODE_ENV}"`
