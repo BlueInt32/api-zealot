@@ -1,29 +1,32 @@
 <template>
 <div class="homeContainer">
-  <b-input-group>
-    <b-dropdown variant="outline-secondary" slot="prepend">
-      <template slot="button-content">
-        {{selectedHttpMethod}}<span class="sr-only"></span>
-      </template>
-      <b-dropdown-item v-for="httpMethod in httpMethods" :key="httpMethod" :id="httpMethod"
-        @click="selectHttpMethod({httpMethod})">{{httpMethod}}</b-dropdown-item>
-    </b-dropdown>
-    <b-input-group-prepend>
-      <b-btn variant="success" @click="sendWiz"><i class="fas fa-play"></i></b-btn>
-    </b-input-group-prepend>
-    <b-form-input v-model="localRequestUrl"></b-form-input>
-  </b-input-group>
-  <vue-json-pretty :data="requestResult"></vue-json-pretty>
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-10">
+      <div class="request-panel">
+        <div class="row mb-2">
+          <request-url-bar class="col-12"></request-url-bar>
+        </div>
+        <div class="row">
+          <request-panel class="col-6"></request-panel>
+          <response-panel class="col-6"></response-panel>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import VueJsonPretty from 'vue-json-pretty';
+import RequestUrlBar from './RequestUrlBar.vue';
+import RequestPanel from './RequestPanel.vue';
+import ResponsePanel from './ResponsePanel.vue';
 
 export default {
   components: {
-    VueJsonPretty
+    RequestUrlBar,
+    RequestPanel,
+    ResponsePanel
   },
   filters: {
   },
@@ -32,28 +35,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('configModule', ['httpMethods']),
-    ...mapGetters('wizModule', ['selectedHttpMethod',
-      'requestResult',
-      'requestUrl']),
-    localRequestUrl: {
-      get() {
-        return this.$store.state.wizModule.requestUrl;
-      },
-      set(value) {
-        this.$store.dispatch('wizModule/setRequestUrl', { requestUrl: value }, { root: true });
-      }
-    }
   },
   created() {
-    this.localRequestUrl = 'http://localhost:9500';
   },
   mounted() {
   },
   methods: {
-    ...mapActions('wizModule', ['selectHttpMethod',
-      'sendWiz',
-      'setRequestUrl']),
   },
   watch: {
     '$route': function (to) {
