@@ -5,8 +5,8 @@
       <template slot="button-content">
         {{selectedVerb}}<span class="sr-only"></span>
       </template>
-      <b-dropdown-item id="GET" @click="selectVerbHandler('GET')">GET</b-dropdown-item>
-      <b-dropdown-item id="POST" @click="selectVerbHandler('POST')">POST</b-dropdown-item>
+      <b-dropdown-item v-for="verb in httpVerbs" :key="verb" :id="verb"
+        @click="selectVerbHandler(verb)">{{verb}}</b-dropdown-item>
     </b-dropdown>
     <b-form-input v-model="url"></b-form-input>
     <b-input-group-append >
@@ -14,8 +14,7 @@
     </b-input-group-append>
   </b-input-group>
   <vue-json-pretty
-      :data="result"
-      @click="handleClick">
+      :data="result">
   </vue-json-pretty>
   </div>
 </template>
@@ -39,7 +38,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('stuffModule', ['text'])
+    ...mapGetters('configModule', ['httpVerbs'])
   },
   created() {
   },

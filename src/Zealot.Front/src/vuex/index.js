@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import stuffModule from './stuffModule';
+import configModule from './configModule';
 
 Vue.use(Vuex);
 
@@ -10,7 +11,8 @@ const state = {
 };
 const store = new Vuex.Store({
   modules: {
-    stuffModule
+    stuffModule,
+    configModule
   },
   state,
   getters: {},
