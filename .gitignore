@@ -89,3 +89,5 @@ deployQueueConsumer/**/*.*
 **/*.pubxml
 !**/nssm.exe
 **/*.bak
+
+*.code-workspace
