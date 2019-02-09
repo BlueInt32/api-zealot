@@ -15,9 +15,9 @@ const getters = {
 
 const actions = {
   sendWiz(context) {
-    logAction('sendWiz to ', context.state.requestUrl);
+    logAction('sendWiz', context.state.selectedHttpVerb, context.state.requestUrl);
     appService.sendWiz({
-      httpVerb: this.selectedHttpVerb,
+      httpVerb: context.state.selectedHttpVerb,
       endpointUrl: context.state.requestUrl,
       body: '{}'
     }).then((data) => {

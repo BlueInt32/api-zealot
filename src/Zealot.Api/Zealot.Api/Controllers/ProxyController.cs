@@ -11,7 +11,7 @@ namespace Zealot.Api.Controllers
         public IActionResult SendWiz([FromBody] WizModel model)
         {
             var client = new RestClient(model.EndpointUrl);
-            var request = new RestRequest("/");
+            var request = new RestRequest("/", model.HttpVerb);
             var response = client.Execute(request);
             return Ok($"{response.Content}");
         }
