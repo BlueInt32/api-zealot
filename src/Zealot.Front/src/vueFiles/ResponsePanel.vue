@@ -1,9 +1,13 @@
 <template>
   <div>
-    <b-nav pills>
-      <b-nav-item>Raw</b-nav-item>
-      <b-nav-item>Preview</b-nav-item>
-    </b-nav>
+    <ul class="nav nav-tabs ml-2">
+      <li role="presentation" class="nav-item active">
+        <a class="nav-link" href="#">Raw</a>
+      </li>
+      <li role="presentation" class="nav-item">
+        <a class="nav-link" href="#">Preview</a>
+      </li>
+    </ul>
     <vue-json-pretty :data="requestResult"></vue-json-pretty>
   </div>
 </template>
