@@ -91,3 +91,5 @@ deployQueueConsumer/**/*.*
 **/*.bak
 
 *.code-workspace
+resources/SystemWrapper/
+test/
