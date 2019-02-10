@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using RestSharp;
-using Zealot.Api.Models;
+using Zealot.Domain.Models;
 
 namespace Zealot.Api.Controllers
 {
@@ -11,7 +12,7 @@ namespace Zealot.Api.Controllers
         public IActionResult SendWiz([FromBody] WizModel model)
         {
             var client = new RestClient(model.EndpointUrl);
-            var request = new RestRequest("/", model.HttpMethod);
+            var request = new RestRequest("/", (Method)Enum.Parse(typeof(Method), model.HttpMethod.ToString()));
             var response = client.Execute(request);
             return Ok($"{response.Content}");
         }

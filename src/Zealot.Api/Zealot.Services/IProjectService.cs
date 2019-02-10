@@ -1,7 +1,10 @@
-﻿namespace Zealot.Services
+﻿using Zealot.Domain.Models;
+using Zealot.Domain.Utilities;
+
+namespace Zealot.Services
 {
     public interface IProjectService
     {
-        void SaveProject();
+        OpResult SaveProject(ProjectModel projectModel);
     }
 }

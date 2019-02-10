@@ -1,18 +1,21 @@
-﻿using Zealot.Repository;
+﻿using Zealot.Domain.Models;
+using Zealot.Domain.Utilities;
+using Zealot.Repository;
 
 namespace Zealot.Services
 {
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
-        public ProjectService()
-        {
 
+        public ProjectService(IProjectRepository projectRepository)
+        {
+            _projectRepository = projectRepository;
         }
 
-        public void SaveProject()
+        public OpResult SaveProject(ProjectModel projectModel)
         {
-            throw new System.NotImplementedException();
+            return _projectRepository.SaveProject(projectModel);
         }
     }
 }

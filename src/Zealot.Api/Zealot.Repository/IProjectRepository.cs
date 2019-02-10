@@ -1,7 +1,10 @@
-﻿namespace Zealot.Repository
+﻿using Zealot.Domain.Models;
+using Zealot.Domain.Utilities;
+
+namespace Zealot.Repository
 {
     public interface IProjectRepository
     {
-        void SaveProject();
+        OpResult SaveProject(ProjectModel model);
     }
 }

@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SystemWrap;
+using Zealot.Domain.Objects;
+using Zealot.Repository;
+using Zealot.Repository.IO;
+using Zealot.Services;
 
 namespace Zealot.Api
 {
@@ -19,6 +24,12 @@ namespace Zealot.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddTransient<IProjectService, ProjectService>()
+                .AddTransient<IProjectRepository, ProjectRepository>()
+                .AddTransient<IDirectoryInfoFactory, DirectoryInfoFactory>()
+                // .AddTransient<IFileInfoFactory, FileInfoFactory>()
+                .AddTransient<IObjectJsonDump<Project>, ObjectJsonDump<Project>>()
+                .AddTransient<IFile, FileWrap>()
                 .AddCors()
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

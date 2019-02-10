@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Zealot.Domain\Zealot.Domain.csproj" />
     <ProjectReference Include="..\Zealot.Repository\Zealot.Repository.csproj" />
   </ItemGroup>
 
