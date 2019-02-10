@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import configModule from './configModule';
 import wizModule from './wizModule';
+import projectModule from './projectModule';
 
 Vue.use(Vuex);
 
@@ -12,7 +13,8 @@ const state = {
 const store = new Vuex.Store({
   modules: {
     configModule,
-    wizModule
+    wizModule,
+    projectModule
   },
   state,
   getters: {},

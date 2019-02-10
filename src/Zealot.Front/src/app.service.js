@@ -30,6 +30,20 @@ const appService = {
         }
       );
     });
+  },
+  saveProject({ projectName, projectFolder }) {
+    return new Promise(resolve => {
+      axios.post(`${serviceRootUrl}/projects`, {
+        name: projectName,
+        folder: projectFolder
+      })
+      .then(response => {
+        resolve(response.data);
+      },
+      () => {
+
+      });
+    });
   }
 };
 

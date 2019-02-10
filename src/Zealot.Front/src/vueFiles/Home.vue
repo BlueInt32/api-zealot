@@ -1,7 +1,9 @@
 <template>
 <div class="homeContainer">
   <div class="row">
-    <div class="col-2"></div>
+    <div class="col-2">
+      <tree-view-container></tree-view-container>
+    </div>
     <div class="col-10">
       <div class="request-panel">
         <div class="row mb-2">
@@ -21,9 +23,11 @@
 import RequestUrlBar from './RequestUrlBar.vue';
 import RequestPanel from './RequestPanel.vue';
 import ResponsePanel from './ResponsePanel.vue';
+import TreeViewContainer from './TreeViewContainer.vue';
 
 export default {
   components: {
+    TreeViewContainer,
     RequestUrlBar,
     RequestPanel,
     ResponsePanel

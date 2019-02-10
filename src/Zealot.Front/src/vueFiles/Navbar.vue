@@ -8,9 +8,10 @@
   <b-collapse is-nav id="nav_collapse">
 
     <b-navbar-nav>
-      <b-nav-item :to="'/'" v-b-modal.postEditionModal text-variant="green">
-        <i class="fas fa-plus"></i> Set stuff
-      </b-nav-item>
+      <b-nav-item :to="'/'" v-b-modal.projectEditionModal text-variant="green">
+        <i class="fas fa-plus"></i> New project</b-nav-item>
+      <b-nav-item :to="'/'" v-b-modal.projectLoadModal text-variant="green">
+        <i class="fas fa-folder-open"></i> Open project</b-nav-item>
     </b-navbar-nav>
   </b-collapse>
 </b-navbar>

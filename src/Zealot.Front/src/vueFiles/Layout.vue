@@ -4,18 +4,23 @@
       <navbar></navbar>
       <div class="content">
         <router-view></router-view>
-
       </div>
+      <project-edition-modal></project-edition-modal>
+      <project-load-modal></project-load-modal>
     </section>
   </div>
 </template>
 
 <script>
 import Navbar from './Navbar.vue';
+import ProjectEditionModal from './ProjectEdition.Modal.vue';
+import ProjectLoadModal from './ProjectLoad.Modal.vue';
 
 export default {
   components: {
-    'navbar': Navbar
+    'navbar': Navbar,
+    'project-edition-modal': ProjectEditionModal,
+    'project-load-modal': ProjectLoadModal
   },
   data() {
     return {
