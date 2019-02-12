@@ -1,10 +1,10 @@
 <template>
 <div class="homeContainer">
   <div class="row">
-    <div class="col-2">
+    <div class="col-lg-3 col-sm-4">
       <tree-view-container></tree-view-container>
     </div>
-    <div class="col-10">
+    <div class="col">
       <div class="request-panel">
         <div class="row mb-2">
           <request-url-bar class="col-12"></request-url-bar>
