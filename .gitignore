@@ -92,4 +92,5 @@ deployQueueConsumer/**/*.*
 
 *.code-workspace
 resources/SystemWrapper/
+resources/vue-drag-tree/
 test/
