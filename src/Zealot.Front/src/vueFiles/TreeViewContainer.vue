@@ -1,45 +1,95 @@
 <template>
-  <ul id="tree-view__container">
-    <tree-view-item
-      class="item"
-      :model="treeData">
-    </tree-view-item>
-  </ul>
+    <vue-drag-tree
+      :data='treeData'
+      :allowDrag='allowDrag'
+      :allowDrop='allowDrop'
+      :defaultText='"New Node"'
+      @current-clicked='curNodeClicked'
+      @drag="dragHandler"
+      @drag-enter="dragEnterHandler"
+      @drag-leave="dragLeaveHandler"
+      @drag-over="dragOverHandler"
+      @drag-end="dragEndHandler"
+      @drop="dropHandler">
+    </vue-drag-tree>
 </template>
 
 <script>
-import TreeViewItem from './TreeViewItem.vue';
+import VueDragTree from './DragTree/VueDragTree.vue';
 
 export default {
   components: {
-    TreeViewItem
+    VueDragTree
   },
   data: function () {
     return {
-      treeData: {
-        name: 'My Tree',
-        children: [
-          { name: 'hello' },
-          { name: 'wat' },
-          {
-            name: 'child folder',
-            children: [
-              {
-                name: 'child folder',
-                children: [{ name: 'hello' }, { name: 'wat' }]
-              },
-              { name: 'hello' },
-              { name: 'wat' },
-              {
-                name: 'child folder',
-                children: [{ name: 'hello' }, { name: 'wat' }]
-              }
-            ]
-          }
-        ]
-      },
+      treeData: [{
+          name: 'Node 0-0',
+          id: 0,
+          children: [
+            {
+              name: 'Node 1-1',
+              id: 3,
+              children: [{
+                  name: 'Node 2-1',
+                  id: 4,
+                  children: []
+                }, {
+                  name: 'Node 2-2',
+                  id: 10,
+                  children: []
+                }
+              ]
+            }, {
+              name: 'Node 1-2',
+              id: 13,
+              children: []
+            }
+          ]
+        }, {
+          name: 'Node 0-1',
+          id: 14,
+          children: []
+        }
+      ]
     };
   },
+  methods: {
+    allowDrag() {
+      // can be dragged
+      console.log('ok');
+      return true;
+    },
+    allowDrop(model) {
+      if (model.name === 'Node 2-2') {
+        // can't be placed
+        return false;
+      }
+      console.log('ok');
+      return true;
+    },
+    curNodeClicked() {
+      // console.log('curNodeClicked', model, component);
+    },
+    dragHandler() {
+      // console.log('dragHandler: ', model, component, e);
+    },
+    dragEnterHandler() {
+      // console.log('dragEnterHandler: ', model, component, e);
+    },
+    dragLeaveHandler() {
+      // console.log('dragLeaveHandler: ', model, component, e);
+    },
+    dragOverHandler() {
+      // console.log('dragOverHandler: ', model, component, e);
+    },
+    dragEndHandler() {
+      // console.log('dragEndHandler: ', model, component, e);
+    },
+    dropHandler() {
+      // console.log('dropHandler: ', model, component, e);
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
