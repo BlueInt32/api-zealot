@@ -1,6 +1,21 @@
 <template>
-  <div :style='styleObj' :draggable='isDraggable' @drag.stop='drag' @dragstart.stop='dragStart' @dragover.stop='dragOver' @dragenter.stop='dragEnter' @dragleave.stop='dragLeave' @drop.stop='drop' @dragend.stop='dragEnd' class='dnd-container'>
-    <div :class='{"is-clicked": isClicked,"is-hover":isHover}' @click="toggle" @mouseover='mouseOver' @mouseout='mouseOut' @dblclick="changeType">
+  <div class='dnd-container'
+    :style='styleObj'
+    :draggable='isDraggable'
+    @drag.stop='drag'
+    @dragstart.stop='dragStart'
+    @dragover.stop='dragOver'
+    @dragenter.stop='dragEnter'
+    @dragleave.stop='dragLeave'
+    @drop.stop='drop'
+    @dragend.stop='dragEnd'
+    >
+    <div
+      :class='{"is-clicked": isClicked,"is-hover":isHover}'
+      @click="toggle"
+      @mouseover='mouseOver'
+      @mouseout='mouseOut'
+      @dblclick="changeType">
       <div :style="{ 'padding-left': (this.depth - 1) * 24 + 'px' }" :id='model.id' class='treeNodeText'>
         <span :class="[isClicked ? 'nodeClicked' : '','vue-drag-node-icon']"></span>
         <span class='text'>{{model.name}}</span>
@@ -121,6 +136,7 @@ export default {
       }
     },
     mouseOver(e) {
+      console.log('hover');
       this.isHover = true
     },
     mouseOut(e) {
@@ -201,10 +217,12 @@ export default {
 
 .dnd-container .is-clicked {
   background: #e5e9f2;
+  border: 1px solid red;
 }
 
 .dnd-container .is-hover {
   background: #e5e9f2;
+  border: 1px solid blue;
 }
 
 .item {
