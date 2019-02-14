@@ -6,5 +6,6 @@ namespace SystemWrap
     {
         void WriteAllBytes(string path, byte[] bytes);
         void WriteAllText(string path, string text, Encoding encoding);
+        string ReadAllText(string path, Encoding encoding);
     }
 }

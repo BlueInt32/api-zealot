@@ -14,5 +14,10 @@ namespace SystemWrap
         {
             File.WriteAllText(path, text, encoding);
         }
+
+        public string ReadAllText(string path, Encoding encoding)
+        {
+            return File.ReadAllText(path, encoding);
+        }
     }
 }
