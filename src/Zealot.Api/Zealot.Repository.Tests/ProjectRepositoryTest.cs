@@ -39,7 +39,7 @@ namespace Zealot.Repository.Tests
             var model = new ProjectModel
             {
                 Name = "project Name",
-                Folder = "not an existing folder path"
+                Path = "not an existing folder path"
             };
             var directoryInfoMock = new Mock<IDirectoryInfo>();
             directoryInfoMock.Setup(m => m.Exists).Returns(false);
@@ -62,7 +62,7 @@ namespace Zealot.Repository.Tests
             var model = new ProjectModel
             {
                 Name = "project Name",
-                Folder = "any folder"
+                Path = "any folder"
             };
             var directoryInfoMock = new Mock<IDirectoryInfo>();
             directoryInfoMock.Setup(m => m.Exists).Returns(true);

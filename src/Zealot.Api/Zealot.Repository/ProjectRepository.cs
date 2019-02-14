@@ -33,31 +33,31 @@ namespace Zealot.Repository
         public OpResult CreateProject(ProjectModel model)
         {
             // 1. checks on input model
-            var directoryInfo = _directoryInfoFactory.Create(model.Folder);
+            var directoryInfo = _directoryInfoFactory.Create(model.Path);
             if (!directoryInfo.Exists)
             {
-                return OpResult.Bad(Constants.FOLDER_DOES_NOT_EXISTS, $"Folder {model.Folder} does not exist");
+                return OpResult.Bad(Constants.FOLDER_DOES_NOT_EXISTS, $"Folder {model.Path} does not exist");
             }
 
             // 2. Add project to main reference file
             var projectsConfigsList = _projectsConfigListFileConverter
                 .Read(_configsPath)
                 .Object;
-            if (projectsConfigsList.Any(config => config.Path == model.Folder))
+            if (projectsConfigsList.Any(config => config.Path == model.Path))
             {
-                return OpResult.Bad(Constants.PROJECT_ALREADY_IN_PROJECT_LIST, $"The configuration already contains a project with the path {model.Folder}");
+                return OpResult.Bad(Constants.PROJECT_ALREADY_IN_PROJECT_LIST, $"The configuration already contains a project with the path {model.Path}");
             }
-            projectsConfigsList.Add(new ProjectConfig { Id = Guid.NewGuid(), Path = model.Folder });
+            var projectId = Guid.NewGuid();
+            projectsConfigsList.Add(new ProjectConfig { Id = projectId, Path = model.Path });
             _projectsConfigListFileConverter.Dump(projectsConfigsList, _configsPath);
 
             // 3. build domain object
             var project = Project.CreateDefaultInstance();
+            project.Id = projectId;
             project.Name = model.Name;
-            project.Folder = model.Folder;
-
 
             // 4. persist in fileSystem right away
-            var dumpResult = _projectFileConverter.Dump(project, Path.Combine(project.Folder, "project.json"));
+            var dumpResult = _projectFileConverter.Dump(project, Path.Combine(model.Path, "project.json"));
 
             return OpResult.Ok;
         }

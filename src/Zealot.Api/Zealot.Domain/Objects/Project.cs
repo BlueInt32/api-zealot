@@ -7,7 +7,6 @@ namespace Zealot.Domain.Objects
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Folder { get; set; }
         public int? EnvironmentId { get; set; }
         public PacksTree PacksTree { get; set; }
         public static Project CreateDefaultInstance()
