@@ -2,13 +2,43 @@
   <div class="row">
     <div class="col-4">
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><i class="fas fa-folder-open"></i> Cras justo odio</li>
-        <li class="list-group-item"><i class="fas fa-folder-open"></i> Dapibus ac facilisis in</li>
-        <li class="list-group-item"><i class="fas fa-folder-open"></i> Morbi leo risus</li>
-        <li class="list-group-item"><i class="fas fa-folder-open"></i> Porta ac consectetur ac</li>
-        <li class="list-group-item"><i class="fas fa-folder-open"></i> Vestibulum at eros</li>
+        <li
+          v-for="project in projects"
+          :key="project.id"
+          class="list-group-item projectsList__item">
+
+          <p :title="project.id">
+            <i class="fas fa-folder-open"></i>
+            {{project.path}}
+          </p>
+        </li>
       </ul>
     </div>
     <div class="col-8"></div>
   </div>
 </template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex';
+
+export default {
+  components: {
+  },
+  computed: {
+    ...mapGetters('projectsListModule', ['projects'])
+  },
+  created() {
+    this.getProjectsList();
+  },
+  methods: {
+    ...mapActions('projectsListModule', ['getProjectsList'])
+  },
+  props: [
+  ]
+};
+</script>
+
+<style lang="scss" scoped>
+.projectsList__item {
+}
+</style>

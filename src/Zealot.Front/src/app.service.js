@@ -15,6 +15,18 @@ axios.interceptors.request.use(function (config) {
 });
 
 const appService = {
+  getProjectsList() {
+    return new Promise(resolve => {
+      axios.get(`${serviceRootUrl}/projects`).then(
+        response => {
+          resolve(response.data);
+        },
+        () => {
+          resolve('DAYUM !');
+        }
+      );
+    });
+  },
   sendWiz({ httpMethod, endpointUrl, body }) {
     return new Promise(resolve => {
       axios.post(`${serviceRootUrl}/proxy`, {
