@@ -61,6 +61,13 @@ namespace Zealot.Repository
 
             return OpResult.Ok;
         }
+
+        public OpResult<ProjectsConfigsList> ListProjects()
+        {
+            var list = _projectsConfigListFileConverter.Read(_configsPath);
+            return list;
+        }
+
         public OpResult UpdateProject(ProjectModel model)
         {
             // 1. Check project exists !

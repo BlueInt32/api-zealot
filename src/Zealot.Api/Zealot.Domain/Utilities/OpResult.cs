@@ -33,7 +33,7 @@
         }
         public OpResult(bool success, T @object)
         {
-            success = Success;
+            Success = success;
             Object = @object;
         }
     }

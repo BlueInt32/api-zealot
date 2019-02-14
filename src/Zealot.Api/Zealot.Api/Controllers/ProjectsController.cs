@@ -16,6 +16,14 @@ namespace Zealot.Api.Controllers
             _projectService = projectService;
         }
 
+        [HttpGet]
+        [Route("")]
+        public IActionResult ListProjects()
+        {
+            var result = _projectService.ListProjects();
+            return result.ToActionResult();
+        }
+
         [HttpPost]
         [Route("")]
         public IActionResult CreateProject([FromBody] ProjectModel model)

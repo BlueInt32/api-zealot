@@ -1,4 +1,5 @@
 ﻿using Zealot.Domain.Models;
+using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
 using Zealot.Repository;
 
@@ -15,6 +16,11 @@ namespace Zealot.Services
         public OpResult CreateProject(ProjectModel projectModel)
         {
             return _projectRepository.CreateProject(projectModel);
+        }
+
+        public OpResult<ProjectsConfigsList> ListProjects()
+        {
+            return _projectRepository.ListProjects();
         }
 
         public OpResult UpdateProject(ProjectModel projectModel)
