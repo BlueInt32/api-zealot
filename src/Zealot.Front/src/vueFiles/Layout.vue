@@ -33,6 +33,10 @@ export default {
 @import "./src/css/custom.scss";
 @import "./node_modules/bootstrap/scss/bootstrap.scss";
 
+.content {
+  margin: 65px 1em;
+  height: 100%;
+}
 // .content {
 //   margin-top: 57px; // matches custom.scss @navbar-height
 // }

@@ -60,10 +60,6 @@ export default {
 body {
   margin: 0;
 }
-.homeContainer {
-  margin: 65px 1em;
-  height: 100%;
-}
 #text-img {
   width: 70px;
 }
