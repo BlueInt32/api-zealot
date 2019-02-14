@@ -3,7 +3,7 @@ import { log, logAction } from '../helpers/consoleHelpers';
 
 const state = {
   projectName: '',
-  projectFolder: ''
+  projectPath: ''
 };
 
 const getters = {
@@ -11,11 +11,11 @@ const getters = {
 };
 
 const actions = {
-  saveProject(context, { projectName, projectFolder }) {
-    logAction('saveProject', projectName, projectFolder);
+  saveProject(context, { projectName, projectPath }) {
+    logAction('saveProject', projectName, projectPath);
     appService.saveProject({
       projectName,
-      projectFolder
+      projectPath
     }).then((data) => {
       log(data);
     });

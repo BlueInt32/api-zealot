@@ -31,11 +31,11 @@ const appService = {
       );
     });
   },
-  saveProject({ projectName, projectFolder }) {
+  saveProject({ projectName, projectPath }) {
     return new Promise(resolve => {
       axios.post(`${serviceRootUrl}/projects`, {
         name: projectName,
-        folder: projectFolder
+        path: projectPath
       })
       .then(response => {
         resolve(response.data);
