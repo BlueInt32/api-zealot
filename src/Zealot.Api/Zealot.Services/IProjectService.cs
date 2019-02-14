@@ -5,6 +5,7 @@ namespace Zealot.Services
 {
     public interface IProjectService
     {
-        OpResult SaveProject(ProjectModel projectModel);
+        OpResult CreateProject(ProjectModel projectModel);
+        OpResult UpdateProject(ProjectModel projectModel);
     }
 }

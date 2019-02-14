@@ -1,4 +1,5 @@
 using System.IO;
+using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SystemWrap;
@@ -12,7 +13,9 @@ namespace Zealot.Repository.Tests
     public class ProjectRepositoryTest
     {
         private Mock<IDirectoryInfoFactory> _directoryInfoFactoryMock;
-        private Mock<IObjectJsonDump<Project>> _projectDumpMock;
+        private Mock<IJsonFileConverter<Project>> _projectFileConverterMock;
+        private Mock<IJsonFileConverter<ProjectsConfigsList>> _projectConfigsListFileConverterMock;
+        private Mock<IMapper> _mapperMock;
         private ProjectRepository _repository;
 
 
@@ -20,10 +23,14 @@ namespace Zealot.Repository.Tests
         public void TestInitialize()
         {
             _directoryInfoFactoryMock = new Mock<IDirectoryInfoFactory>();
-            _projectDumpMock = new Mock<IObjectJsonDump<Project>>();
+            _projectFileConverterMock = new Mock<IJsonFileConverter<Project>>();
+            _projectConfigsListFileConverterMock = new Mock<IJsonFileConverter<ProjectsConfigsList>>();
             _repository = new ProjectRepository(
                 _directoryInfoFactoryMock.Object
-                , _projectDumpMock.Object);
+                , _projectFileConverterMock.Object
+                , _projectConfigsListFileConverterMock.Object
+                , _mapperMock.Object
+                );
         }
         [TestMethod]
         public void SaveProject_ShouldCheckFolderExists()
@@ -41,7 +48,7 @@ namespace Zealot.Repository.Tests
                 .Returns(directoryInfoMock.Object);
 
             // act
-            var opResult = _repository.SaveProject(model);
+            var opResult = _repository.CreateProject(model);
 
             // assert
             Assert.IsFalse(opResult.Success);
@@ -64,10 +71,10 @@ namespace Zealot.Repository.Tests
                 .Returns(directoryInfoMock.Object);
 
             // act
-            var opResult = _repository.SaveProject(model);
+            var opResult = _repository.CreateProject(model);
 
             // assert
-            _projectDumpMock
+            _projectFileConverterMock
                 .Verify(m => m.Dump(It.Is<Project>(
                     p => p.Name == "project Name"
                     ), It.Is<string>(p => p == Path.Combine("any folder", "project.json"))));

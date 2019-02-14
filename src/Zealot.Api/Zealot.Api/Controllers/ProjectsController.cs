@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Zealot.Api.ApiHelpers;
 using Zealot.Domain.Models;
 using Zealot.Services;
 
@@ -17,10 +18,17 @@ namespace Zealot.Api.Controllers
 
         [HttpPost]
         [Route("")]
-        public IActionResult SaveProject([FromBody] ProjectModel model)
+        public IActionResult CreateProject([FromBody] ProjectModel model)
         {
-            _projectService.SaveProject(model);
-            return Ok(1);
+            var result = _projectService.CreateProject(model);
+            return result.ToActionResult();
+        }
+        [HttpPut]
+        [Route("")]
+        public IActionResult UpdateProject([FromBody] ProjectModel model)
+        {
+            var result = _projectService.UpdateProject(model);
+            return result.ToActionResult();
         }
     }
 }

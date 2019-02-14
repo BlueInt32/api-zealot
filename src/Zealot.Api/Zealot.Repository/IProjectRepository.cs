@@ -5,6 +5,7 @@ namespace Zealot.Repository
 {
     public interface IProjectRepository
     {
-        OpResult SaveProject(ProjectModel model);
+        OpResult CreateProject(ProjectModel model);
+        OpResult UpdateProject(ProjectModel model);
     }
 }

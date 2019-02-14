@@ -12,10 +12,15 @@ namespace Zealot.Services
         {
             _projectRepository = projectRepository;
         }
-
-        public OpResult SaveProject(ProjectModel projectModel)
+        public OpResult CreateProject(ProjectModel projectModel)
         {
-            return _projectRepository.SaveProject(projectModel);
+            return _projectRepository.CreateProject(projectModel);
         }
+
+        public OpResult UpdateProject(ProjectModel projectModel)
+        {
+            return _projectRepository.UpdateProject(projectModel);
+        }
+
     }
 }

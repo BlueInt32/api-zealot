@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SystemWrap;
+using Zealot.Domain;
 using Zealot.Domain.Objects;
 using Zealot.Repository;
 using Zealot.Repository.IO;
@@ -23,13 +25,16 @@ namespace Zealot.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var automapperConfig = new AutomapperConfigurationFactory().BuildConfiguration();
             services
                 .AddTransient<IProjectService, ProjectService>()
                 .AddTransient<IProjectRepository, ProjectRepository>()
                 .AddTransient<IDirectoryInfoFactory, DirectoryInfoFactory>()
                 // .AddTransient<IFileInfoFactory, FileInfoFactory>()
-                .AddTransient<IObjectJsonDump<Project>, ObjectJsonDump<Project>>()
+                .AddTransient<IJsonFileConverter<Project>, JsonFileConverter<Project>>()
+                .AddTransient<IJsonFileConverter<ProjectsConfigsList>, JsonFileConverter<ProjectsConfigsList>>()
                 .AddTransient<IFile, FileWrap>()
+                .AddTransient<IMapper, Mapper>(_ => new Mapper(automapperConfig))
                 .AddCors()
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

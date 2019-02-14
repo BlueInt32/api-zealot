@@ -1,30 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Zealot.Domain.Objects
 {
     public class Project
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Folder { get; set; }
         public int? EnvironmentId { get; set; }
-        public List<Pack> Packs { get; set; }
+        public PacksTree PacksTree { get; set; }
         public static Project CreateDefaultInstance()
         {
             return new Project
             {
-                Packs = new List<Pack>
+                PacksTree = new PacksTree
                 {
-                    new Pack
+                    Requests = new List<Request>
                     {
-                        Requests = new List<Request>
+                        new Request
                         {
-                            new Request
+                            EndpointUrl = "http://localhost",
+                            Headers = new Dictionary<string, string>
                             {
-                                EndpointUrl = "http://localhost",
-                                Headers = new Dictionary<string, string>
-                                {
-                                    { "Content type", "application/json" }
-                                }
+                                { "Content type", "application/json" }
                             }
                         }
                     }
