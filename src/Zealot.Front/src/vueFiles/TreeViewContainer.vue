@@ -1,6 +1,6 @@
 <template>
     <vue-drag-tree
-      :data='tree.children'
+      :data='[tree]'
       :allowDrag='allowDrag'
       :allowDrop='allowDrop'
       :defaultText='"New Node"'
@@ -63,11 +63,7 @@ export default {
       // can be dragged
       return true;
     },
-    allowDrop(model) {
-      if (model.name === 'Node 2-2') {
-        // can't be placed
-        return false;
-      }
+    allowDrop() {
       return true;
     },
     curNodeClicked() {
