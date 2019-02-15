@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Zealot.Api.ApiHelpers;
+using Zealot.Domain;
 using Zealot.Domain.Models;
+using Zealot.Domain.Utilities;
 using Zealot.Services;
 
 namespace Zealot.Api.Controllers
@@ -24,6 +27,20 @@ namespace Zealot.Api.Controllers
             return result.ToActionResult();
         }
 
+        [HttpGet]
+        [Route("{projectId}")]
+        public IActionResult GetProject(Guid? projectId)
+        {
+            if (!projectId.HasValue)
+            {
+                return OpResult
+                    .Bad(ErrorCode.PROJECT_ID_NOT_PROVIDED, $"Project id {projectId} was not recognized")
+                    .ToActionResult();
+            }
+            var result = _projectService.GetProject(projectId.Value);
+            return result.ToActionResult();
+        }
+
         [HttpPost]
         [Route("")]
         public IActionResult CreateProject([FromBody] ProjectModel model)
@@ -38,5 +55,6 @@ namespace Zealot.Api.Controllers
             var result = _projectService.UpdateProject(model);
             return result.ToActionResult();
         }
+
     }
 }

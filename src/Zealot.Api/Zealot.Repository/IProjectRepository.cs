@@ -1,4 +1,5 @@
-﻿using Zealot.Domain.Models;
+﻿using System;
+using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
 
@@ -9,5 +10,6 @@ namespace Zealot.Repository
         OpResult CreateProject(ProjectModel model);
         OpResult UpdateProject(ProjectModel model);
         OpResult<ProjectsConfigsList> ListProjects();
+        OpResult<Project> GetProject(Guid projectId);
     }
 }

@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SystemWrap;
+using Zealot.Domain;
 using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
 using Zealot.Repository.IO;
@@ -52,7 +53,7 @@ namespace Zealot.Repository.Tests
 
             // assert
             Assert.IsFalse(opResult.Success);
-            Assert.AreEqual(Zealot.Domain.Constants.FOLDER_DOES_NOT_EXISTS, opResult.ErrorCode);
+            Assert.AreEqual(ErrorCode.FOLDER_DOES_NOT_EXIST, opResult.ErrorCode);
         }
 
         [TestMethod]
