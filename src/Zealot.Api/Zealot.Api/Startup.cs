@@ -1,9 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using SystemWrap;
 using Zealot.Domain;
 using Zealot.Domain.Objects;
@@ -36,7 +40,16 @@ namespace Zealot.Api
                 .AddTransient<IFile, FileWrap>()
                 .AddTransient<IMapper, Mapper>(_ => new Mapper(automapperConfig))
                 .AddCors()
-                .AddMvc()
+                .AddMvc().AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                    opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    opt.SerializerSettings.Converters = new List<JsonConverter>
+                    {
+                        new StringEnumConverter(typeof(CamelCaseNamingStrategy))
+                    };
+
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
         }
