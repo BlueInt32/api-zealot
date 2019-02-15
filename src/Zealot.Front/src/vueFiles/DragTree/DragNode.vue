@@ -213,15 +213,19 @@ export default {
 .dnd-container {
   background: #fff;
 }
+.dnd-container > div {
+  border: 2px dashed rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
 
 .dnd-container .is-clicked {
   background: #e5e9f2;
-  border: 1px solid red;
+  border: 2px solid red;
 }
 
 .dnd-container .is-hover {
   background: #e5e9f2;
-  border: 1px solid blue;
+  border: 2px solid blue;
 }
 
 .item {
@@ -261,7 +265,7 @@ export default {
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
   border-right: 0 solid yellow;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.1s ease-in-out;
 }
 
 .nodeClicked {
