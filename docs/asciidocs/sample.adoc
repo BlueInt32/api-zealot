@@ -29,3 +29,30 @@ Prawn::Document.generate 'example.pdf' do
   text 'Hello, World!'
 end
 ----
+
+Welcome to the Api Zealot project
+
+What is Api Zealot ?
+
+Api zealot is a modular API test runner : from a quick request to a full-blown integration scenario. 
+
+It helps you create and run integration tests on your api with great simplicity.
+
+Api Zealot offers great flexibility because it was developped by an actual API developper striving to organize the integration tests on a daily basis.
+
+ It integrates well with git so you decide how you version your tests, not us.
+ 
+ 
+Philosophy
+
+Running integration tests is hard. Most of the times, it involves building an execution context based on an environment, and run a series of HTTP requests on several different endpoints. For example, the result of an api call can determine if the test should stop, continue or even loop. Maybe you need to have some series of common calls you always make before actually testing the functionality, but of course, you do not want to copy paste those calls in all your scenarios ! 
+
+How about applying the development paradigm to actual API calls ? What if requests, or groups of requests could be manipulated just like instructions or function calls ?
+
+This is why scripting is at the core of Api Zealot. In fact, you can build and execute 3 main types of item in the tool : 
+
+    Requests : this is where you configure actual calls to your API
+
+    Scripts : this is where you initialize, assert or execute other packs
+
+    Packs : this is a logical and executable group containing a list of any other item
