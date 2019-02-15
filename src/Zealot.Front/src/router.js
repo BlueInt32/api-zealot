@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from './vueFiles/Home.vue';
 import NotFound from './vueFiles/NotFound.vue';
 import ProjectsList from './vueFiles/ProjectsList.vue';
+import ProjectView from './vueFiles/ProjectView.vue';
 
 Vue.use(VueRouter);
 
@@ -15,10 +15,10 @@ const router = new VueRouter({
     }
   },
   routes: [
-    { path: '/', component: Home },
-    { path: '/projects', component: ProjectsList },
-    { path: '/random', component: Home },
-    { path: '*', component: NotFound },
+    { name: 'defaultPage', path: '/', component: ProjectsList },
+    { name: 'projectView', path: '/projects/:projectId', component: ProjectView },
+    { name: 'projectList', path: '/projects', component: ProjectsList },
+    { name: 'notFound', path: '*', component: NotFound },
   ]
 });
 

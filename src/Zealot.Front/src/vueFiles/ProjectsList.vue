@@ -5,8 +5,8 @@
         <li
           v-for="project in projects"
           :key="project.id"
-          class="list-group-item projectsList__item">
-
+          class="list-group-item projectsList__item"
+          @click="projectClickHandler(project.id)">
           <p :title="project.id">
             <i class="fas fa-folder-open"></i>
             {{project.path}}
@@ -31,7 +31,15 @@ export default {
     this.getProjectsList();
   },
   methods: {
-    ...mapActions('projectsListModule', ['getProjectsList'])
+    ...mapActions('projectsListModule', ['getProjectsList']),
+    ...mapActions('projectModule', ['getProjectDetails']),
+    projectClickHandler(projectId) {
+      this.getProjectDetails({ projectId })
+        .then(() => {
+          console.log('going to route projectView');
+          this.$router.push({ name: 'projectView', params: { projectId } });
+        });
+    }
   },
   props: [
   ]
@@ -39,6 +47,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.projectsList__item {
-}
 </style>

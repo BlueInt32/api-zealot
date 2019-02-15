@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import RequestUrlBar from './RequestUrlBar.vue';
 import RequestPanel from './RequestPanel.vue';
 import ResponsePanel from './ResponsePanel.vue';
@@ -39,12 +40,19 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('projectModule', ['projectId'])
   },
   created() {
+    console.log('created');
+    if (this.$route.params.projectId !== this.projectId) {
+      this.getProjectDetails({ projectId: this.$route.params.projectId });
+    }
   },
   mounted() {
+    console.log('mounted');
   },
   methods: {
+    ...mapActions('projectModule', ['getProjectDetails'])
   },
   watch: {
     '$route': function (to) {

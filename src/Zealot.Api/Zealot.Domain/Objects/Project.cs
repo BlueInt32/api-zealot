@@ -8,18 +8,20 @@ namespace Zealot.Domain.Objects
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int? EnvironmentId { get; set; }
-        public PacksTree PacksTree { get; set; }
+        public SubTree Tree { get; set; }
         public static Project CreateDefaultInstance()
         {
             return new Project
             {
-                PacksTree = new PacksTree
+                Tree = new SubTree
                 {
-                    Requests = new List<Request>
+                    Name = "Root",
+                    Children = new List<SubTree>
                     {
                         new Request
                         {
-                            EndpointUrl = "http://localhost",
+                            Name = "Get ES root",
+                            EndpointUrl = "http://localhost:9500",
                             Headers = new Dictionary<string, string>
                             {
                                 { "Content type", "application/json" }

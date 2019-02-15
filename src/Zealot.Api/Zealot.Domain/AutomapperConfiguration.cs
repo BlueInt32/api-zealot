@@ -12,7 +12,7 @@ namespace Zealot.Domain
             {
                 cfg.AllowNullCollections = true;
                 cfg.CreateMap<ProjectModel, Project>();
-                cfg.CreateMap<PacksTreeModel, PacksTree>();
+                cfg.CreateMap<SubTreeModel, SubTree>();
             });
             return automapperConfig;
         }

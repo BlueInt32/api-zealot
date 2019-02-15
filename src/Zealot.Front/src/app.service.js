@@ -56,6 +56,17 @@ const appService = {
 
       });
     });
+  },
+  getProjectDetails({ projectId }) {
+    return new Promise(resolve => {
+      axios.get(`${serviceRootUrl}/projects/${projectId}`)
+      .then(response => {
+        resolve(response.data);
+      },
+      () => {
+
+      });
+    });
   }
 };
 

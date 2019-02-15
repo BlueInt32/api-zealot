@@ -1,6 +1,6 @@
 <template>
     <vue-drag-tree
-      :data='treeData'
+      :data='tree.children'
       :allowDrag='allowDrag'
       :allowDrop='allowDrop'
       :defaultText='"New Node"'
@@ -15,11 +15,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import VueDragTree from './DragTree/VueDragTree.vue';
 
 export default {
   components: {
     VueDragTree
+  },
+  computed: {
+    ...mapGetters('projectModule', ['tree'])
   },
   data: function () {
     return {
@@ -57,7 +61,6 @@ export default {
   methods: {
     allowDrag() {
       // can be dragged
-      console.log('ok');
       return true;
     },
     allowDrop(model) {
@@ -65,7 +68,6 @@ export default {
         // can't be placed
         return false;
       }
-      console.log('ok');
       return true;
     },
     curNodeClicked() {

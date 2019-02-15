@@ -19,5 +19,10 @@ namespace SystemWrap
         {
             return File.ReadAllText(path, encoding);
         }
+
+        public bool Exists(string path)
+        {
+            return File.Exists(path);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace Zealot.Domain.Utilities
         }
         public static OpResult Bad(ErrorCode errorCode, string errorMessage)
         {
-            return new OpResult<object>
+            return new OpResult
             {
                 Success = false,
                 ErrorCode = errorCode,
@@ -43,7 +43,11 @@ namespace Zealot.Domain.Utilities
         }
         public new static OpResult<T> Bad(ErrorCode errorCode, string errorMessage)
         {
-            return Bad(errorCode, errorMessage);
+            return new OpResult<T>
+            {
+                ErrorCode = errorCode,
+                ErrorMessage = errorMessage
+            };
         }
     }
 }

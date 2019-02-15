@@ -136,7 +136,6 @@ export default {
       }
     },
     mouseOver(e) {
-      console.log('hover');
       this.isHover = true
     },
     mouseOut(e) {

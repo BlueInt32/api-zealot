@@ -7,6 +7,6 @@ namespace Zealot.Domain.Models
         public Guid? Id { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
-        public PacksTreeModel PacksTree { get; set; }
+        public SubTreeModel PacksTree { get; set; }
     }
 }

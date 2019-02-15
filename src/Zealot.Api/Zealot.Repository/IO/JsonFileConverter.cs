@@ -32,6 +32,10 @@ namespace Zealot.Repository.IO
 
         public OpResult<T> Read(string path)
         {
+            if (!_file.Exists(path))
+            {
+                return OpResult<T>.Bad(Domain.ErrorCode.FILE_DOES_NOT_EXIST, $"File at {path} does not exist");
+            }
             var fileContent = _file.ReadAllText(path, Encoding.UTF8);
             var outputObject = JsonConvert.DeserializeObject<T>(fileContent);
             return new OpResult<T>(true, outputObject);
