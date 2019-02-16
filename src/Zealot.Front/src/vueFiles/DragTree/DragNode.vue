@@ -1,5 +1,5 @@
 <template>
-  <div class='dnd-container'
+  <li class='node-container'
     :style='styleObj'
     :draggable='isDraggable'
     @drag.stop='drag'
@@ -9,223 +9,202 @@
     @dragleave.stop='dragLeave'
     @drop.stop='drop'
     @dragend.stop='dragEnd'
-    >
-    <div
-      :class='{"is-clicked": isClicked,"is-hover":isHover}'
-      @click="toggle"
-      @mouseover='mouseOver'
-      @mouseout='mouseOut'
-      @dblclick="changeType">
-      <div :style="{ 'padding-left': (this.depth - 1) * 24 + 'px' }" :id='model.id' class='treeNodeText'>
-        <span :class="[isClicked ? 'nodeClicked' : '','vue-drag-node-icon']"></span>
+    :class='{ "is-selected": isSelected }'>
+      <div
+        class='treeNodeText'
+        :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }"
+        @click="select"
+        @dblclick="toggle"
+        :id='model.id'>
+        <span :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"></span>
+        <!-- <span :class="[isSelected ? 'nodeClicked' : '','vue-drag-node-icon']"></span> -->
         <span class='text'>{{model.name}}</span>
       </div>
-    </div>
-    <div class='treeMargin' v-show="open" v-if="isFolder">
-      <drag-node v-for="item2 in model.children" :allowDrag='allowDrag' :allowDrop='allowDrop' :depth='increaseDepth' :model="item2" :key='item2.id' :defaultText='defaultText' :disableDBClick='disableDBClick'>
+    <ul class='treeMargin' v-show="open" v-if="isFolder">
+      <drag-node
+        v-for="item2 in model.children"
+        :depth='increaseDepth'
+        :model="item2"
+        :key='item2.id'
+        :root-reference='rootReference' >
       </drag-node>
-    </div>
-  </div>
+    </ul>
+  </li>
 </template>
 
 <script>
-/* eslint-disable */
+import { mapGetters, mapActions } from 'vuex';
 import { findRoot, exchangeData } from '../../helpers/vue-drag-tree-utils';
-let id = 1000
-let fromData = null
-let toData = null
-let nodeClicked = undefined // Attention: 递归的所有组件共享同一个＂顶级作用域＂（这个词或许不太正确，但就这个意思）．即：共享上面这几个let变量．这为实现当前节点的高亮提供了基础．
-let rootTree = null // vue-drag-tree组件引用
+import { log } from '../../helpers/consoleHelpers';
 
+let that = this; // eslint-disable-line no-invalid-this
+let id = 1000;
+let rootTree = null;
 
 export default {
   name: 'DragNode',
   data() {
     return {
       open: false,
-      isClicked: false, // 当前节点被点击
-      isHover: false, // 当前节点被hvoer
       styleObj: {
         opacity: 1
       }
-    }
+    };
   },
   props: {
+    rootReference: Object,
     model: Object,
-    allowDrag: {
-      type: Function,
-      default: () => true
-    },
-    allowDrop: {
-      type: Function,
-      default: () => true
-    },
-    defaultText: {
-      // 填加节点时显示的默认文本．
-      type: String,
-      default: 'New Node'
-    },
     depth: {
       type: Number,
       default: 0
-    },
-    disableDBClick: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
+    ...mapGetters('treeModule', ['defaultNewNodeName', 'currentlySelectedUid']),
+    isSelected() {
+      return this._uid === this.currentlySelectedUid; // eslint-disable-line
+    },
     isFolder() {
-      return this.model.children && this.model.children.length
+      return this.model.children && this.model.children.length;
     },
     increaseDepth() {
-      return this.depth + 1
+      return this.depth + 1;
     },
     isDraggable() {
-      return this.allowDrag(this.model, this)
+      return this.allowDrag(this.model, this);
     }
   },
   methods: {
+    ...mapActions('treeModule', [
+      'allowDrag',
+      'allowDrop',
+      'curNodeClicked',
+      'dragHandler',
+      'dragEnterHandler',
+      'dragLeaveHandler',
+      'dragOverHandler',
+      'dragEndHandler',
+      'dropHandler'
+    ]),
+    select() {
+      this.curNodeClicked({ model: this.model, component: this });
+    },
     toggle() {
       if (this.isFolder) {
-        this.open = !this.open
+        this.open = !this.open;
       }
-      // 调用vue-drag-tree的父组件中的方法,以传递出当前被点击的节点的id值
-      //　API: 对外开放的当前被点击节点的信息
-      rootTree.emitCurNodeClicked(this.model, this)
+      // this.subToggle();
 
-      // 纪录节点被点击的状态
-      this.isClicked = !this.isClicked
-
-      // 用户需要节点高亮
-      // 第一次点击当前节点．当前节点高亮，遍历重置其他节点的样式
-      if (nodeClicked != this.model.id) {
-        let treeParent = rootTree.$parent
-
-        // 遍历重置所有树组件的高亮样式
-        let nodeStack = [treeParent.$children[0]]
-        while (nodeStack.length != 0) {
-          let item = nodeStack.shift()
-          item.isClicked = false
-          if (item.$children && item.$children.length > 0) {
-            nodeStack = nodeStack.concat(item.$children)
-          }
-        }
-        // 然后把当前节点的样式设置为高亮
-        this.isClicked = true
-
-        // 设置节点为 当前节点
-        nodeClicked = this.model.id
-      }
+      // this.isClicked = !this.isClicked;
+      // this.isSelected = !this.isSelected;
     },
+    // subToggle() {
+    //   if (nodeClicked !== this.model.id) {
+    //     const treeParent = rootTree.$parent;
+
+    //     let nodeStack = [treeParent.$children[0]];
+    //     while (nodeStack.length !== 0) {
+    //       const item = nodeStack.shift();
+    //       item.isClicked = false;
+    //       if (item.$children && item.$children.length > 0) {
+    //         nodeStack = nodeStack.concat(item.$children);
+    //       }
+    //     }
+    //     this.isClicked = true;
+
+    //     nodeClicked = this.model.id;
+    //   }
+    // },
 
     changeType() {
-      // 如果用户禁用了双击增加item，什么都不做
-      if(this.disableDBClick){
-        return
-      }
-      // 用户需要高亮-->才纪录当前被点击节点
-      if (this.currentHighlight) {
-        nodeClicked = this.model.id
-      }
       if (!this.isFolder) {
-        this.$set(this.model, 'children', [])
-        this.addChild()
-        this.open = true
-        this.isClicked = true
+        this.$set(this.model, 'children', []);
+        this.addChild();
+        this.open = true;
       }
-    },
-    mouseOver(e) {
-      this.isHover = true
-    },
-    mouseOut(e) {
-      this.isHover = false
     },
     addChild() {
       this.model.children.push({
-        name: this.defaultText,
-        id: id++
-      })
+        name: this.defaultNewNodeName,
+        id: id += 1
+      });
     },
-    removeChild(id) {
-      // 获取父组件的model.children
-      let parent_model_children = this.$parent.model.children
+    removeChild(childId) {
+      const parentModelChildren = this.$parent.model.children;
 
-      // 在父组件model.children里删除
-      for (let index in parent_model_children) {
-        // 找到该删的id
-        if (parent_model_children[index].id == id) {
-          parent_model_children = parent_model_children.splice(index, 1)
-          break
-        }
+      console.error('not implemented', childId, parentModelChildren);
+
+      // for (let index in parentModelChildren) {
+      //   if (parentModelChildren[index].id == childId) {
+      //     parentModelChildren = parentModelChildren.splice(index, 1);
+      //     break;
+      //   }
+      // }
+    },
+    drag(event) {
+      that = this;
+      // rootTree.emitDrag(this.model, this, e)
+      this.dragHandler(this.model, this, event);
+    },
+    dragStart(event) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', 'asdad');
+      return true;
+    },
+    dragOver(event) {
+      event.preventDefault();
+      // rootTree.emitDragOver(this.model, this, e)
+      this.dragOverHandler(this.model, this, event);
+      return true;
+    },
+    dragEnter(event) {
+      if (this._uid !== that._uid) { // eslint-disable-line no-underscore-dangle
+        this.styleObj.opacity = 0.5;
       }
+      // rootTree.emitDragEnter(this.model, this, e)
+      this.dragEnterHandler(this.model, this, event);
     },
-    drag(e) {
-      fromData = this
-      rootTree.emitDrag(this.model, this, e)
+    dragLeave(event) {
+      this.styleObj.opacity = 1;
+      // rootTree.emitDragLeave(this.model, this, e)
+      this.dragLeaveHandler(this.model, this, event);
     },
-    dragStart(e) {
-      e.dataTransfer.effectAllowed = 'move'
-      e.dataTransfer.setData('text/plain', 'asdad')
-      return true
-    },
-    dragOver(e) {
-      e.preventDefault()
-      rootTree.emitDragOver(this.model, this, e)
-      return true
-    },
-    dragEnter(e) {
-      if (this._uid !== fromData._uid) {
-        this.styleObj.opacity = 0.5
-      }
-      rootTree.emitDragEnter(this.model, this, e)
-    },
-    dragLeave(e) {
-      this.styleObj.opacity = 1
-      rootTree.emitDragLeave(this.model, this, e)
-    },
-    drop(e) {
-      e.preventDefault()
-      this.styleObj.opacity = 1
+    drop(event) {
+      event.preventDefault();
+      this.styleObj.opacity = 1;
       // 如果判断当前节点不允许被drop，return;
       if (!this.allowDrop(this.model, this)) {
-        return
+        return;
       }
-      toData = this
-      exchangeData(rootTree, fromData, toData)
-      rootTree.emitDrop(this.model, this, e)
+      exchangeData(rootTree, that, this);
+      // rootTree.emitDrop(this.model, this, e)
+      this.dropHandler(this.model, this, event);
     },
-    dragEnd(e) {
-      rootTree.emitDragEnd(this.model, this, e)
-      return
+    dragEnd(event) {
+      // rootTree.emitDragEnd(this.model, this, e)
+      this.dragEndHandler(this.model, this, event);
     }
   },
-  beforeCreate() {
-    this.$options.components.item = require('./DragNode.vue')
-  },
+  // beforeCreate() {
+  //   this.$options.components.item = require('./DragNode.vue');
+  // },
   created() {
-    rootTree = findRoot(this)
+    log('find root', this.rootReference);
+    rootTree = findRoot(this);
   }
-}
+};
 </script>
 
-<style>
-.dnd-container {
-  background: #fff;
+<style lang="scss">
+.node-container {
+  list-style: none;
+  &:hover {
+    // background: #ccc;
+    cursor: pointer;
+  }
 }
-.dnd-container > div {
-  border: 2px dashed rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-}
-
-.dnd-container .is-clicked {
-  background: #e5e9f2;
-  border: 2px solid red;
-}
-
-.dnd-container .is-hover {
-  background: #e5e9f2;
-  border: 2px solid blue;
+.is-selected {
+  background: rgba(30, 0, 0, 0.1);
 }
 
 .item {
@@ -237,16 +216,16 @@ export default {
 }
 
 .text {
-  font-size: 12px;
+  font-size: 0.65em;
 }
 
 .treeNodeText {
+  display: inline-block;
   height: 28px;
   box-sizing: border-box;
-  width: fit-content;
+  width: 100%;
   font-size: 18px;
   color: #324057;
-  display: flex;
   align-items: center;
 }
 
@@ -272,4 +251,3 @@ export default {
   transform: rotate(90deg);
 }
 </style>
-

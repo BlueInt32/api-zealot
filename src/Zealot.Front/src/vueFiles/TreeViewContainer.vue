@@ -1,17 +1,5 @@
 <template>
-    <vue-drag-tree
-      :data='[tree]'
-      :allowDrag='allowDrag'
-      :allowDrop='allowDrop'
-      :defaultText='"New Node"'
-      @current-clicked='curNodeClicked'
-      @drag="dragHandler"
-      @drag-enter="dragEnterHandler"
-      @drag-leave="dragLeaveHandler"
-      @drag-over="dragOverHandler"
-      @drag-end="dragEndHandler"
-      @drop="dropHandler">
-    </vue-drag-tree>
+    <vue-drag-tree :data='[tree]'></vue-drag-tree>
 </template>
 
 <script>
@@ -59,34 +47,6 @@ export default {
     };
   },
   methods: {
-    allowDrag() {
-      // can be dragged
-      return true;
-    },
-    allowDrop() {
-      return true;
-    },
-    curNodeClicked() {
-      // console.log('curNodeClicked', model, component);
-    },
-    dragHandler() {
-      // console.log('dragHandler: ', model, component, e);
-    },
-    dragEnterHandler() {
-      // console.log('dragEnterHandler: ', model, component, e);
-    },
-    dragLeaveHandler() {
-      // console.log('dragLeaveHandler: ', model, component, e);
-    },
-    dragOverHandler() {
-      // console.log('dragOverHandler: ', model, component, e);
-    },
-    dragEndHandler() {
-      // console.log('dragEndHandler: ', model, component, e);
-    },
-    dropHandler() {
-      // console.log('dropHandler: ', model, component, e);
-    }
   }
 };
 </script>

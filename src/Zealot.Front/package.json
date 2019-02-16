@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server",
     "build:client": "cross-env NODE_ENV=production webpack --config ./build/webpack.client.config.js --progress --hide-modules",
-    "build": "npm run build:client"
+    "build": "npm run build:client",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
