@@ -6,6 +6,7 @@ using SystemWrap;
 using Zealot.Domain;
 using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
+using Zealot.Domain.Utilities;
 using Zealot.Repository.IO;
 
 namespace Zealot.Repository.Tests
@@ -26,6 +27,7 @@ namespace Zealot.Repository.Tests
             _directoryInfoFactoryMock = new Mock<IDirectoryInfoFactory>();
             _projectFileConverterMock = new Mock<IJsonFileConverter<Project>>();
             _projectConfigsListFileConverterMock = new Mock<IJsonFileConverter<ProjectsConfigsList>>();
+            _mapperMock = new Mock<IMapper>();
             _repository = new ProjectRepository(
                 _directoryInfoFactoryMock.Object
                 , _projectFileConverterMock.Object
@@ -70,6 +72,15 @@ namespace Zealot.Repository.Tests
             _directoryInfoFactoryMock
                 .Setup(m => m.Create("any folder"))
                 .Returns(directoryInfoMock.Object);
+            _projectConfigsListFileConverterMock
+                .Setup(m => m.Read(@"D:\_Prog\Projects\Zealot\test\projects.json"))
+                .Returns(new OpResult<ProjectsConfigsList>
+                {
+                    Object = new ProjectsConfigsList{
+                    new ProjectConfig{ }
+
+                }
+                });
 
             // act
             var opResult = _repository.CreateProject(model);
