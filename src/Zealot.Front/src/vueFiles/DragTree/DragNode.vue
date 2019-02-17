@@ -13,8 +13,7 @@
       <div
         class='treeNodeText'
         :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }"
-        @click="select"
-        @dblclick="toggle"
+        @click="toggle"
         :id='model.id'>
         <span
           :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"
