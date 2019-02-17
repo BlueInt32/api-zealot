@@ -1,23 +1,14 @@
 /* eslint-disable */
 
-const findRoot = which => {
-  let ok = false;
-  let that = which;
-  while (!ok) {
-    // 根据组件name来判断
-    if (that.$options._componentTag === 'vue-drag-tree') {
-      ok = true;
-      // 交换两者的数据
-      break;
-    }
-    that = that.$parent;
+const node2IsDirectParentOfNode1 = (node1, node2) => node1.$parent._uid === node2._uid;
+
+const node2IsAncestorOfNode1 = function (from, to) {
+  const rootNodeName = 'vue-drag-tree';
+
+  if(from.$options._componentTag === rootNodeName) {
+    // if from is the root node, return false right away
+    return false;
   }
-  return that;
-};
-
-const hasInclude = (from, to) => from.$parent._uid === to._uid;
-
-const isLinealRelation = function (from, to) {
   let parent = from.$parent;
 
   let ok = false;
@@ -30,7 +21,7 @@ const isLinealRelation = function (from, to) {
     }
     if (
       !parent.$options._componentTag
-      || parent.$options._componentTag === 'vue-drag-tree'
+      || parent.$options._componentTag === rootNodeName
     ) {
       ok = true;
       break;
@@ -41,76 +32,52 @@ const isLinealRelation = function (from, to) {
   return status;
 };
 
-const exchangeData = (rootCom, from, to) => {
-  // 如果拖动节点和被拖动节点相同，return;
+const allowDrop = (targetModel) => {
+  return targetModel.type === 'pack';
+};
+
+const exchangeData = (from, to) => {
+
+  // Having "P(S)" = direct Parent of S, and "X ∈ Y" = X is a descendant of Y
+  // Prevent-drop rules : for "Source S droping on Target T", the following structures
+  // will prevent the drop to occur
+  // 1/ S == T, cannot drop a node in itself
+  // 2/ P(S) == T, cannot drop a node where it sits already
+  // 3/ T ∈ S, cannot drop a node in one of its children
+
+  // Rule 1: if S == T, block because one cannot drop a node in itself
   if (from._uid === to._uid) {
     return;
   }
 
-  // 如果两者是父子关系且from是父节点，to是子节点，什么都不做
-  if (hasInclude(to, from)) {
+  // Rule 2: if P(S) == T, block because one cannot drop a node where it sits already
+  if (node2IsDirectParentOfNode1(from, to)) {
     return;
   }
 
-  const newFrom = { ...from.model };
-
-  // 如果两者是父子关系。将from节点，移动到to节点一级且放到其后一位
-  if (hasInclude(from, to)) {
-    // 如果“父”是最上层节点（节点数组中的最外层数据）
-    const tempParent = to.$parent;
-    const toModel = to.model;
-
-    if (tempParent.$options._componentTag === 'vue-drag-tree') {
-      // 将from节点添加到 根数组中
-      tempParent.newData.push(newFrom);
-      // 移除to中from节点信息；
-      toModel.children = toModel.children.filter(item => item.id !== newFrom.id);
-      return;
-    }
-
-    const toParentModel = tempParent.model;
-    // 先移除to中from节点信息；
-    toModel.children = toModel.children.filter(item => item.id !== newFrom.id);
-    // 将 from节点 添加到 to 一级别中。
-    toParentModel.children = toParentModel.children.concat([newFrom]);
+  // Rule 3: if 'T ∈ S' (or 'S is ancestor of T'), block because one cannot drop a node into one of its descendant
+  if (node2IsAncestorOfNode1(to, from)) {
     return;
   }
 
-  // 如果是 线性 关系，但非父子
-  if (isLinealRelation(from, to)) {
-    const fromParentModel = from.$parent.model;
-    const toModel = to.model;
+  const fromModelCopy = { ...from.model };
 
-    // 先将from从其父节点信息移除；
-    fromParentModel.children = fromParentModel.children.filter(
-      item => item.id !== newFrom.id
-    );
+  // Remove the moved node from its previous parent
+  from.$parent.model.children = from.$parent.model.children.filter(
+    item => item.id !== fromModelCopy.id
+  );
 
-    // 再from节点添加到to节点中最后一位。
-    toModel.children = toModel.children.concat([newFrom]);
-    return;
-  }
-
-  // 两节点（无线性关系），把from节点扔到to节点中。
-  const fromParentModel = from.$parent.model;
-  const toModel = to.model;
-  // 先将from从其父节点信息移除；
-  if (from.$parent.$options._componentTag === 'vue-drag-tree') {
-
-    from.$parent.newData = from.$parent.newData.filter(
-      item => item.id !== newFrom.id
-    );
-  } else {
-    fromParentModel.children = fromParentModel.children.filter(
-      item => item.id !== newFrom.id
-    );
-  }
-
-  if (toModel.children) {
-    toModel.children = toModel.children.concat([newFrom]);
-  } else {
-    toModel.children = [newFrom];
-  }
+  // Add the moved node to the target node's children
+  to.model.children = [...to.model.children, fromModelCopy];
+  // if (to.model.children) {
+  //   to.model.children = to.model.children.concat([fromModelCopy]);
+  // } else {
+  //   to.model.children = [fromModelCopy];
+  // }
 };
 
-export { findRoot, exchangeData };
+export { node2IsDirectParentOfNode1,
+  node2IsAncestorOfNode1,
+  exchangeData,
+  allowDrop
+ };

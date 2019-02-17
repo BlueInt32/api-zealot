@@ -22,9 +22,6 @@ export default {
     }
   },
   computed: {
-    increaseDepth() {
-      return this.depth + 1;
-    },
     newData: {
       // getter
       get() {

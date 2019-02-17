@@ -15,12 +15,8 @@ const actions = {
     // can be dragged
     return true;
   },
-  allowDrop(context, model) {
-    logAction('allowDrop', model);
-    return true;
-  },
-  curNodeClicked(context, { model, component }) {
-    logAction('curNodeClicked', model, component);
+  curNodeClicked(context, { component }) {
+    // logAction('curNodeClicked', model, component);
     context.commit('setSelectedUid', { id: component._uid }); // eslint-disable-line
   },
   dragHandler() {

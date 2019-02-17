@@ -1,50 +1,17 @@
 <template>
-    <vue-drag-tree :data='[tree]'></vue-drag-tree>
+    <drag-node :model='tree' :depth="0"></drag-node>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import VueDragTree from './DragTree/VueDragTree.vue';
+import DragNode from './DragTree/DragNode.vue';
 
 export default {
   components: {
-    VueDragTree
+    DragNode
   },
   computed: {
     ...mapGetters('projectModule', ['tree'])
-  },
-  data: function () {
-    return {
-      treeData: [{
-          name: 'Node 0-0',
-          id: 0,
-          children: [
-            {
-              name: 'Node 1-1',
-              id: 3,
-              children: [{
-                  name: 'Node 2-1',
-                  id: 4,
-                  children: []
-                }, {
-                  name: 'Node 2-2',
-                  id: 10,
-                  children: []
-                }
-              ]
-            }, {
-              name: 'Node 1-2',
-              id: 13,
-              children: []
-            }
-          ]
-        }, {
-          name: 'Node 0-1',
-          id: 14,
-          children: []
-        }
-      ]
-    };
   },
   methods: {
   }

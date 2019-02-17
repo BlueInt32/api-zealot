@@ -16,8 +16,9 @@
         @click="select"
         @dblclick="toggle"
         :id='model.id'>
-        <span :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"></span>
-        <!-- <span :class="[isSelected ? 'nodeClicked' : '','vue-drag-node-icon']"></span> -->
+        <span
+          :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"
+          v-if="isFolder"></span>
         <span class='text'>{{model.name}}</span>
       </div>
     <ul class='treeMargin' v-show="open" v-if="isFolder">
@@ -34,12 +35,11 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { findRoot, exchangeData } from '../../helpers/vue-drag-tree-utils';
+import { exchangeData, allowDrop } from '../../helpers/vue-drag-tree-utils';
 import { log } from '../../helpers/consoleHelpers';
 
 let that = this; // eslint-disable-line no-invalid-this
 let id = 1000;
-let rootTree = null;
 
 export default {
   name: 'DragNode',
@@ -77,7 +77,6 @@ export default {
   methods: {
     ...mapActions('treeModule', [
       'allowDrag',
-      'allowDrop',
       'curNodeClicked',
       'dragHandler',
       'dragEnterHandler',
@@ -93,29 +92,7 @@ export default {
       if (this.isFolder) {
         this.open = !this.open;
       }
-      // this.subToggle();
-
-      // this.isClicked = !this.isClicked;
-      // this.isSelected = !this.isSelected;
     },
-    // subToggle() {
-    //   if (nodeClicked !== this.model.id) {
-    //     const treeParent = rootTree.$parent;
-
-    //     let nodeStack = [treeParent.$children[0]];
-    //     while (nodeStack.length !== 0) {
-    //       const item = nodeStack.shift();
-    //       item.isClicked = false;
-    //       if (item.$children && item.$children.length > 0) {
-    //         nodeStack = nodeStack.concat(item.$children);
-    //       }
-    //     }
-    //     this.isClicked = true;
-
-    //     nodeClicked = this.model.id;
-    //   }
-    // },
-
     changeType() {
       if (!this.isFolder) {
         this.$set(this.model, 'children', []);
@@ -143,7 +120,6 @@ export default {
     },
     drag(event) {
       that = this;
-      // rootTree.emitDrag(this.model, this, e)
       this.dragHandler(this.model, this, event);
     },
     dragStart(event) {
@@ -153,7 +129,6 @@ export default {
     },
     dragOver(event) {
       event.preventDefault();
-      // rootTree.emitDragOver(this.model, this, e)
       this.dragOverHandler(this.model, this, event);
       return true;
     },
@@ -161,36 +136,27 @@ export default {
       if (this._uid !== that._uid) { // eslint-disable-line no-underscore-dangle
         this.styleObj.opacity = 0.5;
       }
-      // rootTree.emitDragEnter(this.model, this, e)
       this.dragEnterHandler(this.model, this, event);
     },
     dragLeave(event) {
       this.styleObj.opacity = 1;
-      // rootTree.emitDragLeave(this.model, this, e)
       this.dragLeaveHandler(this.model, this, event);
     },
     drop(event) {
       event.preventDefault();
       this.styleObj.opacity = 1;
       // 如果判断当前节点不允许被drop，return;
-      if (!this.allowDrop(this.model, this)) {
+      if (!allowDrop(this.model, this)) {
         return;
       }
-      exchangeData(rootTree, that, this);
-      // rootTree.emitDrop(this.model, this, e)
-      this.dropHandler(this.model, this, event);
+      exchangeData(that, this);
     },
     dragEnd(event) {
-      // rootTree.emitDragEnd(this.model, this, e)
       this.dragEndHandler(this.model, this, event);
     }
   },
-  // beforeCreate() {
-  //   this.$options.components.item = require('./DragNode.vue');
-  // },
   created() {
     log('find root', this.rootReference);
-    rootTree = findRoot(this);
   }
 };
 </script>
@@ -199,7 +165,6 @@ export default {
 .node-container {
   list-style: none;
   &:hover {
-    // background: #ccc;
     cursor: pointer;
   }
 }
