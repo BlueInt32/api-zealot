@@ -3,7 +3,6 @@
     :style='styleObj'
     :draggable='isDraggable'
     @drag.stop='drag'
-    @dragstart.stop='dragStart'
     @dragover.stop='dragOver'
     @dragenter.stop='dragEnter'
     @dragleave.stop='dragLeave'
@@ -13,8 +12,7 @@
       <div
         class='treeNodeText'
         :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }"
-        @click="toggle"
-        :id='model.id'>
+        @click="toggle">
         <span
           :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"
           v-if="isFolder"></span>
@@ -22,10 +20,10 @@
       </div>
     <ul class='treeMargin' v-show="open" v-if="isFolder">
       <drag-node
-        v-for="item2 in model.children"
+        v-for="child in model.children"
         :depth='increaseDepth'
-        :model="item2"
-        :key='item2.id'
+        :model="child"
+        :key='child.id'
         :root-reference='rootReference' >
       </drag-node>
     </ul>
@@ -34,11 +32,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { exchangeData, allowDrop } from '../../helpers/vue-drag-tree-utils';
-import { log } from '../../helpers/consoleHelpers';
-
-let that = this; // eslint-disable-line no-invalid-this
-let id = 1000;
 
 export default {
   name: 'DragNode',
@@ -59,9 +52,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('treeModule', ['defaultNewNodeName', 'currentlySelectedUid']),
+    ...mapGetters('treeModule', ['defaultNewNodeName',
+      'currentlySelectedId',
+      'draggedNode']),
     isSelected() {
-      return this._uid === this.currentlySelectedUid; // eslint-disable-line
+      return this.id === this.currentlySelectedId;
     },
     isFolder() {
       return this.model.children && this.model.children.length;
@@ -82,7 +77,9 @@ export default {
       'dragLeaveHandler',
       'dragOverHandler',
       'dragEndHandler',
-      'dropHandler'
+      'dropHandler',
+      'setDraggedNodeId',
+      'dropOn'
     ]),
     select() {
       this.curNodeClicked({ model: this.model, component: this });
@@ -92,24 +89,9 @@ export default {
         this.open = !this.open;
       }
     },
-    changeType() {
-      if (!this.isFolder) {
-        this.$set(this.model, 'children', []);
-        this.addChild();
-        this.open = true;
-      }
-    },
-    addChild() {
-      this.model.children.push({
-        name: this.defaultNewNodeName,
-        id: id += 1
-      });
-    },
     removeChild(childId) {
       const parentModelChildren = this.$parent.model.children;
-
       console.error('not implemented', childId, parentModelChildren);
-
       // for (let index in parentModelChildren) {
       //   if (parentModelChildren[index].id == childId) {
       //     parentModelChildren = parentModelChildren.splice(index, 1);
@@ -117,45 +99,35 @@ export default {
       //   }
       // }
     },
-    drag(event) {
-      that = this;
-      this.dragHandler(this.model, this, event);
-    },
-    dragStart(event) {
-      event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('text/plain', 'asdad');
-      return true;
+    drag() {
+      // that = this;
+      this.setDraggedNodeId(this.model.id);
+      // this.dragHandler(this.model, this, event);
     },
     dragOver(event) {
       event.preventDefault();
       this.dragOverHandler(this.model, this, event);
       return true;
     },
-    dragEnter(event) {
-      if (this._uid !== that._uid) { // eslint-disable-line no-underscore-dangle
+    dragEnter() {
+      if (this.model.id !== this.draggedNode._uid) { // eslint-disable-line no-underscore-dangle
         this.styleObj.opacity = 0.5;
       }
-      this.dragEnterHandler(this.model, this, event);
     },
     dragLeave(event) {
       this.styleObj.opacity = 1;
       this.dragLeaveHandler(this.model, this, event);
     },
-    drop(event) {
-      event.preventDefault();
+    drop() {
       this.styleObj.opacity = 1;
-      // 如果判断当前节点不允许被drop，return;
-      if (!allowDrop(this.model, this)) {
-        return;
-      }
-      exchangeData(that, this);
+      this.dropOn(this.model.id);
     },
     dragEnd(event) {
+      this.styleObj.opacity = 1;
       this.dragEndHandler(this.model, this, event);
     }
   },
   created() {
-    log('find root', this.rootReference);
   }
 };
 </script>

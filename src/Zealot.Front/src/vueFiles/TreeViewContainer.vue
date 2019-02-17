@@ -4,14 +4,14 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import DragNode from './DragTree/DragNode.vue';
+import DragNode from './DragNode.vue';
 
 export default {
   components: {
     DragNode
   },
   computed: {
-    ...mapGetters('projectModule', ['tree'])
+    ...mapGetters('treeModule', ['tree'])
   },
   methods: {
   }

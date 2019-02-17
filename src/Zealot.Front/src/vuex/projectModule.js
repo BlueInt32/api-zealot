@@ -4,8 +4,7 @@ import { log, logAction } from '../helpers/consoleHelpers';
 const state = {
   id: '',
   name: '',
-  path: '',
-  tree: {}
+  path: ''
 };
 
 const getters = {
@@ -20,10 +19,10 @@ const actions = {
     return appService.getProjectDetails({ projectId })
       .then(data => {
         log('Received project details', data);
+        context.dispatch('treeModule/setRawTree', data.tree, { root: true });
         context.commit('setProject', {
           id: data.id,
           name: data.name,
-          tree: data.tree
         });
       });
   },

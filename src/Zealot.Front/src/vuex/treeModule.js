@@ -1,23 +1,43 @@
 import { logAction } from '../helpers/consoleHelpers';
+import { fillParentsInTree, moveNode } from '../helpers/vue-drag-tree-utils';
 
 const state = {
-  currentlySelectedUid: null
+  currentlySelectedId: null,
+  draggedNode: null,
+  draggingTarget: null,
+  tree: {},
+  nodesMap: null
 };
 
 const getters = {
+  tree: currentState => currentState.tree,
+  nodesMap: currentState => currentState.nodesMap,
+  draggedNode: currentState => currentState.draggedNode,
   defaultNewNodeName: () => 'New node',
-  currentlySelectedUid: currentState => currentState.currentlySelectedUid
+  currentlySelectedId: currentState => currentState.currentlySelectedId
 };
 
 const actions = {
+  setRawTree(context, tree) {
+    context.commit('initializeTree', tree);
+  },
+  setDraggedNodeId(context, draggedNodeId) {
+    const nodeInTree = context.state.nodesMap.get(draggedNodeId);
+    context.commit('setDraggedNode', nodeInTree);
+  },
+  dropOn(context, dragTargetNodeId) {
+    const nodeInTree = context.state.nodesMap.get(dragTargetNodeId);
+    // context.commit('setDragTargetNode', nodeInTree);
+    moveNode(context.state.draggedNode, nodeInTree);
+  },
   allowDrag(context, model) {
     logAction('allowDrag', model);
     // can be dragged
     return true;
   },
-  curNodeClicked(context, { component }) {
+  curNodeClicked(context, { node }) {
     // logAction('curNodeClicked', model, component);
-    context.commit('setSelectedUid', { id: component._uid }); // eslint-disable-line
+    context.commit('setSelectedId', { id: node.id });
   },
   dragHandler() {
     // console.log('dragHandler: ', model, component, e);
@@ -40,8 +60,20 @@ const actions = {
 };
 
 const mutations = {
-  setSelectedUid(currentState, { id }) {
-    currentState.currentlySelectedUid = id;
+  setSelectedId(currentState, { id }) {
+    currentState.currentlySelectedId = id;
+  },
+  initializeTree(currentState, tree) {
+    let nodesMap = new Map();
+    nodesMap = fillParentsInTree(tree, null, nodesMap);
+    currentState.tree = tree;
+    currentState.nodesMap = nodesMap;
+  },
+  setNodesMap(currentState, nodesMap) {
+    currentState.nodesMap = nodesMap;
+  },
+  setDraggedNode(currentState, draggedNode) {
+    currentState.draggedNode = draggedNode;
   }
 };
 
