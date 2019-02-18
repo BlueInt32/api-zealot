@@ -1,5 +1,5 @@
 import { logAction } from '../helpers/consoleHelpers';
-import { fillParentsInTree, moveNode } from '../helpers/vue-drag-tree-utils';
+import { buildTreeMapAndSetParentsIds, moveNode } from '../helpers/vue-drag-tree-utils';
 
 const state = {
   currentlySelectedId: null,
@@ -28,7 +28,7 @@ const actions = {
   dropOn(context, dragTargetNodeId) {
     const nodeInTree = context.state.nodesMap.get(dragTargetNodeId);
     // context.commit('setDragTargetNode', nodeInTree);
-    moveNode(context.state.draggedNode, nodeInTree);
+    moveNode(context.state.draggedNode, nodeInTree, context.state.nodesMap);
   },
   allowDrag(context, model) {
     logAction('allowDrag', model);
@@ -65,7 +65,7 @@ const mutations = {
   },
   initializeTree(currentState, tree) {
     let nodesMap = new Map();
-    nodesMap = fillParentsInTree(tree, null, nodesMap);
+    nodesMap = buildTreeMapAndSetParentsIds(tree, null, nodesMap);
     currentState.tree = tree;
     currentState.nodesMap = nodesMap;
   },

@@ -19,9 +19,9 @@ export default {
     };
   },
   methods: {
-    ...mapActions('projectModule', ['saveProject']),
+    ...mapActions('projectModule', ['createProject']),
     addProjectLocal() {
-      this.saveProject({
+      this.createProject({
         projectName: this.projectName,
         projectPath: this.projectPath
       });

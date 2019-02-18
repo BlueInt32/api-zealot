@@ -26,15 +26,28 @@ const actions = {
         });
       });
   },
-  saveProject(context, { projectName, projectPath }) {
-    logAction('saveProject', projectName, projectPath);
-    appService.saveProject({
+  createProject(context, { projectName, projectPath }) {
+    logAction('createProject', projectName, projectPath);
+    appService.createProject({
       projectName,
       projectPath
     }).then((data) => {
       log(data);
     });
-  }
+  },
+  updateProject(context) {
+    logAction('updateProject');
+    // const tree = context.rootState.treeModule.tree;
+    const { id, name } = context.state;
+    const { tree } = context.rootState.treeModule;
+    appService.updateProject({
+      projectId: id,
+      projectName: name,
+      tree
+    }).then((data) => {
+      log(data);
+    });
+  },
 };
 
 const mutations = {

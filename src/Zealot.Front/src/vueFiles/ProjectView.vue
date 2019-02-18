@@ -2,6 +2,7 @@
 <div class="homeContainer">
   <div class="row">
     <div class="col-lg-3 col-sm-4">
+      <input type="button" class="btn btn-primary" value="Save" @click="updateProject"/>
       <tree-view-container></tree-view-container>
     </div>
     <div class="col">
@@ -52,7 +53,7 @@ export default {
     console.log('mounted');
   },
   methods: {
-    ...mapActions('projectModule', ['getProjectDetails'])
+    ...mapActions('projectModule', ['getProjectDetails', 'updateProject'])
   },
   watch: {
     '$route': function (to) {

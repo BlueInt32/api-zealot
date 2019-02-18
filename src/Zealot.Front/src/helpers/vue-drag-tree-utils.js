@@ -1,38 +1,37 @@
 /* eslint-disable */
 
-const node2IsDirectParentOfNode1 = (node1, node2) => node1.parent.id === node2.id;
+const node2IsDirectParentOfNode1 = (node1, node2) => node1.parentId === node2.id;
 
-const fillParentsInTree = (node, parent, nodesMap) => {
-  node.parent = parent;
+const buildTreeMapAndSetParentsIds = (node, parent, nodesMap) => {
+  node.parentId = parent ? parent.id : null;
   nodesMap.set(node.id, node);
   if(node.children) {
     node.children.forEach(child => {
-      fillParentsInTree(child, node, nodesMap);
+      buildTreeMapAndSetParentsIds(child, node, nodesMap);
     });
   }
   return nodesMap;
 };
 
-const node2IsAncestorOfNode1 = function (node1, node2) {
-  if (node1.parent === null) {
-    // if from is the root node, return false right away
+const node2IsAncestorOfNode1 = function (node1, node2, nodesMap) {
+  if (node1.parentId === null) {
+    // if node1 is the root node, return false right away
     return false;
   }
 
   let currentNode = node1;
 
-  while(currentNode.parent) {
-    if(currentNode.parent.id === node2.id) {
+  while(currentNode.parentId) {
+    if(currentNode.parentId === node2.id) {
       return true;
     }
-    currentNode = currentNode.parent;
+    currentNode = nodesMap.get(currentNode.parentId);
   }
 
   return false;
 };
 
-
-const moveNode = (node1, node2) => {
+const moveNode = (node1, node2, nodesMap) => {
 
   // having "P(S)" = direct Parent of S, and "X ∈ Y" = X is a descendant of Y
   // prevent-drop rules : for "Source S droping on Target T", the following structures
@@ -58,16 +57,17 @@ const moveNode = (node1, node2) => {
   }
 
   // rule 4: if 'T ∈ S' (or 'S is ancestor of T'), block because one cannot drop a node into one of its descendant
-  if (node2IsAncestorOfNode1(node2, node1)) {
+  if (node2IsAncestorOfNode1(node2, node1, nodesMap)) {
     return;
   }
 
   // remove the moved node from its previous parent
-  node1.parent.children = node1.parent.children.filter(
+  let node1Parent = nodesMap.get(node1.parentId);
+  node1Parent.children = node1Parent.children.filter(
     item => item.id !== node1.id
   );
   // set node1's parent to node2
-  node1.parent = node2;
+  node1.parentId = node2.id;
 
   // add the moved node to the target node's children
   node2.children = [...node2.children, node1];
@@ -77,5 +77,5 @@ export {
  node2IsDirectParentOfNode1,
   node2IsAncestorOfNode1,
   moveNode,
-  fillParentsInTree
+  buildTreeMapAndSetParentsIds
  };

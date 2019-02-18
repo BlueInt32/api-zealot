@@ -43,7 +43,7 @@ const appService = {
       );
     });
   },
-  saveProject({ projectName, projectPath }) {
+  createProject({ projectName, projectPath }) {
     return new Promise(resolve => {
       axios.post(`${serviceRootUrl}/projects`, {
         name: projectName,
@@ -54,6 +54,21 @@ const appService = {
       },
       () => {
 
+      });
+    });
+  },
+  updateProject({ projectId, projectName, tree }) {
+    return new Promise(resolve => {
+      axios.put(`${serviceRootUrl}/projects`, {
+        id: projectId,
+        name: projectName,
+        tree
+      })
+      .then(response => {
+        resolve(response.data);
+      },
+      (error) => {
+        console.log(error);
       });
     });
   },
