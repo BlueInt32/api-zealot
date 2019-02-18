@@ -95,7 +95,7 @@ namespace Zealot.Repository
             }
 
             var project = _mapper.Map<Project>(model);
-            var dumpResult = _projectFileConverter.Dump(project, Path.Combine(projectConfig.Path, "project.json"));
+            var dumpResult = _projectFileConverter.Dump(project, projectConfig.Path);
 
             return dumpResult;
         }
