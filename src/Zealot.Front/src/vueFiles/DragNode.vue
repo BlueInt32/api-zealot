@@ -1,15 +1,13 @@
 <template>
   <li class='node-container'
     :style='styleObj'
-    :draggable='isDraggable'
-    @drag.stop='drag'
-    @dragover.stop='dragOver'
-    @dragenter.stop='dragEnter'
-    @dragleave.stop='dragLeave'
-    @drop.stop='drop'
-    @dragend.stop='dragEnd'
     :class='{ "is-selected": isSelected }'>
       <div
+        :draggable='true'
+        @drag.stop='drag'
+        @dragover.stop='dragOver'
+        @drop.stop='drop'
+        @dragend.stop='dragEnd'
         class='treeNodeText'
         :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }"
         @click="toggle">
@@ -22,6 +20,11 @@
           <i class="fas fa-globe-americas" v-if="model.type === 'request'"></i>
           {{model.name}}</span>
       </div>
+      <div
+        v-if="isDragging && isFolder" class="nodeDropZone"
+        @dragleave.stop='dragLeave'
+        @dragenter.stop='dragEnter'
+      ></div>
     <ul class='treeMargin' v-show="open" v-if="isFolder">
       <drag-node
         v-for="child in model.children"
@@ -58,7 +61,8 @@ export default {
   computed: {
     ...mapGetters('treeModule', ['defaultNewNodeName',
       'currentlySelectedId',
-      'draggedNode']),
+      'draggedNode',
+      'isDragging']),
     isSelected() {
       return this.id === this.currentlySelectedId;
     },
@@ -67,9 +71,6 @@ export default {
     },
     increaseDepth() {
       return this.depth + 1;
-    },
-    isDraggable() {
-      return this.allowDrag(this.model, this);
     }
   },
   methods: {
@@ -83,7 +84,8 @@ export default {
       'dragEndHandler',
       'dropHandler',
       'setDraggedNodeId',
-      'dropOn'
+      'dropOn',
+      'setIsDragging'
     ]),
     select() {
       this.curNodeClicked({ model: this.model, component: this });
@@ -104,21 +106,25 @@ export default {
       // }
     },
     drag() {
-      // that = this;
-      this.setDraggedNodeId(this.model.id);
-      // this.dragHandler(this.model, this, event);
+      if (!this.isDragging) {
+        this.setDraggedNodeId(this.model.id);
+        this.setIsDragging(true);
+      }
     },
     dragOver(event) {
       event.preventDefault();
+      // console.log('over -> nope');
       this.dragOverHandler(this.model, this, event);
       return true;
     },
     dragEnter() {
-      if (this.model.id !== this.draggedNode._uid) { // eslint-disable-line no-underscore-dangle
+      console.log(`enter ${this.model.name} -> 0.5`);
+      if (this.model.id !== this.draggedNode.id) {
         this.styleObj.opacity = 0.5;
       }
     },
     dragLeave(event) {
+      console.log(`leave ${this.model.name} -> 1`);
       this.styleObj.opacity = 1;
       this.dragLeaveHandler(this.model, this, event);
     },
@@ -129,6 +135,7 @@ export default {
     dragEnd(event) {
       this.styleObj.opacity = 1;
       this.dragEndHandler(this.model, this, event);
+      this.setIsDragging(false);
     }
   },
   created() {
@@ -139,6 +146,7 @@ export default {
 <style lang="scss">
 .node-container {
   list-style: none;
+  position: relative;
   &:hover {
     cursor: pointer;
   }
@@ -189,5 +197,14 @@ export default {
 
 .nodeClicked {
   transform: rotate(90deg);
+}
+
+.nodeDropZone {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 255, 0.3);
+  pointer-events: none;
+  z-index: 30;
 }
 </style>

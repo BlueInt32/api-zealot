@@ -6,7 +6,8 @@ const state = {
   draggedNode: null,
   draggingTarget: null,
   tree: {},
-  nodesMap: null
+  nodesMap: null,
+  isDragging: false
 };
 
 const getters = {
@@ -14,7 +15,8 @@ const getters = {
   nodesMap: currentState => currentState.nodesMap,
   draggedNode: currentState => currentState.draggedNode,
   defaultNewNodeName: () => 'New node',
-  currentlySelectedId: currentState => currentState.currentlySelectedId
+  currentlySelectedId: currentState => currentState.currentlySelectedId,
+  isDragging: currentState => currentState.isDragging
 };
 
 const actions = {
@@ -22,6 +24,7 @@ const actions = {
     context.commit('initializeTree', tree);
   },
   setDraggedNodeId(context, draggedNodeId) {
+    logAction('setDraggedNodeId', draggedNodeId);
     const nodeInTree = context.state.nodesMap.get(draggedNodeId);
     context.commit('setDraggedNode', nodeInTree);
   },
@@ -29,6 +32,9 @@ const actions = {
     const nodeInTree = context.state.nodesMap.get(dragTargetNodeId);
     // context.commit('setDragTargetNode', nodeInTree);
     moveNode(context.state.draggedNode, nodeInTree, context.state.nodesMap);
+  },
+  setIsDragging(context, value) {
+    context.commit('setIsDragging', value);
   },
   allowDrag(context, model) {
     logAction('allowDrag', model);
@@ -74,6 +80,9 @@ const mutations = {
   },
   setDraggedNode(currentState, draggedNode) {
     currentState.draggedNode = draggedNode;
+  },
+  setIsDragging(currentState, value) {
+    currentState.isDragging = value;
   }
 };
 
