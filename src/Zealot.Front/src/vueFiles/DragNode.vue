@@ -16,7 +16,11 @@
         <span
           :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"
           v-if="isFolder"></span>
-        <span class='text'>{{model.name}}</span>
+
+        <span class='text'>
+          <i v-if="model.type === 'code'" class="fab fa-js-square"></i>
+          <i class="fas fa-globe-americas" v-if="model.type === 'request'"></i>
+          {{model.name}}</span>
       </div>
     <ul class='treeMargin' v-show="open" v-if="isFolder">
       <drag-node
