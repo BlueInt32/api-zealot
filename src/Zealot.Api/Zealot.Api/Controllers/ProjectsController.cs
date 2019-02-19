@@ -49,9 +49,13 @@ namespace Zealot.Api.Controllers
             return result.ToActionResult();
         }
         [HttpPut]
-        [Route("")]
-        public IActionResult UpdateProject([FromBody] ProjectModel model)
+        [Route("{projectId}")]
+        public IActionResult UpdateProject(Guid? projectId, [FromBody] ProjectModel model)
         {
+            if (!model.Id.HasValue)
+            {
+                model.Id = projectId;
+            }
             var result = _projectService.UpdateProject(model);
             return result.ToActionResult();
         }

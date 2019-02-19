@@ -59,8 +59,7 @@ const appService = {
   },
   updateProject({ projectId, projectName, tree }) {
     return new Promise(resolve => {
-      axios.put(`${serviceRootUrl}/projects`, {
-        id: projectId,
+      axios.put(`${serviceRootUrl}/projects/${projectId}`, {
         name: projectName,
         tree
       })
