@@ -8,6 +8,8 @@
         @dragover.stop='dragOver'
         @drop.stop='drop'
         @dragend.stop='dragEnd'
+        @dragenter.stop='dragEnter'
+        @dragleave.stop='dragLeave'
         class='treeNodeText'
         :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }"
         @click="toggle">
@@ -15,16 +17,19 @@
           :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"
           v-if="isFolder"></span>
 
-        <span class='text'>
+        <span class='text'
+          @dragenter.stop='dragEnter'
+          @dragleave.stop='dragLeave'>
           <i v-if="model.type === 'code'" class="fab fa-js-square"></i>
           <i class="fas fa-globe-americas" v-if="model.type === 'request'"></i>
           {{model.name}}</span>
       </div>
       <div
+        :style=styleObj2
         v-if="isDragging && isFolder" class="nodeDropZone"
         @dragleave.stop='dragLeave'
-        @dragenter.stop='dragEnter'
-      ></div>
+        @dragenter.stop='dragEnter' >
+        </div>
     <ul class='treeMargin' v-show="open" v-if="isFolder">
       <drag-node
         v-for="child in model.children"
@@ -46,7 +51,10 @@ export default {
     return {
       open: false,
       styleObj: {
-        opacity: 1
+        opacity: 1,
+      },
+      styleObj2: {
+        background: 'rgba(0, 0, 255, 0)'
       }
     };
   },
@@ -121,12 +129,14 @@ export default {
       console.log(`enter ${this.model.name} -> 0.5`);
       if (this.model.id !== this.draggedNode.id) {
         this.styleObj.opacity = 0.5;
+        this.styleObj2.background = 'rgba(0, 0, 255, 0.1)';
       }
     },
     dragLeave(event) {
       console.log(`leave ${this.model.name} -> 1`);
       this.styleObj.opacity = 1;
       this.dragLeaveHandler(this.model, this, event);
+      this.styleObj2.background = 'rgba(0, 0, 255, 0)';
     },
     drop() {
       this.styleObj.opacity = 1;
@@ -201,9 +211,9 @@ export default {
 
 .nodeDropZone {
   position: absolute;
+  top: 0px;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0, 255, 0.3);
   pointer-events: none;
   z-index: 30;
 }
