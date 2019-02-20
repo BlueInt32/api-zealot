@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using SystemWrap;
+using Zealot.Api.ApiHelpers;
+using Zealot.Api.Middlewares;
 using Zealot.Domain;
 using Zealot.Domain.Objects;
 using Zealot.Repository;
@@ -40,7 +42,11 @@ namespace Zealot.Api
                 .AddTransient<IFile, FileWrap>()
                 .AddTransient<IMapper, Mapper>(_ => new Mapper(automapperConfig))
                 .AddCors()
-                .AddMvc().AddJsonOptions(opt =>
+                .AddMvc(opt =>
+                {
+                    opt.Filters.Add(typeof(ApiValidationFilterAttribute));
+                })
+                .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                     opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -69,6 +75,7 @@ namespace Zealot.Api
             app.UseHttpsRedirection();
             app.UseCors("mypolicy");
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseMiddleware<ErrorWrappingMiddleware>();
             app.UseMvc();
         }
     }

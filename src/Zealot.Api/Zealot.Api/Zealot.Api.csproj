@@ -14,6 +14,8 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
+	<PackageReference Include="NLog" Version="4.5.11" />
     <PackageReference Include="RestSharp" Version="106.6.7" />
   </ItemGroup>
 
@@ -21,6 +23,12 @@
     <ProjectReference Include="..\SystemWrap\SystemWrap.csproj" />
     <ProjectReference Include="..\Zealot.Domain\Zealot.Domain.csproj" />
     <ProjectReference Include="..\Zealot.Services\Zealot.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

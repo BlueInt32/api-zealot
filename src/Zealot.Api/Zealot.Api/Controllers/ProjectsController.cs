@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Zealot.Api.ApiHelpers;
 using Zealot.Domain;
 using Zealot.Domain.Models;
@@ -13,10 +14,14 @@ namespace Zealot.Api.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        private readonly ILogger<ProjectsController> _logger;
 
-        public ProjectsController(IProjectService projectService)
+        public ProjectsController(
+            IProjectService projectService
+            , ILogger<ProjectsController> logger)
         {
             _projectService = projectService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -59,6 +64,5 @@ namespace Zealot.Api.Controllers
             var result = _projectService.UpdateProject(model);
             return result.ToActionResult();
         }
-
     }
 }
