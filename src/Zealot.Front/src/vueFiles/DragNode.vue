@@ -44,7 +44,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { log } from '../helpers/consoleHelpers';
 
 export default {
   name: 'DragNode',
@@ -69,12 +68,11 @@ export default {
   },
   computed: {
     ...mapGetters('treeModule', ['defaultNewNodeName',
-      'currentlySelectedId',
+      'selectedNode',
       'draggedNode',
       'isDragging']),
     isSelected() {
-      log(this.model.id, this.currentlySelectedId);
-      return this.model.id === this.currentlySelectedId;
+      return this.model.id === this.selectedNode.id;
     },
     isFolder() {
       return this.model.children && this.model.children.length;
@@ -121,19 +119,16 @@ export default {
     },
     dragOver(event) {
       event.preventDefault();
-      // console.log('over -> nope');
       this.dragOverHandler(this.model, this, event);
       return true;
     },
     dragEnter() {
-      console.log(`enter ${this.model.name} -> 0.5`);
       if (this.model.id !== this.draggedNode.id) {
         this.styleObj.opacity = 0.5;
         this.styleObj2.background = 'rgba(0, 0, 255, 0.1)';
       }
     },
     dragLeave(event) {
-      console.log(`leave ${this.model.name} -> 1`);
       this.styleObj.opacity = 1;
       this.dragLeaveHandler(this.model, this, event);
       this.styleObj2.background = 'rgba(0, 0, 255, 0)';

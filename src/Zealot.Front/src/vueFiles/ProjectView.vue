@@ -6,15 +6,8 @@
       <tree-view-container></tree-view-container>
     </div>
     <div class="col">
-      <div class="request-panel">
-        <div class="row mb-2">
-          <request-url-bar class="col-12"></request-url-bar>
-        </div>
-        <div class="row">
-          <request-panel class="col-6"></request-panel>
-          <response-panel class="col-6"></response-panel>
-        </div>
-      </div>
+      <code-editor v-if="selectedNode && selectedNode.type === 'code'"></code-editor>
+      <request-editor v-else></request-editor>
     </div>
   </div>
 </div>
@@ -22,17 +15,16 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import RequestUrlBar from './RequestUrlBar.vue';
-import RequestPanel from './RequestPanel.vue';
-import ResponsePanel from './ResponsePanel.vue';
 import TreeViewContainer from './TreeViewContainer.vue';
+import RequestEditor from './RequestEditor.vue';
+import CodeEditor from './CodeEditor.vue';
+import { log } from '../helpers/consoleHelpers';
 
 export default {
   components: {
+    CodeEditor,
+    RequestEditor,
     TreeViewContainer,
-    RequestUrlBar,
-    RequestPanel,
-    ResponsePanel
   },
   filters: {
   },
@@ -41,16 +33,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('projectModule', ['projectId'])
+    ...mapGetters('projectModule', ['projectId']),
+    ...mapGetters('treeModule', ['selectedNode']),
   },
   created() {
-    console.log('created');
+  },
+  mounted() {
     if (this.$route.params.projectId !== this.projectId) {
       this.getProjectDetails({ projectId: this.$route.params.projectId });
     }
-  },
-  mounted() {
-    console.log('mounted');
   },
   methods: {
     ...mapActions('projectModule', ['getProjectDetails', 'updateProject'])
@@ -58,7 +49,7 @@ export default {
   watch: {
     '$route': function (to) {
       if (to.path === '/random') {
-        console.log('random');
+        log('random');
       }
     }
   }

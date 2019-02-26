@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { log } from './helpers/consoleHelpers';
 
 axios.defaults.baseURL = 'https://api.fullstackweekly.com';
 const serviceRootUrl = __API__; // eslint-disable-line no-undef
@@ -67,7 +68,7 @@ const appService = {
         resolve(response.data);
       },
       (error) => {
-        console.log(error);
+        log(error);
       });
     });
   },

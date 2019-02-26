@@ -16,6 +16,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { log } from '../helpers/consoleHelpers';
 
 export default {
   components: {
@@ -53,7 +54,7 @@ export default {
   watch: {
     '$route': function (to) {
       if (to.path === '/random') {
-        console.log('random');
+        log('random');
       }
     }
   }

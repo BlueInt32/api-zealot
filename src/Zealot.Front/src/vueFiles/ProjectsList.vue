@@ -20,6 +20,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { log } from '../helpers/consoleHelpers';
 
 export default {
   components: {
@@ -36,7 +37,7 @@ export default {
     projectClickHandler(projectId) {
       this.getProjectDetails({ projectId })
         .then(() => {
-          console.log('going to route projectView');
+          log('going to route projectView');
           this.$router.push({ name: 'projectView', params: { projectId } });
         });
     }
