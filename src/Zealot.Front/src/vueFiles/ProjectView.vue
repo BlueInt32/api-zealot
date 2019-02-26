@@ -6,7 +6,8 @@
       <tree-view-container></tree-view-container>
     </div>
     <div class="col">
-      <code-editor v-if="selectedNode && selectedNode.type === 'code'"></code-editor>
+      <code-editor v-if="selectedNode.type === 'code'"></code-editor>
+      <pack-editor v-else-if="selectedNode.type === 'pack'"></pack-editor>
       <request-editor v-else></request-editor>
     </div>
   </div>
@@ -18,13 +19,15 @@ import { mapGetters, mapActions } from 'vuex';
 import TreeViewContainer from './TreeViewContainer.vue';
 import RequestEditor from './RequestEditor.vue';
 import CodeEditor from './CodeEditor.vue';
+import PackEditor from './PackEditor.vue';
 import { log } from '../helpers/consoleHelpers';
 
 export default {
   components: {
     CodeEditor,
+    PackEditor,
     RequestEditor,
-    TreeViewContainer,
+    TreeViewContainer
   },
   filters: {
   },
