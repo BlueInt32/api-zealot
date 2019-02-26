@@ -41,9 +41,9 @@ const actions = {
     // can be dragged
     return true;
   },
-  curNodeClicked(context, { node }) {
-    // logAction('curNodeClicked', model, component);
-    context.commit('setSelectedId', { id: node.id });
+  selectNode(context, { id }) {
+    // logAction('selectNode', model, component);
+    context.commit('setSelectedId', { id });
   },
   dragHandler() {
     // console.log('dragHandler: ', model, component, e);

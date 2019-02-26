@@ -12,7 +12,7 @@
         @dragleave.stop='dragLeave'
         class='treeNodeText'
         :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }"
-        @click="toggle">
+        @click="nodeClickHandler">
         <span
           :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"
           v-if="isFolder"></span>
@@ -44,6 +44,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { log } from '../helpers/consoleHelpers';
 
 export default {
   name: 'DragNode',
@@ -72,7 +73,8 @@ export default {
       'draggedNode',
       'isDragging']),
     isSelected() {
-      return this.id === this.currentlySelectedId;
+      log(this.model.id, this.currentlySelectedId);
+      return this.model.id === this.currentlySelectedId;
     },
     isFolder() {
       return this.model.children && this.model.children.length;
@@ -84,7 +86,7 @@ export default {
   methods: {
     ...mapActions('treeModule', [
       'allowDrag',
-      'curNodeClicked',
+      'selectNode',
       'dragHandler',
       'dragEnterHandler',
       'dragLeaveHandler',
@@ -95,13 +97,11 @@ export default {
       'dropOn',
       'setIsDragging'
     ]),
-    select() {
-      this.curNodeClicked({ model: this.model, component: this });
-    },
-    toggle() {
+    nodeClickHandler() {
       if (this.isFolder) {
         this.open = !this.open;
       }
+      this.selectNode(this.model);
     },
     removeChild(childId) {
       const parentModelChildren = this.$parent.model.children;
@@ -161,8 +161,8 @@ export default {
     cursor: pointer;
   }
 }
-.is-selected {
-  background: rgba(30, 0, 0, 0.1);
+.is-selected > div > span.text {
+  font-weight: bold;
 }
 
 .item {
