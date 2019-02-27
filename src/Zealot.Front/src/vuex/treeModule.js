@@ -1,5 +1,6 @@
 import { logAction } from '../helpers/consoleHelpers';
 import { buildTreeMapAndSetParentsIds, moveNode } from '../helpers/vue-drag-tree-utils';
+import { setPackContext } from '../services/packContextService';
 
 const state = {
   selectedNode: { id: 0 },
@@ -56,6 +57,7 @@ const mutations = {
     currentState.tree = tree;
     currentState.nodesMap = nodesMap;
     currentState.selectedNode = { id: tree.id, name: tree.name, type: tree.type };
+    setPackContext('a', {});
   },
   setNodesMap(currentState, nodesMap) {
     currentState.nodesMap = nodesMap;
