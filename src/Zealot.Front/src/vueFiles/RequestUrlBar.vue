@@ -8,7 +8,7 @@
         @click="selectHttpMethod({httpMethod})">{{httpMethod}}</b-dropdown-item>
     </b-dropdown>
     <b-input-group-prepend>
-      <b-btn variant="success" @click="sendWiz"><i class="fas fa-play"></i></b-btn>
+      <b-btn variant="success" @click="sendRequest"><i class="fas fa-play"></i></b-btn>
     </b-input-group-prepend>
     <b-form-input v-model="localRequestUrl"></b-form-input>
   </b-input-group>
@@ -29,15 +29,15 @@ export default {
   },
   computed: {
     ...mapGetters('configModule', ['httpMethods']),
-    ...mapGetters('wizModule', ['selectedHttpMethod',
+    ...mapGetters('requestModule', ['selectedHttpMethod',
       'requestResult',
       'requestUrl']),
     localRequestUrl: {
       get() {
-        return this.$store.state.wizModule.requestUrl;
+        return this.$store.state.requestModule.requestUrl;
       },
       set(value) {
-        this.$store.dispatch('wizModule/setRequestUrl', { requestUrl: value }, { root: true });
+        this.$store.dispatch('requestModule/setRequestUrl', { requestUrl: value }, { root: true });
       }
     }
   },
@@ -47,8 +47,8 @@ export default {
   mounted() {
   },
   methods: {
-    ...mapActions('wizModule', ['selectHttpMethod',
-      'sendWiz',
+    ...mapActions('requestModule', ['selectHttpMethod',
+      'sendRequest',
       'setRequestUrl']),
   },
   watch: {

@@ -28,7 +28,7 @@ const appService = {
       );
     });
   },
-  sendWiz({ httpMethod, endpointUrl, body }) {
+  sendRequest({ httpMethod, endpointUrl, body }) {
     return new Promise(resolve => {
       axios.post(`${serviceRootUrl}/proxy`, {
         httpMethod,

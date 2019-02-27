@@ -1,5 +1,6 @@
 import appService from '../app.service';
 import { logAction, logMutation } from '../helpers/consoleHelpers';
+import { setPackContext } from '../services/packContextService';
 
 const state = {
   selectedHttpMethod: 'GET',
@@ -14,14 +15,15 @@ const getters = {
 };
 
 const actions = {
-  sendWiz(context) {
-    logAction('sendWiz', context.state.selectedHttpMethod, context.state.requestUrl);
-    appService.sendWiz({
+  sendRequest(context) {
+    logAction('sendRequest', context.state.selectedHttpMethod, context.state.requestUrl);
+    appService.sendRequest({
       httpMethod: context.state.selectedHttpMethod,
       endpointUrl: context.state.requestUrl,
       body: '{}'
     }).then((data) => {
       context.commit('setRequestResult', { data });
+      setPackContext('a', { lastResult: data });
     });
   },
   selectHttpMethod(context, { httpMethod }) {

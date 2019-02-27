@@ -20,7 +20,7 @@ export default {
     VueJsonPretty
   },
   computed: {
-    ...mapGetters('wizModule', ['requestResult'])
+    ...mapGetters('requestModule', ['requestResult'])
   },
   created() {
   },

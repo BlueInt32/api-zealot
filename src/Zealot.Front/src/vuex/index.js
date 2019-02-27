@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import configModule from './configModule';
-import wizModule from './wizModule';
+import requestModule from './requestModule';
 import projectModule from './projectModule';
 import projectsListModule from './projectsListModule';
 import treeModule from './treeModule';
@@ -15,7 +15,7 @@ const state = {
 const store = new Vuex.Store({
   modules: {
     configModule,
-    wizModule,
+    requestModule,
     projectModule,
     projectsListModule,
     treeModule
