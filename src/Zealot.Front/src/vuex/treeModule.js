@@ -57,7 +57,7 @@ const mutations = {
     currentState.tree = tree;
     currentState.nodesMap = nodesMap;
     currentState.selectedNode = { id: tree.id, name: tree.name, type: tree.type };
-    setPackContext('a', {});
+    setPackContext('a', { stuff: 0 });
   },
   setNodesMap(currentState, nodesMap) {
     currentState.nodesMap = nodesMap;

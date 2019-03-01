@@ -75,13 +75,20 @@ const config = {
       {
         test: /favicon\.png$/u,
         loader: 'file-loader?name=static/[name].[ext]' // <-- retain original file name
+      },
+      {
+        test: /\.worker\.js$/u,
+        use: { loader: 'worker-loader' }
       }
     ]
   },
   output: {
     path: path.resolve(__dirname, webpackOutputFolder),
     publicPath: webpackPublicPath,
-    filename: 'assets/js/[name].js'
+    filename: 'assets/js/[name].js',
+    // globalObject bound to 'this' is a fix for web-workers to work
+    // see https://github.com/webpack/webpack/issues/6642
+    globalObject: 'this'
   },
   plugins: [
     new HtmlWebpackPlugin({

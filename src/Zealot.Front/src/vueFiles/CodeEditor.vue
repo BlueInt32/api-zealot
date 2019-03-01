@@ -8,10 +8,9 @@
 
 <script>
 // import { mapGetters, mapActions } from "vuex";
-// import compiler from 'expression-sandbox'; //eslint-disable-line
-import { getPackContext } from '../services/packContextService';
+import Worker from "../helpers/file.worker.js"; // eslint-disable-line
 
-const compiler = require('expression-sandbox');
+import { getPackContext } from '../services/packContextService';
 
 export default {
   components: {
@@ -20,22 +19,31 @@ export default {
     // ...mapGetters('someModule', ['someGetter'])
   },
   created() {
+    this.worker = new Worker();
   },
   data() {
     return {
-      code: 'bag.pioupiou = context.lastResult.version.number;'
+      code: 'context.stuff = 1;',
+      worker: null,
+      context: {}
     };
   },
   methods: {
     // ...mapActions('someModule', ['someAction'])
     runCode() {
-      const codeRunner = compiler(this.code);
-
-      const packContextA = getPackContext('a');
-      const stuff = { pioupiou: '' };
-      const result = codeRunner({ context: packContextA, bag: stuff });
-      console.log(result);
-      console.log(stuff);
+      this.context = getPackContext('a');
+      const launchWorker = () => {
+        this.worker.postMessage({ code: this.code, context: getPackContext('a') });
+        this.worker.onmessage = (data) => {
+          const message = data;
+          console.log('Host received: ', message.data.context);
+          if (message.type === 'done!') {
+            this.worker.terminate();
+          }
+        };
+      };
+      launchWorker();
+      console.log('Host: posting "start" with context', this.context);
     }
   },
   props: [
