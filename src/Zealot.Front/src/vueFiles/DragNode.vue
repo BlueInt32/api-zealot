@@ -93,9 +93,6 @@ export default {
       'selectNode',
       'dragHandler',
       'dragEnterHandler',
-      'dragLeaveHandler',
-      'dragOverHandler',
-      'dragEndHandler',
       'dropHandler',
       'setDraggedNodeId',
       'dropOn',
@@ -127,7 +124,6 @@ export default {
     },
     dragOver(event) {
       event.preventDefault();
-      this.dragOverHandler(this.model, this, event);
       return true;
     },
     dragEnter() {
@@ -136,18 +132,16 @@ export default {
         this.styleObj2.background = 'rgba(0, 0, 255, 0.1)';
       }
     },
-    dragLeave(event) {
+    dragLeave() {
       this.styleObj.opacity = 1;
-      this.dragLeaveHandler(this.model, this, event);
       this.styleObj2.background = 'rgba(0, 0, 255, 0)';
     },
     drop() {
       this.styleObj.opacity = 1;
       this.dropOn(this.model.id);
     },
-    dragEnd(event) {
+    dragEnd() {
       this.styleObj.opacity = 1;
-      this.dragEndHandler(this.model, this, event);
       this.setIsDragging(false);
     }
   },
@@ -160,8 +154,6 @@ export default {
 .treeview__node-container {
   list-style: none;
   position: relative;
-  &:hover {
-  }
 }
 
 .treeview__node-container--selected {
