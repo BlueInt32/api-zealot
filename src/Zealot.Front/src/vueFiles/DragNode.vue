@@ -1,36 +1,42 @@
 <template>
-  <li class='node-container'
+  <li class='treeview__node-container'
     :style='styleObj'
-    :class='{ "is-selected": isSelected }'>
-      <div
-        :draggable='true'
-        @drag.stop='drag'
-        @dragover.stop='dragOver'
-        @drop.stop='drop'
-        @dragend.stop='dragEnd'
+    :class='{ "treeview__node-container--selected": isSelected }'>
+    <div
+      :draggable='true'
+      @drag.stop='drag'
+      @dragover.stop='dragOver'
+      @drop.stop='drop'
+      @dragend.stop='dragEnd'
+      @dragenter.stop='dragEnter'
+      @dragleave.stop='dragLeave'
+      class='treeview__node-header'
+      :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }">
+      <!-- <span v-if="isFolder" class="vue-drag-node-icon"
+        :class="{ nodeClicked: isFolder && open}"
+        @click="openCloseClickHandler"></span> -->
+      <span class="treeview__node-icon"
+        :class="{
+          'treeview__pack-arrow': isFolder,
+          'treeview__pack-arrow--open': isFolder && open }"
+          @click="openCloseClickHandler">
+          <i v-if="isFolder" class="fas fa-caret-right"></i>
+          <i v-if="model.type === 'code'" class="fab fa-js-square"></i>
+          <i v-if="model.type === 'request'" class="fas fa-globe-americas" ></i>
+          </span>
+      <span class='treeview__node-header-text'
         @dragenter.stop='dragEnter'
         @dragleave.stop='dragLeave'
-        class='treeNodeText'
-        :style="{ 'padding-left': (this.depth - 1) * 12 + 'px' }"
-        @click="nodeClickHandler">
-        <span
-          :class="{ 'nodeClicked': (isFolder && open), 'vue-drag-node-icon':true }"
-          v-if="isFolder"></span>
-
-        <span class='text'
-          @dragenter.stop='dragEnter'
-          @dragleave.stop='dragLeave'>
-          <i v-if="model.type === 'code'" class="fab fa-js-square"></i>
-          <i class="fas fa-globe-americas" v-if="model.type === 'request'"></i>
-          {{model.name}}</span>
+        @click="textClickHandler">
+        {{model.name}}</span>
+    </div>
+    <div
+      :style=styleObj2
+      v-if="isDragging && isFolder" class="treeview__node-drop-zone"
+      @dragleave.stop='dragLeave'
+      @dragenter.stop='dragEnter' >
       </div>
-      <div
-        :style=styleObj2
-        v-if="isDragging && isFolder" class="nodeDropZone"
-        @dragleave.stop='dragLeave'
-        @dragenter.stop='dragEnter' >
-        </div>
-    <ul class='treeMargin' v-show="open" v-if="isFolder">
+    <ul class='treeview__node-childlist' v-show="open" v-if="isFolder">
       <drag-node
         v-for="child in model.children"
         :depth='increaseDepth'
@@ -95,10 +101,12 @@ export default {
       'dropOn',
       'setIsDragging'
     ]),
-    nodeClickHandler() {
+    openCloseClickHandler() {
       if (this.isFolder) {
         this.open = !this.open;
       }
+    },
+    textClickHandler() {
       this.selectNode(this.model);
     },
     removeChild(childId) {
@@ -149,30 +157,22 @@ export default {
 </script>
 
 <style lang="scss">
-.node-container {
+.treeview__node-container {
   list-style: none;
   position: relative;
   &:hover {
-    cursor: pointer;
   }
 }
-.is-selected > div > span.text {
-  font-weight: bold;
+
+.treeview__node-container--selected {
+  background: #ececec;
+  border-radius: 5px;
+  & > div > span.treeview__node-header-text {
+    font-weight: bold;
+  }
 }
 
-.item {
-  cursor: pointer;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.text {
-  font-size: 0.65em;
-}
-
-.treeNodeText {
+.treeview__node-header {
   display: inline-block;
   height: 28px;
   box-sizing: border-box;
@@ -182,29 +182,42 @@ export default {
   align-items: center;
 }
 
-.changeTree {
-  width: 16px;
-  color: #324057;
+.treeview__node-icon {
+  padding-left: 10px;
+  padding-right: 8px;
 }
 
-.vue-drag-node-icon {
+.treeview__pack-arrow {
+  &:hover {
+    color: black;
+    cursor: pointer;
+  }
+
+  i {
+    transition: transform 0.1s ease-in-out;
+  }
+}
+
+.treeview__node-header-text {
   display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 10px;
-  margin-right: 8px;
-  border-left: 4px solid grey;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  border-right: 0 solid yellow;
-  transition: transform 0.1s ease-in-out;
+  line-height: 28px;
+  font-size: 0.7em;
+
+  &:hover {
+    color: rgb(31, 31, 31);
+    cursor: pointer;
+  }
 }
 
-.nodeClicked {
+.treeview__pack-arrow--open i {
   transform: rotate(90deg);
 }
 
-.nodeDropZone {
+.treeview__node-childlist {
+  padding-inline-start: 25px;
+}
+
+.treeview__node-drop-zone {
   position: absolute;
   top: 0px;
   height: 100%;
