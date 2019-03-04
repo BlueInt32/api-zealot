@@ -9,8 +9,7 @@ const state = {
 
 const getters = {
   projectId: currentState => currentState.id,
-  name: currentState => currentState.name,
-  tree: currentState => currentState.tree
+  name: currentState => currentState.name
 };
 
 const actions = {
@@ -37,7 +36,6 @@ const actions = {
   },
   updateProject(context) {
     logAction('updateProject');
-    // const tree = context.rootState.treeModule.tree;
     const { id, name } = context.state;
     const { tree } = context.rootState.treeModule;
     appService.updateProject({
@@ -51,10 +49,9 @@ const actions = {
 };
 
 const mutations = {
-  setProject(currentState, { id, name, tree }) {
+  setProject(currentState, { id, name }) {
     currentState.id = id;
     currentState.name = name;
-    currentState.tree = tree;
   }
 };
 
