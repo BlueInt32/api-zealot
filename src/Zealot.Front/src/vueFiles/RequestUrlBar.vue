@@ -5,7 +5,7 @@
         {{selectedHttpMethod}}<span class="sr-only"></span>
       </template>
       <b-dropdown-item v-for="httpMethod in httpMethods" :key="httpMethod" :id="httpMethod"
-        @click="selectHttpMethod({httpMethod})">{{httpMethod}}</b-dropdown-item>
+        @click="setHttpMethod({httpMethod})">{{httpMethod}}</b-dropdown-item>
     </b-dropdown>
     <b-input-group-prepend>
       <b-btn variant="success" @click="sendRequest"><i class="fas fa-play"></i></b-btn>
@@ -47,7 +47,7 @@ export default {
   mounted() {
   },
   methods: {
-    ...mapActions('requestModule', ['selectHttpMethod',
+    ...mapActions('requestModule', ['setHttpMethod',
       'sendRequest',
       'setRequestUrl']),
   },

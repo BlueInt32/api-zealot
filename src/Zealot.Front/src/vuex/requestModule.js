@@ -26,9 +26,9 @@ const actions = {
       setPackContext('a', { lastResult: data });
     });
   },
-  selectHttpMethod(context, { httpMethod }) {
-    logAction('selectHttpMethod', httpMethod);
-    context.commit('selectHttpMethod', { httpMethod });
+  setHttpMethod(context, { httpMethod }) {
+    logAction('setHttpMethod', httpMethod);
+    context.commit('setHttpMethod', { httpMethod });
   },
   setRequestUrl(context, { requestUrl }) {
     logAction('setRequestUrl', requestUrl);
@@ -37,7 +37,7 @@ const actions = {
 };
 
 const mutations = {
-  selectHttpMethod(currentState, { httpMethod }) {
+  setHttpMethod(currentState, { httpMethod }) {
     logMutation('selectedHttpMethod', httpMethod);
     currentState.selectedHttpMethod = httpMethod;
   },
