@@ -3,20 +3,24 @@ import { logAction, logMutation } from '../helpers/consoleHelpers';
 import { setPackContext } from '../services/packContextService';
 
 const state = {
-  selectedHttpMethod: 'GET',
   requestUrl: '',
+  httpMethod: '',
   requestResult: ''
 };
 
 const getters = {
-  selectedHttpMethod: currentState => currentState.selectedHttpMethod,
+  httpMethod: currentState => currentState.httpMethod,
   requestResult: currentState => currentState.requestResult,
   requestUrl: currentState => currentState.requestUrl
 };
 
 const actions = {
-  sendRequest(context) {
-    logAction('sendRequest', context.state.selectedHttpMethod, context.state.requestUrl);
+  resetFromTree(context, { requestUrl, httpMethod }) {
+    context.commit('setRequestUrl', requestUrl);
+    context.commit('setHttpMethod', httpMethod);
+  },
+  sendRequest(context, { httpMethod, url }) {
+    logAction('sendRequest', httpMethod, url);
     appService.sendRequest({
       httpMethod: context.state.selectedHttpMethod,
       endpointUrl: context.state.requestUrl,
@@ -26,26 +30,28 @@ const actions = {
       setPackContext('a', { lastResult: data });
     });
   },
-  setHttpMethod(context, { httpMethod }) {
-    logAction('setHttpMethod', httpMethod);
-    context.commit('setHttpMethod', { httpMethod });
+  setRequestUrl(context, requestUrl) {
+    logAction('[requestModule/setRequestUrl]', requestUrl);
+    context.commit('setRequestUrl', requestUrl);
+    context.commit('treeModule/setNodeProperties', { requestUrl, isPristine: false }, { root: true });
   },
-  setRequestUrl(context, { requestUrl }) {
-    logAction('setRequestUrl', requestUrl);
-    context.commit('setRequestUrl', { requestUrl });
+  setHttpMethod(context, httpMethod) {
+    logAction('[requestModule/setHttpMethod]', httpMethod);
+    context.commit('setHttpMethod', httpMethod);
+    context.commit('treeModule/setNodeProperties', { httpMethod, isPristine: false }, { root: true });
   }
 };
 
 const mutations = {
-  setHttpMethod(currentState, { httpMethod }) {
-    logMutation('selectedHttpMethod', httpMethod);
-    currentState.selectedHttpMethod = httpMethod;
+  setHttpMethod(currentState, httpMethod) {
+    logMutation('setHttpMethod', httpMethod);
+    currentState.httpMethod = httpMethod;
   },
   setRequestResult(currentState, { data }) {
     currentState.requestResult = data;
   },
-  setRequestUrl(currentState, { requestUrl }) {
-    logMutation('requestUrl', requestUrl);
+  setRequestUrl(currentState, requestUrl) {
+    logMutation('requestModule/requestUrl', requestUrl);
     currentState.requestUrl = requestUrl;
   }
 };

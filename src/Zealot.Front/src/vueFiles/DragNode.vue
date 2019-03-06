@@ -24,6 +24,7 @@
           <i v-if="model.type === 'code'" class="fab fa-js-square"></i>
           <i v-if="model.type === 'request'" class="fas fa-globe-americas" ></i>
           </span>
+      <i v-if="!model.isPristine" class="fas fa-circle treeview__node-not-pristine-icon"></i>
       <span class='treeview__node-header-text'
         @dragenter.stop='dragEnter'
         @dragleave.stop='dragLeave'
@@ -55,7 +56,7 @@ export default {
   name: 'DragNode',
   data() {
     return {
-      open: false,
+      open: true,
       styleObj: {
         opacity: 1,
       },
@@ -74,11 +75,12 @@ export default {
   },
   computed: {
     ...mapGetters('treeModule', ['defaultNewNodeName',
-      'selectedNode',
+      'selectedNodeId',
+      'selectedNodeType',
       'draggedNode',
       'isDragging']),
     isSelected() {
-      return this.model.id === this.selectedNode.id;
+      return this.model.id === this.selectedNodeId;
     },
     isFolder() {
       return this.model.children && this.model.children.length;
@@ -104,7 +106,7 @@ export default {
       }
     },
     textClickHandler() {
-      this.selectNode(this.model);
+      this.selectNode(this.model.id);
     },
     removeChild(childId) {
       const parentModelChildren = this.$parent.model.children;
@@ -199,6 +201,10 @@ export default {
     color: rgb(31, 31, 31);
     cursor: pointer;
   }
+}
+.treeview__node-not-pristine-icon {
+  font-size: 0.5em;
+  color: #a70000;
 }
 
 .treeview__pack-arrow--open i {

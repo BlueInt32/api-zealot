@@ -6,8 +6,8 @@
       <tree-view-container></tree-view-container>
     </div>
     <div class="col">
-      <code-editor v-if="selectedNode.type === 'code'"></code-editor>
-      <pack-editor v-else-if="selectedNode.type === 'pack'"></pack-editor>
+      <code-editor v-if="selectedNodeType === 'code'"></code-editor>
+      <pack-editor v-else-if="selectedNodeType === 'pack'"></pack-editor>
       <request-editor v-else></request-editor>
     </div>
   </div>
@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     ...mapGetters('projectModule', ['projectId']),
-    ...mapGetters('treeModule', ['selectedNode']),
+    ...mapGetters('treeModule', ['selectedNodeId', 'selectedNodeType']),
   },
   created() {
   },

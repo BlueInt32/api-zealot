@@ -4,6 +4,7 @@ const node2IsDirectParentOfNode1 = (node1, node2) => node1.parentId === node2.id
 
 const buildTreeMapAndSetParentsIds = (node, parent, nodesMap) => {
   node.parentId = parent ? parent.id : null;
+  node.isPristine = true;
   nodesMap.set(node.id, node);
   if(node.children) {
     node.children.forEach(child => {
