@@ -5,6 +5,6 @@ namespace Zealot.Repository.IO
 {
     public interface IAnnexFileConverter
     {
-        OpResult Dump(SubTree subTree, string basepath);
+        OpResult Dump(SubTree subTree, string basePath);
     }
 }

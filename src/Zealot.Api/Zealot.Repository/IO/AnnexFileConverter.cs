@@ -20,10 +20,8 @@ namespace Zealot.Repository.IO
         {
             if (subTree.Type == Domain.Enums.TreeNodeType.Request)
             {
-#warning SBU: Create constant for "httpMethod"
-                var httpMethod = TryGetValue(subTree.Attributes, "httpMethod");
-#warning SBU: Create constant for "requestUrl"
-                var requestUrl = TryGetValue(subTree.Attributes, "requestUrl");
+                var httpMethod = TryGetValue(subTree.Attributes, Constants.RequestAttributes.HttpMethod);
+                var requestUrl = TryGetValue(subTree.Attributes, Constants.RequestAttributes.RequestUrl);
 
                 _file.WriteAllText(Path.Combine(basePath, $"{subTree.Id}.req"), $"{httpMethod} {requestUrl}", Encoding.UTF8);
             }
