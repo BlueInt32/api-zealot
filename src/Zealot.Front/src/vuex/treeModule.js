@@ -1,5 +1,5 @@
 import { logAction, logMutation } from '../helpers/consoleHelpers';
-import { buildTreeMapAndSetParentsIds, moveNode } from '../helpers/vue-drag-tree-utils';
+import { buildTreeMapAndSetParentsIds, moveNode } from '../helpers/treeHelper';
 import { setPackContext } from '../services/packContextService';
 
 const state = {

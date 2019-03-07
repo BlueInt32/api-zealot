@@ -14,6 +14,25 @@ const buildTreeMapAndSetParentsIds = (node, parent, nodesMap) => {
   return nodesMap;
 };
 
+
+const prepareTreeBeforeSave = (node) => {
+  if(node.type === 'request') {
+    prepareRequestNode(node);
+  }
+  if(node.children) {
+    node.children.forEach(child => {
+      prepareTreeBeforeSave(child);
+    });
+  }
+};
+
+const prepareRequestNode = (node) => {
+  node.attributes = {
+    httpMethod: node.httpMethod,
+    requestUrl: node.requestUrl
+  };
+}
+
 const node2IsAncestorOfNode1 = function (node1, node2, nodesMap) {
   if (node1.parentId === null) {
     // if node1 is the root node, return false right away
@@ -78,5 +97,6 @@ export {
  node2IsDirectParentOfNode1,
   node2IsAncestorOfNode1,
   moveNode,
-  buildTreeMapAndSetParentsIds
+  buildTreeMapAndSetParentsIds,
+  prepareTreeBeforeSave
  };

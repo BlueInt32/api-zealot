@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { log } from './helpers/consoleHelpers';
+import { prepareTreeBeforeSave } from './helpers/treeHelper';
 
 axios.defaults.baseURL = 'https://api.fullstackweekly.com';
 const serviceRootUrl = __API__; // eslint-disable-line no-undef
@@ -60,6 +61,7 @@ const appService = {
   },
   updateProject({ projectId, projectName, tree }) {
     return new Promise(resolve => {
+      prepareTreeBeforeSave(tree);
       axios.put(`${serviceRootUrl}/projects/${projectId}`, {
         name: projectName,
         tree

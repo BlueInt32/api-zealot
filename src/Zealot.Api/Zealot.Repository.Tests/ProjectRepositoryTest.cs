@@ -18,6 +18,7 @@ namespace Zealot.Repository.Tests
         private Mock<IJsonFileConverter<Project>> _projectFileConverterMock;
         private Mock<IJsonFileConverter<ProjectsConfigsList>> _projectConfigsListFileConverterMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<IAnnexFileConverter> _annexFileConverterMock;
         private ProjectRepository _repository;
 
 
@@ -28,11 +29,13 @@ namespace Zealot.Repository.Tests
             _projectFileConverterMock = new Mock<IJsonFileConverter<Project>>();
             _projectConfigsListFileConverterMock = new Mock<IJsonFileConverter<ProjectsConfigsList>>();
             _mapperMock = new Mock<IMapper>();
+            _annexFileConverterMock = new Mock<IAnnexFileConverter>();
             _repository = new ProjectRepository(
                 _directoryInfoFactoryMock.Object
                 , _projectFileConverterMock.Object
                 , _projectConfigsListFileConverterMock.Object
                 , _mapperMock.Object
+                , _annexFileConverterMock.Object
                 );
         }
         [TestMethod]

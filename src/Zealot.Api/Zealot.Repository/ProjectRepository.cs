@@ -18,17 +18,20 @@ namespace Zealot.Repository
         private readonly IJsonFileConverter<Project> _projectFileConverter;
         private readonly IMapper _mapper;
         private readonly IJsonFileConverter<ProjectsConfigsList> _projectsConfigListFileConverter;
+        private readonly IAnnexFileConverter _annexFileConverter;
 
         public ProjectRepository(
             IDirectoryInfoFactory directoryInfoFactory
             , IJsonFileConverter<Project> projectJsonDump
             , IJsonFileConverter<ProjectsConfigsList> projectsConfigListFileConverter
-            , IMapper mapper)
+            , IMapper mapper
+            , IAnnexFileConverter annexFileConverter)
         {
             _directoryInfoFactory = directoryInfoFactory;
             _projectFileConverter = projectJsonDump;
             _mapper = mapper;
             _projectsConfigListFileConverter = projectsConfigListFileConverter;
+            _annexFileConverter = annexFileConverter;
         }
         public OpResult CreateProject(ProjectModel model)
         {
@@ -95,9 +98,23 @@ namespace Zealot.Repository
             }
 
             var project = _mapper.Map<Project>(model);
+
+            RecursiveAnnexFilesDump(project.Tree);
             var dumpResult = _projectFileConverter.Dump(project, projectConfig.Path);
 
             return dumpResult;
+        }
+
+        private void RecursiveAnnexFilesDump(SubTree tree)
+        {
+            _annexFileConverter.Dump(tree, @"D:\_Prog\Projects\Zealot\test\folder1");
+            if (tree.Children != null)
+            {
+                foreach (var child in tree.Children)
+                {
+                    RecursiveAnnexFilesDump(child);
+                }
+            }
         }
     }
 }
