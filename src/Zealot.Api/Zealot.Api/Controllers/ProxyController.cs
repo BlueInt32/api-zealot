@@ -9,6 +9,7 @@ namespace Zealot.Api.Controllers
     [ApiController]
     public class ProxyController : ControllerBase
     {
+        [HttpPost]
         public IActionResult SendWiz([FromBody] WizModel model)
         {
             var client = new RestClient(model.EndpointUrl);
