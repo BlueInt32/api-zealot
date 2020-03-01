@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using SystemWrap;
 using Zealot.Domain;
+using Zealot.Domain.Enums;
 using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
@@ -76,6 +77,20 @@ namespace Zealot.Repository
                 return OpResult<Project>.Bad(ErrorCode.PROJECT_DOES_NOT_EXIST, $"Project with id {projectId} not found in your configuration");
             }
             var projectResult = _projectFileConverter.Read(projectConfig.Path);
+
+            projectResult.Object.Tree.Children.ForEach(child =>
+            {
+                if (child.Type == TreeNodeType.Request)
+                {
+                    var result = _annexFileConverter.Read(Path.Combine(projectConfig.Path, child.Id.ToString()) + ".yml");
+                    // result.Object
+                }
+                else if (child.Type == TreeNodeType.Pack)
+                {
+
+                }
+
+            });
             return projectResult;
         }
 
