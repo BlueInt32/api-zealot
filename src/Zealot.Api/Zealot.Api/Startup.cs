@@ -2,9 +2,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -45,9 +45,10 @@ namespace Zealot.Api
                 .AddCors()
                 .AddMvc(opt =>
                 {
+                    opt.EnableEndpointRouting = false;
                     opt.Filters.Add(typeof(ApiValidationFilterAttribute));
                 })
-                .AddJsonOptions(opt =>
+                .AddNewtonsoftJson(opt =>
                 {
                     opt.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                     opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -56,13 +57,12 @@ namespace Zealot.Api
                         new StringEnumConverter(typeof(CamelCaseNamingStrategy))
                     };
 
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                });
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
