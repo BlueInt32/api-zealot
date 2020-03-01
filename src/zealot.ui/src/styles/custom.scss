@@ -1,0 +1,54 @@
+$primary: #1f8dd6;
+$tagsAndButtonsColor: #fff;
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.button-success {
+  color: $tagsAndButtonsColor;
+  background: $primary !important; /* this is a green */
+}
+
+.button-error {
+  background: rgb(202, 60, 60); /* this is a maroon */
+}
+
+.button-warning {
+  background: rgb(223, 117, 20); /* this is an orange */
+}
+
+.button-secondary {
+  background: rgb(66, 184, 221); /* this is a light blue */
+}
+body {
+  color: #777;
+}
+
+.pure-img-responsive {
+  max-width: 100%;
+  height: auto;
+}
+
+h1 {
+  color: #325064;
+  border-bottom: 3px solid;
+  padding: 0px 0px 12px 0px;
+}
+
+h2 {
+  margin: 0.6em 0 0.3em 0;
+}
+h3 {
+  margin: 0.3em 0 0.1em 0;
+}
+.page-content {
+  padding: 1em;
+}
+
+// @import './src/styles/menu.scss';
