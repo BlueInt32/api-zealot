@@ -8,7 +8,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
-import Menu from '@/views/Menu.vue';
+import Menu from '@/components/Menu.vue';
 
 // font-awesome dependencies
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -30,7 +30,9 @@ Vue.filter('capitalize', function(value: string) {
 });
 
 @Component({
-  components: {}
+  components: {
+    Menu
+  }
 })
 export default class App extends Vue {
   private menuLinkOpen: boolean = false;
