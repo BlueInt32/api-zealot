@@ -7,7 +7,12 @@ import {
   Mutation
 } from 'vuex-module-decorators';
 import AppService from '@/app.service';
-import { logAction, log, logArrow } from '../helpers/consoleHelpers';
+import {
+  logAction,
+  log,
+  logArrow,
+  logMutation
+} from '../helpers/consoleHelpers';
 import Project from '@/domain/Project';
 import Guid from '@/helpers/Guid';
 import TreeModule from './TreeModule';
@@ -59,6 +64,7 @@ export default class ProjectEditionModule extends VuexModule {
 
   @Mutation
   setProject(project: Project) {
+    logMutation('Set project', project);
     this.currentProject = project;
   }
 }

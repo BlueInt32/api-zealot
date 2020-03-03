@@ -21,6 +21,7 @@ export default class ProjectsListModule extends VuexModule {
     logAction('Load Projects');
     let projectsConfigs = await appService.getProjectsConfigsList();
     this.context.commit('setProjectsConfigs', projectsConfigs);
+    logArrow('Projects', projectsConfigs);
     return projectsConfigs;
   }
 
