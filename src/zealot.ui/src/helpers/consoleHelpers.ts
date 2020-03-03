@@ -1,14 +1,16 @@
-const logsActive = process.env.DISPLAY_LOGS; // eslint-disable-line no-undef
-const log = (...args: any[]) => {
+const logsActive = process.env.VUE_APP_DISPLAY_LOGS === 'true'; // eslint-disable-line no-undef
+export const log = (...args: any[]) => {
   if (logsActive) {
     Reflect.apply(console.log, null, [...args]);
   }
 };
-const logAction = (actionName: string, ...args: any[]) => {
+export const logAction = (actionName: string, ...args: any[]) => {
   log('[action]', actionName, ...args);
 };
-const logMutation = (actionName: string, ...args: any[]) => {
-  log('[mutation]', actionName, ...args);
+export const logArrow = (...args: any[]) => {
+  log('→', ...args);
 };
 
-export { log, logAction, logMutation };
+export const logMutation = (actionName: string, ...args: any[]) => {
+  log('[mutation]', actionName, ...args);
+};
