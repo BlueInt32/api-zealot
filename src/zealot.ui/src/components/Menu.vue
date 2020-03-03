@@ -18,16 +18,17 @@
           computeMenuItemSelectedClass(['addElementStep1', 'addElementStep2'])
         "
       >
-        <router-link to="/add/step1" class="pure-menu-link">Add</router-link>
+        <router-link to="/launcher" class="pure-menu-link"
+          >Launcher</router-link
+        >
       </li>
       <li
         class="pure-menu-item"
         :class="computeMenuItemSelectedClass(['about'])"
       >
-        <router-link to="/about" class="pure-menu-link">About</router-link>
-      </li>
-      <li class="pure-menu-item">
-        <a href="#" class="pure-menu-link">Manage labels</a>
+        <router-link to="/about" class="pure-menu-link"
+          >Getting started</router-link
+        >
       </li>
     </ul>
   </div>

@@ -12,6 +12,11 @@ const routes = [
     component: () => import('@/views/ProjectsList.vue')
   },
   {
+    name: 'launcher',
+    path: '/launcher/:projectId*',
+    component: () => import('@/views/Launcher.vue')
+  },
+  {
     path: '/',
     name: 'Home',
     component: Home
@@ -25,7 +30,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
   }
   // { name: 'defaultPage', path: '/', component: ProjectsList },
-  // { name: 'projectView', path: '/projects/:projectId', component: ProjectView },
   // { name: 'notFound', path: '*', component: NotFound }
 ];
 

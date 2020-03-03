@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <h1>Hey</h1>
+    <h1>Projects</h1>
     <div class="col-4">
       <ul class="list-group list-group-flush">
         <li
@@ -22,25 +22,23 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import ProjectsListModule from '@/store/projectsListModule';
 import { getModule } from 'vuex-module-decorators';
+import ProjectsListModule from '@/store/ProjectsListModule';
 import { log } from '../helpers/consoleHelpers';
-import ProjectConfig from '@/domain/Project';
+import ProjectConfig from '@/domain/ProjectConfig';
 
 @Component({})
 export default class ProjectsList extends Vue {
   private projectsListModule = getModule(ProjectsListModule);
   private projectsConfigs: ProjectConfig[] = [];
 
-  private mounted() {
-    console.log('hey');
-  }
+  private mounted() {}
 
   private async created() {
     this.projectsConfigs = await this.projectsListModule.getProjectsConfigsList();
   }
   projectClickHandler(projectId: string) {
-    this.$router.push({ name: 'projectView', params: { projectId } });
+    this.$router.push({ name: 'launcher', params: { projectId } });
   }
 }
 </script>

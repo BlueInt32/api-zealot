@@ -1,4 +1,5 @@
-export default class ProjectConfig {
+export default class Project {
   public id: string = '';
-  public path: string = '';
+  public name: string = '';
+  public tree: Node = new Node();
 }

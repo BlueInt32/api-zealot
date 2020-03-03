@@ -1,7 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { log } from './helpers/consoleHelpers';
 import { prepareTreeBeforeSave } from './helpers/treeHelper';
-import ProjectConfig from './domain/Project';
+import ProjectConfig from './domain/ProjectConfig';
+import Guid from './helpers/Guid';
+import Project from './domain/Project';
+import CreateProjectParams from './domain/actionParams/CreateProjectParams';
 
 export default class AppService {
   private serviceRootUrl: string;
@@ -29,7 +32,34 @@ export default class AppService {
           resolve(response.data);
         })
         .catch(error => {
-          reject('DAYUM !');
+          reject(error);
+        });
+    });
+  }
+  public getProjectDetails(projectId: Guid): Promise<Project> {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`${this.serviceRootUrl}/projects/${projectId}`)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+  createProject(params: CreateProjectParams) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(`${this.serviceRootUrl}/projects`, {
+          name: params.name,
+          path: params.path
+        })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject(error);
         });
     });
   }
@@ -51,21 +81,6 @@ export default class AppService {
   //       );
   //   });
   // }
-  // createProject({ projectName, projectPath }) {
-  //   return new Promise(resolve => {
-  //     axios
-  //       .post(`${serviceRootUrl}/projects`, {
-  //         name: projectName,
-  //         path: projectPath
-  //       })
-  //       .then(
-  //         response => {
-  //           resolve(response.data);
-  //         },
-  //         () => {}
-  //       );
-  //   });
-  // }
   // updateProject({ projectId, projectName, tree }) {
   //   return new Promise(resolve => {
   //     prepareTreeBeforeSave(tree);
@@ -82,16 +97,6 @@ export default class AppService {
   //           log(error);
   //         }
   //       );
-  //   });
-  // }
-  // getProjectDetails({ projectId }) {
-  //   return new Promise(resolve => {
-  //     axios.get(`${serviceRootUrl}/projects/${projectId}`).then(
-  //       response => {
-  //         resolve(response.data);
-  //       },
-  //       () => {}
-  //     );
   //   });
   // }
 }
