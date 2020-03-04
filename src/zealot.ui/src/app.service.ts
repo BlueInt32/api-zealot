@@ -4,7 +4,8 @@ import { prepareTreeBeforeSave } from './helpers/treeHelper';
 import ProjectConfig from './domain/ProjectConfig';
 import Guid from './helpers/Guid';
 import Project from './domain/Project';
-import CreateProjectParams from './domain/actionParams/CreateProjectParams';
+import CreateProjectParams from './domain/stateChangeParams/CreateProjectParams';
+import { SendRequestParams } from './domain/apiParams/SendRequestParams';
 
 export default class AppService {
   private serviceRootUrl: string;
@@ -63,24 +64,18 @@ export default class AppService {
         });
     });
   }
-  // sendRequest({ httpMethod, endpointUrl, body }) {
-  //   return new Promise(resolve => {
-  //     axios
-  //       .post(`${serviceRootUrl}/proxy`, {
-  //         httpMethod,
-  //         endpointUrl,
-  //         body
-  //       })
-  //       .then(
-  //         response => {
-  //           resolve(response.data);
-  //         },
-  //         () => {
-  //           resolve('DAYUM !');
-  //         }
-  //       );
-  //   });
-  // }
+  sendRequest(params: SendRequestParams) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(`${this.serviceRootUrl}/proxy`, params)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject('DAYUM !');
+        });
+    });
+  }
   // updateProject({ projectId, projectName, tree }) {
   //   return new Promise(resolve => {
   //     prepareTreeBeforeSave(tree);

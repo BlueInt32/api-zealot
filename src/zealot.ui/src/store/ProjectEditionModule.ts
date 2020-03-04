@@ -16,7 +16,7 @@ import {
 import Project from '@/domain/Project';
 import Guid from '@/helpers/Guid';
 import TreeModule from './TreeModule';
-import CreateProjectParams from '@/domain/actionParams/CreateProjectParams';
+import CreateProjectParams from '@/domain/stateChangeParams/CreateProjectParams';
 
 const appService = new AppService();
 
@@ -63,7 +63,7 @@ export default class ProjectEditionModule extends VuexModule {
   // }
 
   @Mutation
-  setProject(project: Project) {
+  public setProject(project: Project) {
     logMutation('Set project', project);
     this.currentProject = project;
   }

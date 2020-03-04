@@ -6,7 +6,7 @@ const node2IsDirectParentOfNode1 = (node1: Node, node2: Node) =>
 
 const buildTreeMapAndSetParentsIds = (
   node: Node,
-  parent: Node,
+  parent: Node | null,
   nodesMap: Map<string, Node>
 ) => {
   node.parentId = parent ? parent.id : null;
