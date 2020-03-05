@@ -26,9 +26,21 @@
         }"
         @click="openCloseClickHandler"
       >
-        <i v-if="isFolder" class="fas fa-caret-right"></i>
-        <i v-if="model.type === 'code'" class="fab fa-js-square"></i>
-        <i v-if="model.type === 'request'" class="fas fa-globe-americas"></i>
+        <font-awesome-icon
+          v-if="isFolder"
+          class="typePrompt__icon"
+          icon="caret-right"
+        ></font-awesome-icon>
+        <font-awesome-icon
+          v-if="model.type === 'code'"
+          class="typePrompt__icon"
+          :icon="['fab', 'js-square']"
+        ></font-awesome-icon>
+        <font-awesome-icon
+          v-if="model.type === 'request'"
+          class="typePrompt__icon"
+          icon="globe-americas"
+        ></font-awesome-icon>
       </span>
       <i
         v-if="!model.isPristine"

@@ -9,6 +9,7 @@
         <TreeViewContainer />
       </div>
       <div class="pure-u-2-3">
+        <RequestEditor></RequestEditor>
         <!-- <code-editor v-if="selectedNodeType === 'code'"></code-editor>
         <pack-editor v-else-if="selectedNodeType === 'pack'"></pack-editor>
         <request-editor v-else></request-editor> -->
@@ -23,8 +24,9 @@ import { getModule } from 'vuex-module-decorators';
 import ProjectEditionModule from '@/store/ProjectEditionModule';
 import Project from '@/domain/Project';
 import TreeViewContainer from '@/components/TreeViewContainer.vue';
+import RequestEditor from '@/components/RequestEditor.vue';
 
-@Component({ components: { TreeViewContainer } })
+@Component({ components: { TreeViewContainer, RequestEditor } })
 export default class Launcher extends Vue {
   private projectEditionModule = getModule(ProjectEditionModule);
   private currentProject: Project | null = null;

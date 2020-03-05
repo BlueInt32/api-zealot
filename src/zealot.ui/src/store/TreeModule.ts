@@ -7,7 +7,7 @@ import {
   Mutation
 } from 'vuex-module-decorators';
 import AppService from '@/app.service';
-import { logAction, logMutation } from '../helpers/consoleHelpers';
+import { logAction, logMutation, log } from '../helpers/consoleHelpers';
 import Project from '@/domain/Project';
 import Guid from '@/helpers/Guid';
 import { Node, RequestNode } from '@/domain/Node';
@@ -15,7 +15,7 @@ import { NodeType } from '@/domain/NodeType';
 import * as treeHelper from '@/helpers/treeHelper';
 import * as packContextService from '@/domain/packContextService';
 import { MutateNodeParams } from '@/domain/stateChangeParams/MutateNodeParams';
-import RequestModule from './requestModule';
+import RequestModule from './RequestModule';
 
 const appService = new AppService();
 
@@ -75,6 +75,7 @@ export default class TreeModule extends VuexModule {
       if (node.type === 'request') {
         const requestModule = getModule(RequestModule);
         const requestNode = node as RequestNode;
+        console.log(requestNode);
         requestModule.setHttpMethod(requestNode.httpMethod);
         requestModule.setRequestUrl(requestNode.requestUrl);
       }

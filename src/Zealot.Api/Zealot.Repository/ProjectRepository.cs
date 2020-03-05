@@ -80,18 +80,30 @@ namespace Zealot.Repository
 
             projectResult.Object.Tree.Children.ForEach(child =>
             {
-                if (child.Type == TreeNodeType.Request)
-                {
-                    var result = _annexFileConverter.Read(Path.Combine(projectConfig.Path, child.Id.ToString()) + ".yml");
-                    // result.Object
-                }
-                else if (child.Type == TreeNodeType.Pack)
-                {
-
-                }
-
+                ReadSubTree(projectConfig, child);
             });
             return projectResult;
+        }
+
+        private OpResult ReadSubTree(ProjectConfig projectConfig, SubTree subTree)
+        {
+            switch (subTree.Type)
+            {
+                case TreeNodeType.Pack:
+                    foreach (var child in subTree.Children)
+                    {
+                        ReadSubTree(projectConfig, child);
+                    }
+                    break;
+                case TreeNodeType.Request:
+                    var result = _annexFileConverter.Read(Path.Combine(projectConfig.Path, subTree.Id.ToString()) + ".yml");
+                    break;
+                case TreeNodeType.Code:
+                    break;
+                default:
+                    break;
+            }
+            return OpResult.Ok;
         }
 
         public OpResult<ProjectsConfigsList> ListProjects()

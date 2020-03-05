@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using AutoMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SystemWrap;
 using Zealot.Domain;
+using Zealot.Domain.Enums;
 using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
@@ -94,6 +97,65 @@ namespace Zealot.Repository.Tests
                     p => p.Name == "project Name"
                     ), It.Is<string>(p => p == Path.Combine("any folder", "project.json"))));
 
+
+        }
+
+        [TestMethod]
+        public void GetProject_ShouldReadAnnexFilesRecursively()
+        {
+            // arrange
+            var projectId = Guid.NewGuid();
+            var projectPath = "projectPath";
+            var nestedRequest1Id = Guid.NewGuid();
+            var nestedRequest2Id = Guid.NewGuid();
+            _projectConfigsListFileConverterMock
+                .Setup(m => m.Read(It.IsAny<string>()))
+                .Returns(new OpResult<ProjectsConfigsList>
+                {
+                    Success = true,
+                    Object = new ProjectsConfigsList
+                    {
+                        new ProjectConfig { Id = projectId, Path = "path" }
+                    }
+                });
+            _projectFileConverterMock
+                .Setup(m => m.Read("path"))
+                .Returns(new OpResult<Project>
+                {
+                    Success = true,
+                    Object = new Project
+                    {
+                        Id = projectId,
+                        Name = "projectName",
+                        Tree = new SubTree
+                        {
+                            Type = TreeNodeType.Pack,
+                            Children = new List<SubTree>
+                            {
+                                new Request
+                                {
+                                    Id = nestedRequest1Id,
+                                    EndpointUrl = "endpoint url 1",
+                                    HttpMethod = "httpMedthod 1"
+                                },
+                                new Request
+                                {
+                                    Id = nestedRequest2Id,
+                                    EndpointUrl = "endpoint url 2",
+                                    HttpMethod = "httpMedthod 2"
+                                },
+
+                            }
+                        }
+                    }
+                });
+
+            // act
+            var project = _repository.GetProject(projectId);
+
+            // assert
+            _annexFileConverterMock.Verify(m => m.Read($"{projectPath}{nestedRequest1Id}.yml"), Times.Once);
+            _annexFileConverterMock.Verify(m => m.Read($"{projectPath}{nestedRequest2Id}.yml"), Times.Once);
 
         }
     }

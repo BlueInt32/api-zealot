@@ -13,14 +13,13 @@ import Menu from '@/components/Menu.vue';
 // font-awesome dependencies
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
-  faCircleNotch,
-  faImage,
-  faVideo,
-  faAlignLeft,
-  faLink
+  faCaretRight,
+  faGlobeAmericas,
+  faPlay
 } from '@fortawesome/free-solid-svg-icons';
+import { faJsSquare } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-library.add(faCircleNotch, faImage, faVideo, faAlignLeft, faLink);
+library.add(faCaretRight, faJsSquare, faGlobeAmericas, faPlay);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.filter('capitalize', function(value: string) {
