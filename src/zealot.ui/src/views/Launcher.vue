@@ -1,9 +1,6 @@
 <template>
   <div class="launcher">
-    <h1>Launcher</h1>
-    <div v-if="currentProject">
-      {{ currentProject.id }} - {{ currentProject.name }}
-    </div>
+    <h1>{{ currentProject.name }}</h1>
     <div id="launcher__grid" class="pure-g">
       <div class="pure-u-1-3">
         <TreeViewContainer />

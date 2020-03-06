@@ -6,7 +6,6 @@ namespace Zealot.Domain.Objects
     public class Project
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
         public int? EnvironmentId { get; set; }
         public Node Tree { get; set; }
         public static Project CreateDefaultInstance()

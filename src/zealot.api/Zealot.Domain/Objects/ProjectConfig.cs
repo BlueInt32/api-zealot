@@ -10,5 +10,8 @@ namespace Zealot.Domain.Objects
 
         [JsonProperty("path")]
         public string Path { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="projectsList">
     <h1>Projects</h1>
     <div class="col-4">
       <ul class="list-group list-group-flush">
@@ -11,7 +11,10 @@
         >
           <p :title="projectConfig.id">
             <i class="fas fa-folder-open"></i>
-            {{ projectConfig.path }}
+            <span class="projectsList__projectTitle">{{
+              projectConfig.name
+            }}</span>
+            - {{ projectConfig.path }}
           </p>
         </li>
       </ul>
@@ -43,4 +46,11 @@ export default class ProjectsList extends Vue {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.projectsList__item {
+  cursor: pointer;
+}
+.projectsList__projectTitle {
+  font-size: 1.2em;
+}
+</style>

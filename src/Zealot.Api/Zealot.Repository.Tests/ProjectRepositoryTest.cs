@@ -95,12 +95,10 @@ namespace Zealot.Repository.Tests
             var opResult = _repository.CreateProject(model);
 
             // assert
-            _projectFileConverterMock
-                .Verify(m => m.Dump(It.Is<Project>(
-                    p => p.Name == "project Name"
-                    ), It.Is<string>(p => p == Path.Combine("any folder", "project.json"))));
-
-
+            _projectConfigsListFileConverterMock
+                .Verify(m => m.Dump(It.Is<ProjectsConfigsList>(
+                    l => l.Count == 1
+                    ), "any folder"));
         }
 
         [TestMethod]
@@ -142,7 +140,6 @@ namespace Zealot.Repository.Tests
                     Object = new Project
                     {
                         Id = projectId,
-                        Name = "projectName",
                         Tree = new Node
                         {
                             Type = TreeNodeType.Pack,
