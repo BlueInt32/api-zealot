@@ -11,11 +11,15 @@ namespace SystemWrap
             get { return DirectoryInfo.Exists; }
         }
 
-
+        public string FullName => DirectoryInfo.FullName;
 
         public DirectoryInfoWrap(string path)
         {
             DirectoryInfo = new DirectoryInfo(path);
+        }
+        public DirectoryInfoWrap(DirectoryInfo instance)
+        {
+            DirectoryInfo = instance;
         }
     }
 }
