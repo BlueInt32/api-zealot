@@ -9,6 +9,7 @@ using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
 using Zealot.Repository.IO;
+using Zealot.Repository.Utils;
 
 namespace Zealot.Repository
 {
@@ -16,19 +17,22 @@ namespace Zealot.Repository
     {
         private readonly string _configsPath = @"D:\_Prog\Projects\Zealot\test\projects.json";
         private readonly IDirectoryInfoFactory _directoryInfoFactory;
+        private readonly IFileInfoFactory _fileInfoFactory;
         private readonly IJsonFileConverter<Project> _projectFileConverter;
         private readonly IMapper _mapper;
         private readonly IJsonFileConverter<ProjectsConfigsList> _projectsConfigListFileConverter;
-        private readonly IAnnexFileConverter _annexFileConverter;
+        private readonly IRequestFileConverter _annexFileConverter;
 
         public ProjectRepository(
             IDirectoryInfoFactory directoryInfoFactory
+            , IFileInfoFactory fileInfoFactory
             , IJsonFileConverter<Project> projectJsonDump
             , IJsonFileConverter<ProjectsConfigsList> projectsConfigListFileConverter
             , IMapper mapper
-            , IAnnexFileConverter annexFileConverter)
+            , IRequestFileConverter annexFileConverter)
         {
             _directoryInfoFactory = directoryInfoFactory;
+            _fileInfoFactory = fileInfoFactory;
             _projectFileConverter = projectJsonDump;
             _mapper = mapper;
             _projectsConfigListFileConverter = projectsConfigListFileConverter;
@@ -78,25 +82,46 @@ namespace Zealot.Repository
             }
             var projectResult = _projectFileConverter.Read(projectConfig.Path);
 
-            projectResult.Object.Tree.Children.ForEach(child =>
+            for (int i = 0; i < projectResult.Object.Tree.Children.Count; i++)
             {
-                ReadSubTree(projectConfig, child);
-            });
+                var recursionContext = new NodeRecursionContext
+                {
+                    ChildIndex = i,
+                    CurrentNode = projectResult.Object.Tree.Children[i],
+                    ParentNode = projectResult.Object.Tree,
+                    ProjectConfig = projectConfig
+
+                };
+                ReadSubTree(recursionContext);
+            }
             return projectResult;
         }
 
-        private OpResult ReadSubTree(ProjectConfig projectConfig, SubTree subTree)
+        private OpResult ReadSubTree(NodeRecursionContext context)
         {
-            switch (subTree.Type)
+            switch (context.CurrentNode.Type)
             {
                 case TreeNodeType.Pack:
-                    foreach (var child in subTree.Children)
+                    for (int i = 0; i < context.CurrentNode.Children.Count; i++)
                     {
-                        ReadSubTree(projectConfig, child);
+                        var recursionContext = new NodeRecursionContext
+                        {
+                            ChildIndex = i,
+                            CurrentNode = context.CurrentNode.Children[i],
+                            ParentNode = context.CurrentNode,
+                            ProjectConfig = context.ProjectConfig
+
+                        };
+                        ReadSubTree(recursionContext);
                     }
                     break;
                 case TreeNodeType.Request:
-                    var result = _annexFileConverter.Read(Path.Combine(projectConfig.Path, subTree.Id.ToString()) + ".yml");
+                    var projectDirectory = _fileInfoFactory.Create(context.ProjectConfig.Path).Directory.FullName;
+                    var readResult = _annexFileConverter.Read(Path.Combine(projectDirectory, context.CurrentNode.Id.ToString()) + ".yml");
+                    if (readResult.Success)
+                    {
+                        context.ParentNode.Children[context.ChildIndex] = readResult.Object;
+                    }
                     break;
                 case TreeNodeType.Code:
                     break;
@@ -132,9 +157,9 @@ namespace Zealot.Repository
             return dumpResult;
         }
 
-        private void RecursiveAnnexFilesDump(SubTree tree)
+        private void RecursiveAnnexFilesDump(Node tree)
         {
-            _annexFileConverter.Dump(tree, @"D:\_Prog\Projects\Zealot\test\folder1");
+            _annexFileConverter.Dump(tree as Request, @"D:\_Prog\Projects\Zealot\test\folder1");
             if (tree.Children != null)
             {
                 foreach (var child in tree.Children)

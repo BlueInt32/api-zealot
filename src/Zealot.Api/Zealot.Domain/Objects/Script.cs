@@ -1,6 +1,6 @@
 ﻿namespace Zealot.Domain
 {
-    public class Script : SubTree
+    public class Script : Node
     {
         public string Code { get; set; }
     }

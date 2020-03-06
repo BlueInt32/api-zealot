@@ -33,11 +33,11 @@ namespace Zealot.Api
         {
             var automapperConfig = new AutomapperConfigurationFactory().BuildConfiguration();
             services
-                .AddTransient<IAnnexFileConverter, AnnexFileConverter>()
+                .AddTransient<IRequestFileConverter, RequestFileConverter>()
                 .AddTransient<IProjectService, ProjectService>()
                 .AddTransient<IProjectRepository, ProjectRepository>()
                 .AddTransient<IDirectoryInfoFactory, DirectoryInfoFactory>()
-                // .AddTransient<IFileInfoFactory, FileInfoFactory>()
+                .AddTransient<IFileInfoFactory, FileInfoFactory>()
                 .AddTransient<IJsonFileConverter<Project>, JsonFileConverter<Project>>()
                 .AddTransient<IJsonFileConverter<ProjectsConfigsList>, JsonFileConverter<ProjectsConfigsList>>()
                 .AddTransient<IFile, FileWrap>()

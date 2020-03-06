@@ -8,7 +8,7 @@ namespace Zealot.Domain.Utilities
         public bool Success { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public ErrorCode ErrorCode { get; set; }
+        public ErrorCode? ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public static OpResult Ok
         {
