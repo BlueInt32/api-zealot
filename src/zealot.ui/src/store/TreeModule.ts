@@ -77,7 +77,7 @@ export default class TreeModule extends VuexModule {
         const requestNode = node as RequestNode;
         console.log(requestNode);
         requestModule.setHttpMethod(requestNode.httpMethod);
-        requestModule.setRequestUrl(requestNode.requestUrl);
+        requestModule.setEndpointUrl(requestNode.endpointUrl);
       }
     }
   }

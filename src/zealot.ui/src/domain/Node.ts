@@ -11,5 +11,5 @@ export class Node {
 
 export class RequestNode extends Node {
   public httpMethod: string = '';
-  public requestUrl: string = '';
+  public endpointUrl: string = '';
 }

@@ -26,7 +26,7 @@ const appService = new AppService();
   store
 })
 export default class RequestModule extends VuexModule {
-  public requestUrl: string = '';
+  public endpointUrl: string = '';
   public httpMethod: string = '';
   public requestResult: string = '';
 
@@ -44,13 +44,13 @@ export default class RequestModule extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public changeRequestUrl(requestUrl: string) {
+  public changeRequestUrl(endpointUrl: string) {
     // TODO maybe could be a Mutation
-    logAction('[requestModule/setRequestUrl]', requestUrl);
-    this.context.commit('setRequestUrl', requestUrl);
+    logAction('[requestModule/setEndpointUrl]', endpointUrl);
+    this.context.commit('setEndpointUrl', endpointUrl);
     this.context.commit(
       'treeModule/setNodeProperties',
-      { requestUrl, isPristine: false },
+      { endpointUrl, isPristine: false },
       { root: true }
     );
   }
@@ -79,8 +79,8 @@ export default class RequestModule extends VuexModule {
   }
 
   @Mutation
-  public setRequestUrl(requestUrl: string) {
-    logMutation('requestModule/requestUrl', requestUrl);
-    this.requestUrl = requestUrl;
+  public setEndpointUrl(endpointUrl: string) {
+    logMutation('requestModule/endpointUrl', endpointUrl);
+    this.endpointUrl = endpointUrl;
   }
 }

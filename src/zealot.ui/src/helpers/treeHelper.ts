@@ -34,7 +34,7 @@ const prepareTreeBeforeSave = (node: Node) => {
 const prepareRequestNode = (node: RequestNode) => {
   node.attributes = {
     httpMethod: node.httpMethod,
-    requestUrl: node.requestUrl
+    endpointUrl: node.endpointUrl
   };
 };
 

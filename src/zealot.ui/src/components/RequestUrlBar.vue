@@ -5,8 +5,8 @@
     <input
       class="form-control"
       type="text"
-      :value="requestModule.requestUrl"
-      @input="requestModule.setRequestUrl($event.target.value)"
+      :value="requestModule.endpointUrl"
+      @input="requestModule.setEndpointUrl($event.target.value)"
     />
   </div>
 </template>
