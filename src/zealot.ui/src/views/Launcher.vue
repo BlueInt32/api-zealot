@@ -1,5 +1,5 @@
 <template>
-  <div class="launcher">
+  <div class="launcher" v-if="currentProject">
     <h1>{{ currentProject.name }}</h1>
     <div id="launcher__grid" class="pure-g">
       <div class="pure-u-1-3">
