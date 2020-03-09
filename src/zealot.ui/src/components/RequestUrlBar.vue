@@ -1,6 +1,6 @@
 <template>
   <form class="RequestUrlBar pure-form pure-g">
-    <div class="pure-u-1-8">
+    <div class="pure-u-1-12">
       <select
         name="httpMethod"
         id="httpMethod"
@@ -13,7 +13,7 @@
         >
       </select>
     </div>
-    <div class="pure-u-7-8">
+    <div class="pure-u-11-12">
       <input
         class="pure-input-1"
         type="text"

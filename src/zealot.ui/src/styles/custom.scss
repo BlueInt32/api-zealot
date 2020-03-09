@@ -52,3 +52,21 @@ h3 {
 }
 
 // @import './src/styles/menu.scss';
+// vue-json-pretty customization
+
+.vjs-tree .vjs-key {
+  color: blue;
+}
+.vjs-tree .vjs-value__string {
+  color: red;
+}
+.vjs-tree .vjs-value.vjs-value__boolean {
+  color: yellow;
+}
+.vjs-tree .vjs-value.vjs-value__number {
+  color: yellow;
+}
+
+.vjs-tree .vjs-tree__brackets {
+  cursor: default;
+}

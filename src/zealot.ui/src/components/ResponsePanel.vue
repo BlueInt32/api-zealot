@@ -8,7 +8,13 @@
         <a class="nav-link" href="#">Preview</a>
       </li>
     </ul>
-    <vue-json-pretty :data="requestModule.requestResult"></vue-json-pretty>
+    <vue-json-pretty
+      :data="requestModule.requestResult"
+      :showLength="false"
+      :showDoubleQuote="true"
+      :highlightMouseoverNode="false"
+      :showLine="false"
+    ></vue-json-pretty>
   </div>
 </template>
 
