@@ -1,11 +1,11 @@
 <template>
   <div class="request-panel">
     <div class="row mb-2">
-      <request-url-bar class="col-12"></request-url-bar>
+      <RequestUrlBar class="col-12"></RequestUrlBar>
     </div>
     <div class="row">
-      <request-panel class="col-6"></request-panel>
-      <response-panel class="col-6"></response-panel>
+      <RequestPanel class="col-6"></RequestPanel>
+      <ResponsePanel class="col-6"></ResponsePanel>
     </div>
   </div>
 </template>
@@ -25,16 +25,13 @@ export default {
   computed: {
     // ...mapGetters('someModule', ['someGetter'])
   },
-  created() {
-  },
+  created() {},
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     // ...mapActions('someModule', ['someAction'])
   },
-  props: [
-  ]
+  props: []
 };
 </script>

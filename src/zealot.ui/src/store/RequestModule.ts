@@ -14,8 +14,7 @@ import { Node, RequestNode } from '@/domain/Node';
 import { NodeType } from '@/domain/NodeType';
 import * as treeHelper from '@/helpers/treeHelper';
 import * as packContextService from '@/domain/packContextService';
-import { MutateNodeParams } from '@/domain/stateChangeParams/MutateNodeParams';
-import { SendRequestParams } from '@/domain/apiParams/SendRequestParams';
+import { HttpMethodEnum } from '@/domain/HttpMethodEnum';
 
 const appService = new AppService();
 
@@ -27,17 +26,17 @@ const appService = new AppService();
 })
 export default class RequestModule extends VuexModule {
   public endpointUrl: string = '';
-  public httpMethod: string = '';
+  public httpMethod: HttpMethodEnum = HttpMethodEnum.GET;
   public requestResult: string = '';
 
   @Action({ rawError: true })
-  public async sendRequest(params: SendRequestParams) {
+  public async sendRequest() {
     // TODO maybe could be a Mutation
-    logAction('Send Request', params);
+    logAction('Send Request', this.httpMethod, this.endpointUrl);
     const resultData = await appService.sendRequest({
-      httpMethod: params.httpMethod,
-      endpointUrl: params.endpointUrl,
-      body: params.body
+      httpMethod: this.httpMethod,
+      endpointUrl: this.endpointUrl,
+      body: ''
     });
     this.context.commit('setRequestResult', { resultData });
     packContextService.setPackContext('a', { lastResult: resultData });
@@ -68,7 +67,7 @@ export default class RequestModule extends VuexModule {
   }
 
   @Mutation
-  public setHttpMethod(httpMethod: string) {
+  public setHttpMethod(httpMethod: HttpMethodEnum) {
     logMutation('setHttpMethod', httpMethod);
     this.httpMethod = httpMethod;
   }
