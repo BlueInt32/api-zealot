@@ -57,16 +57,19 @@ h3 {
 .vjs-tree .vjs-key {
   color: blue;
 }
-.vjs-tree .vjs-value__string {
+
+.vjs-tree > div > span.vjs-value__string {
   color: red;
 }
-.vjs-tree .vjs-value.vjs-value__boolean {
-  color: yellow;
-}
-.vjs-tree .vjs-value.vjs-value__number {
+
+.vjs-tree span.vjs-value.vjs-value__boolean {
   color: yellow;
 }
 
-.vjs-tree .vjs-tree__brackets {
+.vjs-tree span.vjs-value.vjs-value__number {
+  color: yellow;
+}
+
+.vjs-tree span.vjs-tree__brackets {
   cursor: default;
 }
