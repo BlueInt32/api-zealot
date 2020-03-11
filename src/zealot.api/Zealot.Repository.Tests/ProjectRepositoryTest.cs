@@ -129,7 +129,29 @@ namespace Zealot.Repository.Tests
                 .Returns(new Project
                 {
                     Id = projectId,
-                    Tree = new Node { }
+                    Tree = new PackNode
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Root",
+                        Children = new List<INode>
+                        {
+                            new RequestNode
+                            {
+                                Id = Guid.NewGuid(),
+                                Name = "Request 1",
+                                EndpointUrl = "http://test.com",
+                                HttpMethod = "POST"
+                            },
+                            new PackNode
+                            {
+                                Id = Guid.NewGuid(),
+                                Name = "Empty pack"
+                            }
+
+                        }
+
+
+                    }
                 });
             _projectFileConverterMock
                 .Setup(m => m.Dump(It.IsAny<Project>(), It.IsAny<string>()))
@@ -190,31 +212,26 @@ namespace Zealot.Repository.Tests
                     Object = new Project
                     {
                         Id = projectId,
-                        Tree = new Node
+                        Tree = new PackNode
                         {
-                            Type = TreeNodeType.Pack,
-                            Children = new List<Node>
+                            Children = new List<INode>
                             {
-                                new Node
+                                new RequestNode
                                 {
                                     Id = nestedRequest1Id,
-                                    Type = TreeNodeType.Request
                                 },
-                                new Node
+                                new RequestNode
                                 {
                                     Id = nestedRequest2Id,
-                                    Type = TreeNodeType.Request
                                 },
-                                new Node
+                                new PackNode
                                 {
                                     Id = nestedPack1Id,
-                                    Type = TreeNodeType.Pack,
-                                    Children = new List<Node>
+                                    Children = new List<INode>
                                     {
-                                        new Node
+                                        new RequestNode
                                         {
-                                            Id = nestedRequest3Id,
-                                            Type = TreeNodeType.Request
+                                            Id = nestedRequest3Id
                                         }
                                     }
                                 }
@@ -224,10 +241,10 @@ namespace Zealot.Repository.Tests
                 });
             _annexFileConverterMock
                 .Setup(m => m.Read(Path.Combine(projectPath, $"{nestedRequest1Id}.yml")))
-                .Returns(new OpResult<Request>
+                .Returns(new OpResult<RequestNode>
                 {
                     Success = true,
-                    Object = new Request
+                    Object = new RequestNode
                     {
                         Id = nestedRequest1Id,
                         EndpointUrl = "endpoint url 1",
@@ -236,10 +253,10 @@ namespace Zealot.Repository.Tests
                 });
             _annexFileConverterMock
                 .Setup(m => m.Read(Path.Combine(projectPath, $"{nestedRequest2Id}.yml")))
-                .Returns(new OpResult<Request>
+                .Returns(new OpResult<RequestNode>
                 {
                     Success = true,
-                    Object = new Request
+                    Object = new RequestNode
                     {
                         Id = nestedRequest2Id,
                         EndpointUrl = "endpoint url 2",
@@ -248,10 +265,10 @@ namespace Zealot.Repository.Tests
                 });
             _annexFileConverterMock
                 .Setup(m => m.Read(Path.Combine(projectPath, $"{nestedRequest3Id}.yml")))
-                .Returns(new OpResult<Request>
+                .Returns(new OpResult<RequestNode>
                 {
                     Success = true,
-                    Object = new Request
+                    Object = new RequestNode
                     {
                         Id = nestedRequest3Id,
                         EndpointUrl = "endpoint url 3",
@@ -272,23 +289,24 @@ namespace Zealot.Repository.Tests
             _annexFileConverterMock.Verify(m => m.Read(Path.Combine(projectPath, $"{nestedRequest3Id}.yml")), Times.Once);
 
             // assert project object is populated with annex file loads
-            Assert.IsNotNull(project.Object.Tree.Children[0] as Request);
-            var req1 = project.Object.Tree.Children[0] as Request;
+            var rootPack = project.Object.Tree as PackNode;
+            Assert.IsNotNull(rootPack.Children[0] as RequestNode);
+            var req1 = rootPack.Children[0] as RequestNode;
             Assert.AreEqual(nestedRequest1Id, req1.Id);
             Assert.AreEqual("endpoint url 1", req1.EndpointUrl);
             Assert.AreEqual("httpMethod 1", req1.HttpMethod);
 
-            Assert.IsNotNull(project.Object.Tree.Children[1] as Request);
-            var req2 = project.Object.Tree.Children[1] as Request;
+            Assert.IsNotNull(rootPack.Children[1] as RequestNode);
+            var req2 = rootPack.Children[1] as RequestNode;
             Assert.AreEqual(nestedRequest2Id, req2.Id);
             Assert.AreEqual("endpoint url 2", req2.EndpointUrl);
             Assert.AreEqual("httpMethod 2", req2.HttpMethod);
 
-            Assert.IsNotNull(project.Object.Tree.Children[2] as Node);
-            var pack1 = project.Object.Tree.Children[2] as Node;
+            Assert.IsNotNull(rootPack.Children[2] as RequestNode);
+            var pack1 = rootPack.Children[2] as PackNode;
             Assert.AreEqual(nestedPack1Id, pack1.Id);
-            Assert.IsNotNull(pack1.Children[0] as Request);
-            var req3 = pack1.Children[0] as Request;
+            Assert.IsNotNull(pack1.Children[0] as RequestNode);
+            var req3 = pack1.Children[0] as RequestNode;
             Assert.AreEqual(nestedRequest3Id, req3.Id);
             Assert.AreEqual("endpoint url 3", req3.EndpointUrl);
             Assert.AreEqual("httpMethod 3", req3.HttpMethod);

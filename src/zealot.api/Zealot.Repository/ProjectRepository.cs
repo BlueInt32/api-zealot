@@ -4,7 +4,6 @@ using System.Linq;
 using AutoMapper;
 using SystemWrap;
 using Zealot.Domain;
-using Zealot.Domain.Enums;
 using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
@@ -86,51 +85,55 @@ namespace Zealot.Repository
             }
             var projectResult = _projectFileConverter.Read(projectConfig.Path);
 
-            for (int i = 0; i < projectResult.Object.Tree.Children.Count; i++)
+            var rootPackNode = projectResult.Object.Tree as PackNode;
+            if (rootPackNode != null)
             {
-                var recursionContext = new NodeRecursionContext
+                for (int i = 0; i < rootPackNode.Children.Count; i++)
                 {
-                    ChildIndex = i,
-                    CurrentNode = projectResult.Object.Tree.Children[i],
-                    ParentNode = projectResult.Object.Tree,
-                    ProjectConfig = projectConfig
+                    var recursionContext = new NodeRecursionContext
+                    {
+                        ChildIndex = i,
+                        CurrentNode = rootPackNode.Children[i],
+                        ParentNode = rootPackNode,
+                        ProjectConfig = projectConfig
 
-                };
-                ReadSubTree(recursionContext);
+                    };
+                    ReadSubTree(recursionContext);
+                }
             }
             return projectResult;
         }
 
         private OpResult ReadSubTree(NodeRecursionContext context)
         {
-            switch (context.CurrentNode.Type)
+            //switch (context.CurrentNode.Type)
+            //{
+            //    case TreeNodeType.Pack:
+            if (context.CurrentNode is PackNode)
             {
-                case TreeNodeType.Pack:
-                    for (int i = 0; i < context.CurrentNode.Children.Count; i++)
-                    {
-                        var recursionContext = new NodeRecursionContext
-                        {
-                            ChildIndex = i,
-                            CurrentNode = context.CurrentNode.Children[i],
-                            ParentNode = context.CurrentNode,
-                            ProjectConfig = context.ProjectConfig
+                var packNode = context.CurrentNode as PackNode;
 
-                        };
-                        ReadSubTree(recursionContext);
-                    }
-                    break;
-                case TreeNodeType.Request:
-                    var projectDirectory = _fileInfoFactory.Create(context.ProjectConfig.Path).Directory.FullName;
-                    var readResult = _annexFileConverter.Read(Path.Combine(projectDirectory, context.CurrentNode.Id.ToString()) + ".yml");
-                    if (readResult.Success)
+                for (int i = 0; i < packNode.Children.Count; i++)
+                {
+                    var recursionContext = new NodeRecursionContext
                     {
-                        context.ParentNode.Children[context.ChildIndex] = readResult.Object;
-                    }
-                    break;
-                case TreeNodeType.Code:
-                    break;
-                default:
-                    break;
+                        ChildIndex = i,
+                        CurrentNode = packNode.Children[i],
+                        ParentNode = packNode,
+                        ProjectConfig = context.ProjectConfig
+                    };
+                    ReadSubTree(recursionContext);
+                }
+            }
+            if (context.CurrentNode is RequestNode)
+            {
+                var requestNode = context.CurrentNode as RequestNode;
+                var projectDirectory = _fileInfoFactory.Create(context.ProjectConfig.Path).Directory.FullName;
+                var readResult = _annexFileConverter.Read(Path.Combine(projectDirectory, requestNode.Id.ToString()) + ".yml");
+                if (readResult.Success)
+                {
+                    (context.ParentNode as PackNode).Children[context.ChildIndex] = readResult.Object;
+                }
             }
             return OpResult.Ok;
         }
@@ -155,21 +158,30 @@ namespace Zealot.Repository
 
             var project = _mapper.Map<Project>(model);
 
-            RecursiveAnnexFilesDump(project.Tree);
+            var rootPack = project.Tree as PackNode;
+            if (rootPack != null)
+            {
+                RecursiveAnnexFilesDump(rootPack);
+            }
             var dumpResult = _projectFileConverter.Dump(project, projectConfig.Path);
 
             return dumpResult;
         }
 
-        private void RecursiveAnnexFilesDump(Node tree)
+        private void RecursiveAnnexFilesDump(INode node)
         {
-            _annexFileConverter.Dump(tree as Request, @"D:\_Prog\Projects\Zealot\test\folder1");
-            if (tree.Children != null)
+            var pack = node as PackNode;
+            if (node != null)
             {
-                foreach (var child in tree.Children)
+                foreach (var childNode in pack.Children)
                 {
-                    RecursiveAnnexFilesDump(child);
+                    RecursiveAnnexFilesDump(childNode);
                 }
+            }
+            var request = node as RequestNode;
+            if (request != null)
+            {
+                _annexFileConverter.Dump(request, _configsPath);
             }
         }
     }

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Zealot.Domain.Enums;
+using Zealot.Domain.Objects;
 
 namespace Zealot.Domain
 {
-    public class Node
+    public class PackNode : INode
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public virtual TreeNodeType Type { get; set; }
-        public virtual List<Node> Children { get; set; }
+        public virtual List<INode> Children { get; set; }
     }
 }

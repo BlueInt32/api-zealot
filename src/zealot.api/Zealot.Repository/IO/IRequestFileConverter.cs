@@ -5,7 +5,7 @@ namespace Zealot.Repository.IO
 {
     public interface IRequestFileConverter
     {
-        OpResult Dump(Request subTree, string basePath);
-        OpResult<Request> Read(string path);
+        OpResult Dump(RequestNode request, string basePath);
+        OpResult<RequestNode> Read(string path);
     }
 }

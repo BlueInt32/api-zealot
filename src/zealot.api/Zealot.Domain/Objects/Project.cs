@@ -7,16 +7,16 @@ namespace Zealot.Domain.Objects
     {
         public Guid Id { get; set; }
         public int? EnvironmentId { get; set; }
-        public Node Tree { get; set; }
+        public PackNode Tree { get; set; }
         public static Project CreateDefaultInstance()
         {
             return new Project
             {
-                Tree = new Node
+                Tree = new PackNode
                 {
-                    Children = new List<Node>
+                    Children = new List<INode>
                     {
-                        new Request
+                        new RequestNode
                         {
                             EndpointUrl = "http://localhost:9500",
                             Headers = new Dictionary<string, string>
