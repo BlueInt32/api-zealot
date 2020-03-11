@@ -1,11 +1,11 @@
 <template>
-  <div class="request-panel">
-    <div class="row mb-2">
-      <RequestUrlBar class="col-12"></RequestUrlBar>
+  <div class="request-panel pure-g">
+    <div class="pure-u-1-2">
+      <RequestUrlBar></RequestUrlBar>
+      <RequestPanel></RequestPanel>
     </div>
-    <div class="row">
-      <RequestPanel class="col-6"></RequestPanel>
-      <ResponsePanel class="col-6"></ResponsePanel>
+    <div class="pure-u-1-2">
+      <ResponsePanel></ResponsePanel>
     </div>
   </div>
 </template>

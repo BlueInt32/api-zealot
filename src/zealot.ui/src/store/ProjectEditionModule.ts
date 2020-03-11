@@ -17,6 +17,7 @@ import Project from '@/domain/Project';
 import Guid from '@/helpers/Guid';
 import TreeModule from './TreeModule';
 import CreateProjectParams from '@/domain/stateChangeParams/CreateProjectParams';
+import UpdateProjectParams from '@/domain/stateChangeParams/UpdateProjectParam';
 
 const appService = new AppService();
 
@@ -46,21 +47,23 @@ export default class ProjectEditionModule extends VuexModule {
     logArrow('Created', creationResult);
   }
 
-  // @Action({ rawError: true })
-  // updateProject() {
-  //   logAction('updateProject');
-  //   const { id, name } = this.context.state;
-  //   const { tree } = this.context.rootState.treeModule;
-  //   appService
-  //     .updateProject({
-  //       projectId: id,
-  //       projectName: name,
-  //       tree
-  //     })
-  //     .then(data => {
-  //       log(data);
-  //     });
-  // }
+  @Action({ rawError: true })
+  async updateProject() {
+    logAction('updateProject');
+    const treeModule = getModule(TreeModule);
+
+    if (!this.currentProject) {
+      return;
+    }
+
+    const updateParams = new UpdateProjectParams();
+    updateParams.id = this.currentProject.id;
+    updateParams.name = this.currentProject.name;
+    updateParams.tree = this.currentProject.tree;
+
+    const result = await appService.updateProject(updateParams)
+    log(result);
+  }
 
   @Mutation
   public setProject(project: Project) {

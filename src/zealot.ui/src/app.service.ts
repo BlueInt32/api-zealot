@@ -6,6 +6,7 @@ import Guid from './helpers/Guid';
 import Project from './domain/Project';
 import CreateProjectParams from './domain/stateChangeParams/CreateProjectParams';
 import { SendRequestParams } from './domain/apiParams/SendRequestParams';
+import UpdateProjectParams from './domain/stateChangeParams/UpdateProjectParam';
 
 export default class AppService {
   private serviceRootUrl: string;
@@ -76,22 +77,17 @@ export default class AppService {
         });
     });
   }
-  // updateProject({ projectId, projectName, tree }) {
-  //   return new Promise(resolve => {
-  //     prepareTreeBeforeSave(tree);
-  //     axios
-  //       .put(`${serviceRootUrl}/projects/${projectId}`, {
-  //         name: projectName,
-  //         tree
-  //       })
-  //       .then(
-  //         response => {
-  //           resolve(response.data);
-  //         },
-  //         error => {
-  //           log(error);
-  //         }
-  //       );
-  //   });
-  // }
+  updateProject(params: UpdateProjectParams) {
+    return new Promise(resolve => {
+      if (params.tree) {
+        prepareTreeBeforeSave(params.tree);
+      }
+      axios.put(`${this.serviceRootUrl}/projects/${params.id}`, params)
+        .then(response => {
+          resolve(response.data);
+        }).catch(error => {
+          log(error);
+        });
+    });
+  }
 }

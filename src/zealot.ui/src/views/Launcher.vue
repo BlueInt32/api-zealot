@@ -3,13 +3,14 @@
     <h1>{{ currentProject.name }}</h1>
     <div id="launcher__grid" class="pure-g">
       <div class="pure-u-1-5">
+        <button class="pure-button" @click="saveAllClickHandler">Save all</button>
         <TreeViewContainer />
       </div>
       <div class="pure-u-4-5">
         <RequestEditor></RequestEditor>
         <!-- <code-editor v-if="selectedNodeType === 'code'"></code-editor>
         <pack-editor v-else-if="selectedNodeType === 'pack'"></pack-editor>
-        <request-editor v-else></request-editor> -->
+        <request-editor v-else></request-editor>-->
       </div>
     </div>
   </div>
@@ -35,6 +36,10 @@ export default class Launcher extends Vue {
       );
       this.currentProject = this.projectEditionModule.currentProject;
     }
+  }
+
+  saveAllClickHandler() {
+    this.projectEditionModule.updateProject();
   }
 }
 </script>

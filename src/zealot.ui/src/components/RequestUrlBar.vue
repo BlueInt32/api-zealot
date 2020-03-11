@@ -1,6 +1,6 @@
 <template>
   <form class="RequestUrlBar pure-form pure-g">
-    <div class="pure-u-1-12">
+    <div class="pure-u-1-8">
       <select
         name="httpMethod"
         id="httpMethod"
@@ -8,12 +8,10 @@
         :value="requestModule.httpMethod"
         @input="updateHttpMethodHandler"
       >
-        <option v-for="method in httpMethodsAvailable" :key="method">
-          {{ method }}</option
-        >
+        <option v-for="method in httpMethodsAvailable" :key="method">{{ method }}</option>
       </select>
     </div>
-    <div class="pure-u-11-12">
+    <div class="pure-u-7-8">
       <input
         class="pure-input-1"
         type="text"
@@ -27,11 +25,7 @@
         class="pure-button pure-input-1 pure-button-primary"
         @click="clickSendHandler"
       >
-        <font-awesome-icon
-          class="typePrompt__icon"
-          icon="play"
-        ></font-awesome-icon>
-        Send request
+        <font-awesome-icon class="typePrompt__icon" icon="play"></font-awesome-icon>Send request
       </button>
     </div>
   </form>
