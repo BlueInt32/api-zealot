@@ -25,6 +25,9 @@ namespace Zealot.Repository.Tests
         private Mock<IRequestFileConverter> _annexFileConverterMock;
         private ProjectRepository _repository;
 
+        private Guid projectId = Guid.NewGuid();
+        private string projectPath = "any folder";
+
 
         [TestInitialize]
         public void TestInitialize()
@@ -43,6 +46,21 @@ namespace Zealot.Repository.Tests
                 , _mapperMock.Object
                 , _annexFileConverterMock.Object
                 );
+
+            _projectConfigsListFileConverterMock
+                .Setup(m => m.Read(@"D:\_Prog\Projects\Zealot\test\projects.json"))
+                .Returns(new OpResult<ProjectsConfigsList>
+                {
+                    Object = new ProjectsConfigsList
+                    {
+                        new ProjectConfig
+                        {
+                            Id = projectId,
+                            Path = projectPath
+
+                        }
+                    }
+                });
         }
         [TestMethod]
         public void SaveProject_ShouldCheckFolderExists()
@@ -74,22 +92,13 @@ namespace Zealot.Repository.Tests
             var model = new ProjectModel
             {
                 Name = "project Name",
-                Path = "any folder"
+                Path = "any new folder"
             };
             var directoryInfoMock = new Mock<IDirectoryInfo>();
             directoryInfoMock.Setup(m => m.Exists).Returns(true);
             _directoryInfoFactoryMock
-                .Setup(m => m.Create("any folder"))
+                .Setup(m => m.Create("any new folder"))
                 .Returns(directoryInfoMock.Object);
-            _projectConfigsListFileConverterMock
-                .Setup(m => m.Read(@"D:\_Prog\Projects\Zealot\test\projects.json"))
-                .Returns(new OpResult<ProjectsConfigsList>
-                {
-                    Object = new ProjectsConfigsList{
-                    new ProjectConfig{ }
-
-                }
-                });
 
             // act
             var opResult = _repository.CreateProject(model);
@@ -97,8 +106,49 @@ namespace Zealot.Repository.Tests
             // assert
             _projectConfigsListFileConverterMock
                 .Verify(m => m.Dump(It.Is<ProjectsConfigsList>(
-                    l => l.Count == 1
-                    ), "any folder"));
+                    l => l.Count == 2
+                    ), @"D:\_Prog\Projects\Zealot\test\projects.json"));
+        }
+
+        [TestMethod]
+        public void UpdateProject_ShouldWorkWithEmptyProject()
+        {
+            // arrange
+            var model = new ProjectModel
+            {
+                Id = projectId,
+                Name = "project Name",
+                Path = "any folder",
+                Tree = new SubTreeModel
+                {
+                    Type = TreeNodeType.Pack
+                }
+            };
+            _mapperMock
+                .Setup(m => m.Map<Project>(It.IsAny<ProjectModel>()))
+                .Returns(new Project
+                {
+                    Id = projectId,
+                    Tree = new Node { }
+                });
+            _projectFileConverterMock
+                .Setup(m => m.Dump(It.IsAny<Project>(), It.IsAny<string>()))
+                .Returns(new OpResult
+                {
+                    Success = true
+                });
+
+            // act
+            var opResult = _repository.UpdateProject(model);
+
+            // assert
+
+            Assert.IsTrue(opResult.Success);
+
+            _projectConfigsListFileConverterMock.Verify(m => m.Read(@"D:\_Prog\Projects\Zealot\test\projects.json"));
+            _mapperMock.Verify(m => m.Map<Project>(model));
+            _projectFileConverterMock.Verify(m => m.Dump(It.IsAny<Project>(), "any folder"));
+
         }
 
         [TestMethod]
