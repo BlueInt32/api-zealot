@@ -53,7 +53,7 @@ namespace Zealot.Repository.Tests
                 {
                     Object = new ProjectsConfigsList
                     {
-                        new ProjectConfig
+                        new Project
                         {
                             Id = projectId,
                             Path = projectPath
@@ -190,7 +190,7 @@ namespace Zealot.Repository.Tests
                     Success = true,
                     Object = new ProjectsConfigsList
                     {
-                        new ProjectConfig { Id = projectId, Path = projectPath }
+                        new Project { Id = projectId, Path = projectPath }
                     }
                 });
             var fileInfoMock = new Mock<IFileInfo>();

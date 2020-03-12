@@ -37,6 +37,7 @@ namespace Zealot.Repository
             _projectsConfigListFileConverter = projectsConfigListFileConverter;
             _annexFileConverter = annexFileConverter;
         }
+
         public OpResult CreateProject(ProjectModel model)
         {
             // 1. checks on input model
@@ -55,7 +56,7 @@ namespace Zealot.Repository
                 return OpResult.Bad(ErrorCode.PROJECT_ALREADY_IN_PROJECT_LIST, $"The configuration already contains a project with the path {model.Path}");
             }
             var projectId = Guid.NewGuid();
-            projectsConfigsList.Add(new ProjectConfig
+            projectsConfigsList.Add(new Project
             {
                 Id = projectId,
                 Name = model.Name,
@@ -95,47 +96,13 @@ namespace Zealot.Repository
                         ChildIndex = i,
                         CurrentNode = rootPackNode.Children[i],
                         ParentNode = rootPackNode,
-                        ProjectConfig = projectConfig
+                        Project = projectConfig
 
                     };
                     ReadSubTree(recursionContext);
                 }
             }
             return projectResult;
-        }
-
-        private OpResult ReadSubTree(NodeRecursionContext context)
-        {
-            //switch (context.CurrentNode.Type)
-            //{
-            //    case TreeNodeType.Pack:
-            if (context.CurrentNode is PackNode)
-            {
-                var packNode = context.CurrentNode as PackNode;
-
-                for (int i = 0; i < packNode.Children.Count; i++)
-                {
-                    var recursionContext = new NodeRecursionContext
-                    {
-                        ChildIndex = i,
-                        CurrentNode = packNode.Children[i],
-                        ParentNode = packNode,
-                        ProjectConfig = context.ProjectConfig
-                    };
-                    ReadSubTree(recursionContext);
-                }
-            }
-            if (context.CurrentNode is RequestNode)
-            {
-                var requestNode = context.CurrentNode as RequestNode;
-                var projectDirectory = _fileInfoFactory.Create(context.ProjectConfig.Path).Directory.FullName;
-                var readResult = _annexFileConverter.Read(Path.Combine(projectDirectory, requestNode.Id.ToString()) + ".yml");
-                if (readResult.Success)
-                {
-                    (context.ParentNode as PackNode).Children[context.ChildIndex] = readResult.Object;
-                }
-            }
-            return OpResult.Ok;
         }
 
         public OpResult<ProjectsConfigsList> ListProjects()
@@ -183,6 +150,37 @@ namespace Zealot.Repository
             {
                 _annexFileConverter.Dump(request, _configsPath);
             }
+        }
+
+        private OpResult ReadSubTree(NodeRecursionContext context)
+        {
+            if (context.CurrentNode is PackNode)
+            {
+                var packNode = context.CurrentNode as PackNode;
+
+                for (int i = 0; i < packNode.Children.Count; i++)
+                {
+                    var recursionContext = new NodeRecursionContext
+                    {
+                        ChildIndex = i,
+                        CurrentNode = packNode.Children[i],
+                        ParentNode = packNode,
+                        Project = context.Project
+                    };
+                    ReadSubTree(recursionContext);
+                }
+            }
+            if (context.CurrentNode is RequestNode)
+            {
+                var requestNode = context.CurrentNode as RequestNode;
+                var projectDirectory = _fileInfoFactory.Create(context.Project.Path).Directory.FullName;
+                var readResult = _annexFileConverter.Read(Path.Combine(projectDirectory, requestNode.Id.ToString()) + ".yml");
+                if (readResult.Success)
+                {
+                    (context.ParentNode as PackNode).Children[context.ChildIndex] = readResult.Object;
+                }
+            }
+            return OpResult.Ok;
         }
     }
 }

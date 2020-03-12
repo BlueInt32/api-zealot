@@ -2,7 +2,7 @@
 
 namespace Zealot.Domain.Objects
 {
-    public class ProjectsConfigsList : List<ProjectConfig>
+    public class ProjectsConfigsList : List<Project>
     {
     }
 }
