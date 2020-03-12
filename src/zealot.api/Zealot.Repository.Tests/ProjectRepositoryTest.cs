@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SystemWrap;
@@ -23,6 +24,8 @@ namespace Zealot.Repository.Tests
         private Mock<IJsonFileConverter<ProjectsConfigsList>> _projectConfigsListFileConverterMock;
         private Mock<IMapper> _mapperMock;
         private Mock<IRequestFileConverter> _annexFileConverterMock;
+        private Mock<IOptions<ZealotConfiguration>> _zealotConfigurationMock;
+
         private ProjectRepository _repository;
 
         private Guid projectId = Guid.NewGuid();
@@ -32,14 +35,19 @@ namespace Zealot.Repository.Tests
         [TestInitialize]
         public void TestInitialize()
         {
+            _zealotConfigurationMock = new Mock<IOptions<ZealotConfiguration>>();
             _directoryInfoFactoryMock = new Mock<IDirectoryInfoFactory>();
             _fileInfoFactoryMock = new Mock<IFileInfoFactory>();
             _projectFileConverterMock = new Mock<IJsonFileConverter<Project>>();
             _projectConfigsListFileConverterMock = new Mock<IJsonFileConverter<ProjectsConfigsList>>();
             _mapperMock = new Mock<IMapper>();
             _annexFileConverterMock = new Mock<IRequestFileConverter>();
+
+            _zealotConfigurationMock.Setup(m => m.Value).Returns(new ZealotConfiguration());
+
             _repository = new ProjectRepository(
-                _directoryInfoFactoryMock.Object
+                _zealotConfigurationMock.Object
+                , _directoryInfoFactoryMock.Object
                 , _fileInfoFactoryMock.Object
                 , _projectFileConverterMock.Object
                 , _projectConfigsListFileConverterMock.Object
@@ -147,10 +155,7 @@ namespace Zealot.Repository.Tests
                                 Id = Guid.NewGuid(),
                                 Name = "Empty pack"
                             }
-
                         }
-
-
                     }
                 });
             _projectFileConverterMock

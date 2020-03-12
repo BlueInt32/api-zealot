@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using SystemWrap;
 using Zealot.Domain;
 using Zealot.Domain.Models;
@@ -14,7 +15,7 @@ namespace Zealot.Repository
 {
     public class ProjectRepository : IProjectRepository
     {
-        private readonly string _configsPath = @"D:\_Prog\Projects\Zealot\test\projects.json";
+        private readonly string _configsPath = string.Empty;
         private readonly IDirectoryInfoFactory _directoryInfoFactory;
         private readonly IFileInfoFactory _fileInfoFactory;
         private readonly IJsonFileConverter<Project> _projectFileConverter;
@@ -23,13 +24,15 @@ namespace Zealot.Repository
         private readonly IRequestFileConverter _annexFileConverter;
 
         public ProjectRepository(
-            IDirectoryInfoFactory directoryInfoFactory
+            IOptions<ZealotConfiguration> zealotConfiguration
+            , IDirectoryInfoFactory directoryInfoFactory
             , IFileInfoFactory fileInfoFactory
             , IJsonFileConverter<Project> projectJsonDump
             , IJsonFileConverter<ProjectsConfigsList> projectsConfigListFileConverter
             , IMapper mapper
             , IRequestFileConverter annexFileConverter)
         {
+            _configsPath = zealotConfiguration.Value.ProjectsListPath;
             _directoryInfoFactory = directoryInfoFactory;
             _fileInfoFactory = fileInfoFactory;
             _projectFileConverter = projectJsonDump;
@@ -47,22 +50,22 @@ namespace Zealot.Repository
                 return OpResult.Bad(ErrorCode.FOLDER_DOES_NOT_EXIST, $"Folder {model.Path} does not exist");
             }
 
-            // 2. Add project to main reference file
-            var projectsConfigsList = _projectsConfigListFileConverter
+            // 2. Add project to projects list file
+            var projectsList = _projectsConfigListFileConverter
                 .Read(_configsPath)
                 .Object;
-            if (projectsConfigsList.Any(config => config.Path == model.Path))
+            if (projectsList.Any(config => config.Path == model.Path))
             {
                 return OpResult.Bad(ErrorCode.PROJECT_ALREADY_IN_PROJECT_LIST, $"The configuration already contains a project with the path {model.Path}");
             }
             var projectId = Guid.NewGuid();
-            projectsConfigsList.Add(new Project
+            projectsList.Add(new Project
             {
                 Id = projectId,
                 Name = model.Name,
                 Path = Path.Combine(model.Path, "project.json")
             });
-            _projectsConfigListFileConverter.Dump(projectsConfigsList, _configsPath);
+            _projectsConfigListFileConverter.Dump(projectsList, _configsPath);
 
             // 3. build domain object
             var project = Project.CreateDefaultInstance();

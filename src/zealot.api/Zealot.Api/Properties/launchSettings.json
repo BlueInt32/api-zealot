@@ -19,6 +19,7 @@
     },
     "Zealot.Api": {
       "commandName": "Project",
+      "commandLineArgs": "--path=D:\\_Prog\\Projects\\Zealot\\test\\projects.json",
       "launchUrl": "api/values",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
