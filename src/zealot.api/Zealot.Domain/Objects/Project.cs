@@ -29,6 +29,7 @@ namespace Zealot.Domain.Objects
                     {
                         new RequestNode
                         {
+                            Name = "Request 1",
                             EndpointUrl = "http://localhost:9500",
                             Headers = new Dictionary<string, string>
                             {

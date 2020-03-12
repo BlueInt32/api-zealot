@@ -35,8 +35,8 @@ namespace Zealot.Api
             services
                 .Configure<ZealotConfiguration>(options =>
                 {
-                    // Configuration.Bind(options);
-                    options.ProjectsListPath = Configuration.GetValue<string>("path");
+                    Configuration.Bind(options);
+                    options.ProjectsListPath = Configuration.GetValue<string>("projects-list-path");
                 })
                 .AddTransient<IRequestFileConverter, RequestFileConverter>()
                 .AddTransient<IProjectService, ProjectService>()

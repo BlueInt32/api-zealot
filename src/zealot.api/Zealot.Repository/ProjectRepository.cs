@@ -15,7 +15,7 @@ namespace Zealot.Repository
 {
     public class ProjectRepository : IProjectRepository
     {
-        private readonly string _configsPath = string.Empty;
+        private readonly ZealotConfiguration _configuration;
         private readonly IDirectoryInfoFactory _directoryInfoFactory;
         private readonly IFileInfoFactory _fileInfoFactory;
         private readonly IJsonFileConverter<Project> _projectFileConverter;
@@ -32,7 +32,7 @@ namespace Zealot.Repository
             , IMapper mapper
             , IRequestFileConverter annexFileConverter)
         {
-            _configsPath = zealotConfiguration.Value.ProjectsListPath;
+            _configuration = zealotConfiguration.Value;
             _directoryInfoFactory = directoryInfoFactory;
             _fileInfoFactory = fileInfoFactory;
             _projectFileConverter = projectJsonDump;
@@ -43,7 +43,7 @@ namespace Zealot.Repository
 
         public OpResult CreateProject(ProjectModel model)
         {
-            // 1. checks on input model
+            // 1. Check input model
             var directoryInfo = _directoryInfoFactory.Create(model.Path);
             if (!directoryInfo.Exists)
             {
@@ -52,7 +52,7 @@ namespace Zealot.Repository
 
             // 2. Add project to projects list file
             var projectsList = _projectsConfigListFileConverter
-                .Read(_configsPath)
+                .Read(_configuration.ProjectsListPath)
                 .Object;
             if (projectsList.Any(config => config.Path == model.Path))
             {
@@ -63,16 +63,25 @@ namespace Zealot.Repository
             {
                 Id = projectId,
                 Name = model.Name,
-                Path = Path.Combine(model.Path, "project.json")
+                Path = Path.Combine(model.Path, _configuration.DefaultProjectFileName)
             });
-            _projectsConfigListFileConverter.Dump(projectsList, _configsPath);
+            _projectsConfigListFileConverter.Dump(projectsList, _configuration.ProjectsListPath);
 
-            // 3. build domain object
+            // 3. Build domain object
             var project = Project.CreateDefaultInstance();
             project.Id = projectId;
+            project.Name = model.Name;
+            project.Path = model.Path;
 
-            // 4. persist in fileSystem right away
-            var dumpResult = _projectFileConverter.Dump(project, Path.Combine(model.Path, "project.json"));
+            // 4. Persist the default project file 
+            var dumpResult = _projectFileConverter.Dump(project, Path.Combine(model.Path, _configuration.DefaultProjectFileName));
+
+            // 5. Persist the default annex request file
+            var rootPack = project.Tree as PackNode;
+            if (rootPack != null)
+            {
+                RecursiveAnnexFilesDump(project, rootPack);
+            }
 
             return OpResult.Ok;
         }
@@ -80,7 +89,7 @@ namespace Zealot.Repository
         public OpResult<Project> GetProject(Guid projectId)
         {
             var projectsConfigsList = _projectsConfigListFileConverter
-                .Read(_configsPath)
+                .Read(_configuration.ProjectsListPath)
                 .Object;
             var projectConfig = projectsConfigsList.SingleOrDefault(c => c.Id == projectId);
             if (projectConfig == null)
@@ -110,7 +119,7 @@ namespace Zealot.Repository
 
         public OpResult<ProjectsConfigsList> ListProjects()
         {
-            var list = _projectsConfigListFileConverter.Read(_configsPath);
+            var list = _projectsConfigListFileConverter.Read(_configuration.ProjectsListPath);
             return list;
         }
 
@@ -118,10 +127,10 @@ namespace Zealot.Repository
         {
             // 1. Check project exists !
             var projectsConfigsList = _projectsConfigListFileConverter
-                .Read(_configsPath)
+                .Read(_configuration.ProjectsListPath)
                 .Object;
-            var projectConfig = projectsConfigsList.SingleOrDefault(c => c.Id == model.Id);
-            if (projectConfig == null)
+            var projectFromConfig = projectsConfigsList.SingleOrDefault(c => c.Id == model.Id);
+            if (projectFromConfig == null)
             {
                 return OpResult.Bad(ErrorCode.PROJECT_DOES_NOT_EXIST, $"Project with id {model.Id} not found in your configuration");
             }
@@ -131,27 +140,27 @@ namespace Zealot.Repository
             var rootPack = project.Tree as PackNode;
             if (rootPack != null)
             {
-                RecursiveAnnexFilesDump(rootPack);
+                RecursiveAnnexFilesDump(project, rootPack);
             }
-            var dumpResult = _projectFileConverter.Dump(project, projectConfig.Path);
+            var dumpResult = _projectFileConverter.Dump(project, Path.Combine(project.Path, _configuration.DefaultProjectFileName));
 
             return dumpResult;
         }
 
-        private void RecursiveAnnexFilesDump(INode node)
+        private void RecursiveAnnexFilesDump(Project project, INode node)
         {
             var pack = node as PackNode;
-            if (node != null)
+            if (pack != null)
             {
                 foreach (var childNode in pack.Children)
                 {
-                    RecursiveAnnexFilesDump(childNode);
+                    RecursiveAnnexFilesDump(project, childNode);
                 }
             }
             var request = node as RequestNode;
             if (request != null)
             {
-                _annexFileConverter.Dump(request, _configsPath);
+                _annexFileConverter.Dump(request, Path.Combine(project.Path, project.Name, $"{request.Id}.yml"));
             }
         }
 
