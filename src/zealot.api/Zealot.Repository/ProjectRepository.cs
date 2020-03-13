@@ -21,7 +21,7 @@ namespace Zealot.Repository
         private readonly IJsonFileConverter<Project> _projectFileConverter;
         private readonly IMapper _mapper;
         private readonly IJsonFileConverter<ProjectsConfigsList> _projectsConfigListFileConverter;
-        private readonly IRequestFileConverter _annexFileConverter;
+        private readonly IAnnexFileConverter _annexFileConverter;
 
         public ProjectRepository(
             IOptions<ZealotConfiguration> zealotConfiguration
@@ -30,7 +30,7 @@ namespace Zealot.Repository
             , IJsonFileConverter<Project> projectJsonDump
             , IJsonFileConverter<ProjectsConfigsList> projectsConfigListFileConverter
             , IMapper mapper
-            , IRequestFileConverter annexFileConverter)
+            , IAnnexFileConverter annexFileConverter)
         {
             _configuration = zealotConfiguration.Value;
             _directoryInfoFactory = directoryInfoFactory;
@@ -80,7 +80,16 @@ namespace Zealot.Repository
             var rootPack = project.Tree as PackNode;
             if (rootPack != null)
             {
-                RecursiveAnnexFilesDump(project, rootPack);
+                ProjectTreeHelper<Project>.ExecuteTraversal(
+                    rootPack,
+                    (node, projectContext) =>
+                    {
+                        if (!(node is PackNode))
+                        {
+                            _annexFileConverter.Dump(node, Path.Combine(projectContext.Path, projectContext.Name, $"{node.Id}.yml"));
+                        }
+                    },
+                    project);
             }
 
             return OpResult.Ok;
@@ -140,7 +149,16 @@ namespace Zealot.Repository
             var rootPack = project.Tree as PackNode;
             if (rootPack != null)
             {
-                RecursiveAnnexFilesDump(project, rootPack);
+                ProjectTreeHelper<Project>.ExecuteTraversal(
+                    rootPack,
+                    (node, projectContext) =>
+                    {
+                        if (!(node is PackNode))
+                        {
+                            _annexFileConverter.Dump(node, Path.Combine(projectContext.Path, projectContext.Name, $"{node.Id}.yml"));
+                        }
+                    },
+                    project);
             }
             var dumpResult = _projectFileConverter.Dump(project, Path.Combine(project.Path, _configuration.DefaultProjectFileName));
 
@@ -186,7 +204,7 @@ namespace Zealot.Repository
             {
                 var requestNode = context.CurrentNode as RequestNode;
                 var projectDirectory = _fileInfoFactory.Create(context.Project.Path).Directory.FullName;
-                var readResult = _annexFileConverter.Read(Path.Combine(projectDirectory, requestNode.Id.ToString()) + ".yml");
+                var readResult = _annexFileConverter.Read<RequestNode>(Path.Combine(projectDirectory, requestNode.Id.ToString()) + ".yml");
                 if (readResult.Success)
                 {
                     (context.ParentNode as PackNode).Children[context.ChildIndex] = readResult.Object;

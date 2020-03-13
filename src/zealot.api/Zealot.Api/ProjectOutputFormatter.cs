@@ -8,8 +8,8 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Zealot.Domain;
-using Zealot.Domain.Enums;
 using Zealot.Domain.Objects;
+using Zealot.Domain.Utilities;
 
 namespace Zealot.Api
 {
@@ -69,8 +69,14 @@ namespace Zealot.Api
             var project = value as Project; // type already checked by formatter, no need to null-check
             var serializer = new JsonSerializer();
 
-            // 1. first we drill down in the tree to populate a "nodeId -> type" map
-            PopulateTypeMapRecursive(typesMap, project.Tree);
+            // 1. first we execute a traversal in the tree to populate a "nodeId -> type" map (typesMap)
+            ProjectTreeHelper<Dictionary<Guid, string>>.ExecuteTraversal(
+                project.Tree,
+                (node, map) =>
+                {
+                    map.Add(node.Id, node.GetTypeConstant());
+                }
+                , typesMap);
 
             // 2. then using jsonPath we set the type property manually on each relevant jToken node
             var rawProject = JObject.FromObject(value);
@@ -81,22 +87,6 @@ namespace Zealot.Api
             }
 
             serializer.Serialize(writer, rawProject);
-        }
-        private void PopulateTypeMapRecursive(Dictionary<Guid, string> map, INode node)
-        {
-            switch (node)
-            {
-                case PackNode packNode:
-                    map.Add(packNode.Id, TreeNodeType.Pack.ToString().ToLower());
-                    packNode.Children.ForEach(c => PopulateTypeMapRecursive(map, c));
-                    break;
-                case RequestNode requestNode:
-                    map.Add(requestNode.Id, TreeNodeType.Request.ToString().ToLower());
-                    break;
-                case ScriptNode scriptNode:
-                    map.Add(scriptNode.Id, TreeNodeType.Script.ToString().ToLower());
-                    break;
-            }
         }
     }
 }

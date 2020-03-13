@@ -25,7 +25,7 @@ namespace Zealot.Repository.Tests
         private Mock<IJsonFileConverter<Project>> _projectFileConverterMock;
         private Mock<IJsonFileConverter<ProjectsConfigsList>> _projectConfigsListFileConverterMock;
         private Mock<IMapper> _mapperMock;
-        private Mock<IRequestFileConverter> _annexFileConverterMock;
+        private Mock<IAnnexFileConverter> _annexFileConverterMock;
         private Mock<IOptions<ZealotConfiguration>> _zealotConfigurationMock;
 
         private ProjectRepository _repository;
@@ -46,7 +46,7 @@ namespace Zealot.Repository.Tests
             _projectFileConverterMock = new Mock<IJsonFileConverter<Project>>();
             _projectConfigsListFileConverterMock = new Mock<IJsonFileConverter<ProjectsConfigsList>>();
             _mapperMock = new Mock<IMapper>();
-            _annexFileConverterMock = new Mock<IRequestFileConverter>();
+            _annexFileConverterMock = new Mock<IAnnexFileConverter>();
 
             _zealotConfigurationMock.Setup(m => m.Value).Returns(new ZealotConfiguration
             {
@@ -176,7 +176,7 @@ namespace Zealot.Repository.Tests
             // assert
             _annexFileConverterMock
                 .Verify(m => m.Dump(
-                    It.Is<RequestNode>(r =>
+                    It.Is<INode>(r =>
                         r.Name == "Request 1"),
                     It.Is<string>(s =>
                         s.StartsWith($@"{newProjectPath}\project Name\")
@@ -309,8 +309,8 @@ namespace Zealot.Repository.Tests
             // assert
             _annexFileConverterMock
                 .Verify(m => m.Dump(
-                    It.Is<RequestNode>(r =>
-                        r.Name == "Request 1" && r.EndpointUrl == "http://test.com" && r.HttpMethod == "POST"),
+                    It.Is<INode>(r =>
+                        r.Name == "Request 1" && ((RequestNode)r).EndpointUrl == "http://test.com" && ((RequestNode)r).HttpMethod == "POST"),
                     It.Is<string>(s =>
                         s.StartsWith($@"{updatedProjectPath}\project Name\")
                         && (new Regex(_guidRegex)).IsMatch(s)
@@ -385,7 +385,7 @@ namespace Zealot.Repository.Tests
                     }
                 });
             _annexFileConverterMock
-                .Setup(m => m.Read(Path.Combine(projectPath, $"{nestedRequest1Id}.yml")))
+                .Setup(m => m.Read<RequestNode>(Path.Combine(projectPath, $"{nestedRequest1Id}.yml")))
                 .Returns(new OpResult<RequestNode>
                 {
                     Success = true,
@@ -397,7 +397,7 @@ namespace Zealot.Repository.Tests
                     }
                 });
             _annexFileConverterMock
-                .Setup(m => m.Read(Path.Combine(projectPath, $"{nestedRequest2Id}.yml")))
+                .Setup(m => m.Read<RequestNode>(Path.Combine(projectPath, $"{nestedRequest2Id}.yml")))
                 .Returns(new OpResult<RequestNode>
                 {
                     Success = true,
@@ -409,7 +409,7 @@ namespace Zealot.Repository.Tests
                     }
                 });
             _annexFileConverterMock
-                .Setup(m => m.Read(Path.Combine(projectPath, $"{nestedRequest3Id}.yml")))
+                .Setup(m => m.Read<RequestNode>(Path.Combine(projectPath, $"{nestedRequest3Id}.yml")))
                 .Returns(new OpResult<RequestNode>
                 {
                     Success = true,
@@ -429,9 +429,9 @@ namespace Zealot.Repository.Tests
                 .Verify(m => m.Read(projectPath), Times.Once);
 
             // assert read methods are called for annex files
-            _annexFileConverterMock.Verify(m => m.Read(Path.Combine(projectPath, $"{nestedRequest1Id}.yml")), Times.Once);
-            _annexFileConverterMock.Verify(m => m.Read(Path.Combine(projectPath, $"{nestedRequest2Id}.yml")), Times.Once);
-            _annexFileConverterMock.Verify(m => m.Read(Path.Combine(projectPath, $"{nestedRequest3Id}.yml")), Times.Once);
+            _annexFileConverterMock.Verify(m => m.Read<RequestNode>(Path.Combine(projectPath, $"{nestedRequest1Id}.yml")), Times.Once);
+            _annexFileConverterMock.Verify(m => m.Read<RequestNode>(Path.Combine(projectPath, $"{nestedRequest2Id}.yml")), Times.Once);
+            _annexFileConverterMock.Verify(m => m.Read<RequestNode>(Path.Combine(projectPath, $"{nestedRequest3Id}.yml")), Times.Once);
 
             // assert project object is populated with annex file loads
             var rootPack = project.Object.Tree as PackNode;
