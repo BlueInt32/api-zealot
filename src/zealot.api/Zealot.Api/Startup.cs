@@ -52,6 +52,7 @@ namespace Zealot.Api
                 {
                     opt.EnableEndpointRouting = false;
                     opt.Filters.Add(typeof(ApiValidationFilterAttribute));
+                    opt.OutputFormatters.Insert(0, new ProjectOutputFormatter());
                 })
                 .AddNewtonsoftJson(opt =>
                 {

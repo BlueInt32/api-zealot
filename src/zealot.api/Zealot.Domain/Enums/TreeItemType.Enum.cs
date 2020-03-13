@@ -4,6 +4,6 @@
     {
         Pack,
         Request,
-        Code
+        Script
     }
 }

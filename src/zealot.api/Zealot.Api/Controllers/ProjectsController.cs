@@ -32,6 +32,12 @@ namespace Zealot.Api.Controllers
             return result.ToActionResult();
         }
 
+        /// <summary>
+        /// Get a project. 
+        /// Note that this uses <see cref="ProjectOutputFormatter"/> to populate types in JSON output
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{projectId}")]
         public IActionResult GetProject(Guid? projectId)

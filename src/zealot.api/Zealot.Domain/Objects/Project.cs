@@ -15,8 +15,10 @@ namespace Zealot.Domain.Objects
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("environmentId")]
         public int? EnvironmentId { get; set; }
 
+        [JsonProperty("tree")]
         public PackNode Tree { get; set; }
 
         public static Project CreateDefaultInstance()
