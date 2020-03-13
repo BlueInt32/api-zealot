@@ -24,7 +24,7 @@ namespace Zealot.Repository
         private readonly IAnnexFileConverter _annexFileConverter;
 
         public ProjectRepository(
-            IOptions<ZealotConfiguration> zealotConfiguration
+            IOptionsMonitor<ZealotConfiguration> zealotConfiguration
             , IDirectoryInfoFactory directoryInfoFactory
             , IFileInfoFactory fileInfoFactory
             , IJsonFileConverter<Project> projectJsonDump
@@ -32,7 +32,7 @@ namespace Zealot.Repository
             , IMapper mapper
             , IAnnexFileConverter annexFileConverter)
         {
-            _configuration = zealotConfiguration.Value;
+            _configuration = zealotConfiguration.CurrentValue;
             _directoryInfoFactory = directoryInfoFactory;
             _fileInfoFactory = fileInfoFactory;
             _projectFileConverter = projectJsonDump;

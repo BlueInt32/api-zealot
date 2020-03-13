@@ -26,7 +26,7 @@ namespace Zealot.Repository.Tests
         private Mock<IJsonFileConverter<ProjectsConfigsList>> _projectConfigsListFileConverterMock;
         private Mock<IMapper> _mapperMock;
         private Mock<IAnnexFileConverter> _annexFileConverterMock;
-        private Mock<IOptions<ZealotConfiguration>> _zealotConfigurationMock;
+        private Mock<IOptionsMonitor<ZealotConfiguration>> _zealotConfigurationMock;
 
         private ProjectRepository _repository;
 
@@ -40,7 +40,7 @@ namespace Zealot.Repository.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            _zealotConfigurationMock = new Mock<IOptions<ZealotConfiguration>>();
+            _zealotConfigurationMock = new Mock<IOptionsMonitor<ZealotConfiguration>>();
             _directoryInfoFactoryMock = new Mock<IDirectoryInfoFactory>();
             _fileInfoFactoryMock = new Mock<IFileInfoFactory>();
             _projectFileConverterMock = new Mock<IJsonFileConverter<Project>>();
@@ -48,7 +48,7 @@ namespace Zealot.Repository.Tests
             _mapperMock = new Mock<IMapper>();
             _annexFileConverterMock = new Mock<IAnnexFileConverter>();
 
-            _zealotConfigurationMock.Setup(m => m.Value).Returns(new ZealotConfiguration
+            _zealotConfigurationMock.Setup(m => m.CurrentValue).Returns(new ZealotConfiguration
             {
                 ProjectsListPath = _projectsListFilePath,
                 DefaultProjectFileName = _defaultProjectFileName

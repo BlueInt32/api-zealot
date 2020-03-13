@@ -33,9 +33,9 @@ namespace Zealot.Api
         {
             var automapperConfig = new AutomapperConfigurationFactory().BuildConfiguration();
             services
-                .Configure<ZealotConfiguration>(options =>
+                .Configure<ZealotConfiguration>(Configuration.GetSection("ZealotConfiguration"))
+                .PostConfigure<ZealotConfiguration>(options =>
                 {
-                    Configuration.Bind(options);
                     options.ProjectsListPath = Configuration.GetValue<string>("projects-list-path");
                 })
                 .AddTransient<IAnnexFileConverter, AnnexFileConverter>()
