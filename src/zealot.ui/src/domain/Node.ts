@@ -1,4 +1,5 @@
 import { NodeType } from './NodeType';
+import { HttpMethodEnum } from './HttpMethodEnum';
 
 export class Node {
   public id: string = '';
@@ -6,10 +7,9 @@ export class Node {
   public isPristine: boolean = true;
   public children: Node[] = [];
   public type: NodeType = NodeType.Request;
-  public attributes: any = {};
 }
 
 export class RequestNode extends Node {
-  public httpMethod: string = '';
+  public httpMethod: HttpMethodEnum = HttpMethodEnum.GET;
   public endpointUrl: string = '';
 }

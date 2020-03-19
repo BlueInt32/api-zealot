@@ -21,9 +21,7 @@ const buildTreeMapAndSetParentsIds = (
 };
 
 const prepareTreeBeforeSave = (node: Node) => {
-  if (node.type === NodeType.Request) {
-    prepareRequestNode(node as RequestNode);
-  }
+  node.type = NodeType.Pack;
   if (node.children) {
     node.children.forEach(child => {
       prepareTreeBeforeSave(child);
@@ -31,14 +29,8 @@ const prepareTreeBeforeSave = (node: Node) => {
   }
 };
 
-const prepareRequestNode = (node: RequestNode) => {
-  node.attributes = {
-    httpMethod: node.httpMethod,
-    endpointUrl: node.endpointUrl
-  };
-};
 
-const node2IsAncestorOfNode1 = function(
+const node2IsAncestorOfNode1 = function (
   node1: Node,
   node2: Node,
   nodesMap: Map<string, Node>

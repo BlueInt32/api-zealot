@@ -5,7 +5,7 @@ namespace Zealot.Repository.IO
 {
     public interface IAnnexFileConverter
     {
-        OpResult Dump<T>(T node, string basePath) where T : INode;
+        OpResult Dump<T>(T node, string basePath) where T : Node;
         OpResult<T> Read<T>(string path) where T : class;
     }
 }

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using Zealot.Domain.Objects;
 
 namespace Zealot.Domain
 {
-    public class PackNode : INode
+    public class PackNode : Node
     {
-        [JsonProperty("id")]
-        public Guid Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
         [JsonProperty("children")]
-        public virtual List<INode> Children { get; set; }
+        public virtual List<Node> Children { get; set; }
     }
 }

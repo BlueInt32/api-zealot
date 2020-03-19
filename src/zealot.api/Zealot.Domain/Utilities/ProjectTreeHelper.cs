@@ -7,13 +7,13 @@ namespace Zealot.Domain.Utilities
 {
     public static class ProjectTreeHelper<TContext>
     {
-        public static void ExecuteTraversal(INode startNode, Action<INode, TContext> nodeAction, TContext context)
+        public static void ExecuteTraversal(Node startNode, Action<Node, TContext> nodeAction, TContext context)
         {
             switch (startNode)
             {
                 case PackNode packNode:
                     nodeAction(packNode, context);
-                    packNode.Children.ForEach(c => ExecuteTraversal(c, nodeAction, context));
+                    packNode.Children?.ForEach(c => ExecuteTraversal(c, nodeAction, context));
                     break;
                 case RequestNode requestNode:
                     nodeAction(requestNode, context);
@@ -27,7 +27,7 @@ namespace Zealot.Domain.Utilities
 
     public static class ProjectTreeHelperExtensions
     {
-        public static string GetTypeConstant(this INode node)
+        public static string GetTypeConstant(this Node node)
         {
             switch (node)
             {

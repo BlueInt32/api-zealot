@@ -9,8 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SystemWrap;
 using Zealot.Domain;
-using Zealot.Domain.Enums;
-using Zealot.Domain.Models;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
 using Zealot.Repository.IO;
@@ -60,7 +58,6 @@ namespace Zealot.Repository.Tests
                 , _fileInfoFactoryMock.Object
                 , _projectFileConverterMock.Object
                 , _projectConfigsListFileConverterMock.Object
-                , _mapperMock.Object
                 , _annexFileConverterMock.Object
                 );
 
@@ -84,7 +81,7 @@ namespace Zealot.Repository.Tests
         {
             // arrange
             var projectPath = "any path";
-            var model = new ProjectModel
+            var model = new Project
             {
                 Name = "project Name",
                 Path = projectPath
@@ -111,7 +108,7 @@ namespace Zealot.Repository.Tests
         {
             // arrange
             string badPath = "not an existing folder path";
-            var model = new ProjectModel
+            var model = new Project
             {
                 Name = "project Name",
                 Path = badPath
@@ -133,7 +130,7 @@ namespace Zealot.Repository.Tests
         {
             // arrange 
             var newProjectPath = @"C:\any\new\path";
-            var model = new ProjectModel
+            var model = new Project
             {
                 Name = "project Name",
                 Path = newProjectPath
@@ -159,7 +156,7 @@ namespace Zealot.Repository.Tests
         {
             // arrange 
             var newProjectPath = @"C:\any\new\path";
-            var model = new ProjectModel
+            var model = new Project
             {
                 Name = "project Name",
                 Path = newProjectPath
@@ -176,7 +173,7 @@ namespace Zealot.Repository.Tests
             // assert
             _annexFileConverterMock
                 .Verify(m => m.Dump(
-                    It.Is<INode>(r =>
+                    It.Is<Node>(r =>
                         r.Name == "Request 1"),
                     It.Is<string>(s =>
                         s.StartsWith($@"{newProjectPath}\project Name\")
@@ -190,28 +187,16 @@ namespace Zealot.Repository.Tests
         {
             // arrange
             var updatedProjectPath = "any folder";
-            var model = new ProjectModel
+            var model = new Project
             {
                 Id = projectId,
                 Name = "project Name",
                 Path = updatedProjectPath,
-                Tree = new SubTreeModel
+                Tree = new PackNode
                 {
-                    Type = TreeNodeType.Pack
-                }
-            };
-            _mapperMock
-                .Setup(m => m.Map<Project>(It.IsAny<ProjectModel>()))
-                .Returns(new Project
-                {
-                    Id = projectId,
-                    Name = "project Name",
-                    Path = updatedProjectPath,
-                    Tree = new PackNode
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Root",
-                        Children = new List<INode>
+                    Id = Guid.NewGuid(),
+                    Name = "Root",
+                    Children = new List<Node>
                         {
                             new RequestNode
                             {
@@ -224,11 +209,11 @@ namespace Zealot.Repository.Tests
                             {
                                 Id = Guid.NewGuid(),
                                 Name = "Empty pack",
-                                Children = new List<INode>()
+                                Children = new List<Node>()
                             }
                         }
-                    }
-                });
+                }
+            };
             _projectFileConverterMock
                 .Setup(m => m.Dump(It.IsAny<Project>(), It.IsAny<string>()))
                 .Returns(new OpResult
@@ -257,28 +242,16 @@ namespace Zealot.Repository.Tests
         {
             // arrange
             var updatedProjectPath = "any folder";
-            var model = new ProjectModel
+            var model = new Project
             {
                 Id = projectId,
                 Name = "project Name",
                 Path = updatedProjectPath,
-                Tree = new SubTreeModel
+                Tree = new PackNode
                 {
-                    Type = TreeNodeType.Pack
-                }
-            };
-            _mapperMock
-                .Setup(m => m.Map<Project>(It.IsAny<ProjectModel>()))
-                .Returns(new Project
-                {
-                    Id = projectId,
-                    Name = "project Name",
-                    Path = updatedProjectPath,
-                    Tree = new PackNode
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Root",
-                        Children = new List<INode>
+                    Id = Guid.NewGuid(),
+                    Name = "Root",
+                    Children = new List<Node>
                         {
                             new RequestNode
                             {
@@ -291,11 +264,11 @@ namespace Zealot.Repository.Tests
                             {
                                 Id = Guid.NewGuid(),
                                 Name = "Empty pack",
-                                Children = new List<INode>()
+                                Children = new List<Node>()
                             }
                         }
-                    }
-                });
+                }
+            };
             _projectFileConverterMock
                 .Setup(m => m.Dump(It.IsAny<Project>(), It.IsAny<string>()))
                 .Returns(new OpResult
@@ -309,7 +282,7 @@ namespace Zealot.Repository.Tests
             // assert
             _annexFileConverterMock
                 .Verify(m => m.Dump(
-                    It.Is<INode>(r =>
+                    It.Is<Node>(r =>
                         r.Name == "Request 1" && ((RequestNode)r).EndpointUrl == "http://test.com" && ((RequestNode)r).HttpMethod == "POST"),
                     It.Is<string>(s =>
                         s.StartsWith($@"{updatedProjectPath}\project Name\")
@@ -359,7 +332,7 @@ namespace Zealot.Repository.Tests
                         Id = projectId,
                         Tree = new PackNode
                         {
-                            Children = new List<INode>
+                            Children = new List<Node>
                             {
                                 new RequestNode
                                 {
@@ -372,7 +345,7 @@ namespace Zealot.Repository.Tests
                                 new PackNode
                                 {
                                     Id = nestedPack1Id,
-                                    Children = new List<INode>
+                                    Children = new List<Node>
                                     {
                                         new RequestNode
                                         {

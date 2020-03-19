@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Zealot.Api.ApiHelpers;
+using Zealot.Api.Formatters;
 using Zealot.Domain;
-using Zealot.Domain.Models;
+using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
 using Zealot.Services;
 
@@ -54,20 +55,21 @@ namespace Zealot.Api.Controllers
 
         [HttpPost]
         [Route("")]
-        public IActionResult CreateProject([FromBody] ProjectModel model)
+        public IActionResult CreateProject([FromBody] Project inputProject)
         {
-            var result = _projectService.CreateProject(model);
+            var result = _projectService.CreateProject(inputProject);
             return result.ToActionResult();
         }
         [HttpPut]
         [Route("{projectId}")]
-        public IActionResult UpdateProject(Guid? projectId, [FromBody] ProjectModel model)
+        public IActionResult UpdateProject(Guid? projectId, [FromBody] Project inputProject)
         {
-            if (!model.Id.HasValue)
+            /// TODO: use https://www.tutorialdocs.com/article/webapi-data-binding.html
+            if (!inputProject.Id.HasValue)
             {
-                model.Id = projectId;
+                inputProject.Id = projectId;
             }
-            var result = _projectService.UpdateProject(model);
+            var result = _projectService.UpdateProject(inputProject);
             return result.ToActionResult();
         }
     }

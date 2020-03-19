@@ -5,14 +5,8 @@ using Zealot.Domain.Objects;
 
 namespace Zealot.Domain
 {
-    public class RequestNode : INode
+    public class RequestNode : Node
     {
-        [JsonProperty("id")]
-        public Guid Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
         [JsonProperty("endpointUrl")]
         public string EndpointUrl { get; set; }
 

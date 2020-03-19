@@ -1,0 +1,15 @@
+﻿{
+  "id": "504164bd-824c-4cdb-b2f2-7db0b2e2f1a9",
+  "path": "",
+  "name": "test1",
+  "tree": {
+    "id": "04283a9d-7afe-4ca7-9375-2b9c25af2241",
+    "name": "Root",
+    "children": [
+      {
+        "name": "Other",
+        "id": "3b6d337c-d95b-4138-9a74-688a967defca"
+      }
+    ]
+  }
+}

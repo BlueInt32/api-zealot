@@ -7,7 +7,7 @@ namespace Zealot.Domain.Objects
     public class Project
     {
         [JsonProperty("id")]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [JsonProperty("path")]
         public string Path { get; set; }
@@ -27,7 +27,7 @@ namespace Zealot.Domain.Objects
             {
                 Tree = new PackNode
                 {
-                    Children = new List<INode>
+                    Children = new List<Node>
                     {
                         new RequestNode
                         {

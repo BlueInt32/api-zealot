@@ -11,7 +11,7 @@ using Zealot.Domain;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
 
-namespace Zealot.Api
+namespace Zealot.Api.Formatters
 {
     public class ProjectOutputFormatter : TextOutputFormatter
     {

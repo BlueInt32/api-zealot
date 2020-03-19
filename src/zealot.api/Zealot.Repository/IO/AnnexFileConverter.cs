@@ -16,11 +16,11 @@ namespace Zealot.Repository.IO
             _file = file;
         }
 
-        public OpResult Dump<T>(T node, string basePath) where T : INode
+        public OpResult Dump<T>(T node, string path) where T : Node
         {
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(CastObject<T>(node));
-            _file.WriteAllText(Path.Combine(basePath, $"{node.Id}.yml"), yaml, Encoding.UTF8);
+            _file.WriteAllText(path, yaml, Encoding.UTF8);
             return OpResult.Ok;
         }
 

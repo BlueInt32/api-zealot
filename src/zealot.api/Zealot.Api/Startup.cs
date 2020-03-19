@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,7 +30,6 @@ namespace Zealot.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var automapperConfig = new AutomapperConfigurationFactory().BuildConfiguration();
             services
                 .Configure<ZealotConfiguration>(Configuration.GetSection("ZealotConfiguration"))
                 .PostConfigure<ZealotConfiguration>(options =>
@@ -44,20 +42,21 @@ namespace Zealot.Api
                 .AddTransient<IDirectoryInfoFactory, DirectoryInfoFactory>()
                 .AddTransient<IFileInfoFactory, FileInfoFactory>()
                 .AddTransient<IJsonFileConverter<Project>, JsonFileConverter<Project>>()
-                .AddTransient<IJsonFileConverter<ProjectsConfigsList>, JsonFileConverter<ProjectsConfigsList>>()
+                .AddTransient<IJsonFileConverter<List<Project>>, JsonFileConverter<List<Project>>>()
                 .AddTransient<IFile, FileWrap>()
-                .AddTransient<IMapper, Mapper>(_ => new Mapper(automapperConfig))
                 .AddCors()
                 .AddMvc(opt =>
                 {
                     opt.EnableEndpointRouting = false;
                     opt.Filters.Add(typeof(ApiValidationFilterAttribute));
-                    opt.OutputFormatters.Insert(0, new ProjectOutputFormatter());
+                    // opt.OutputFormatters.Insert(0, new ProjectOutputFormatter());
+                    // opt.InputFormatters.Insert(0, new ProjectInputFormatter());
                 })
                 .AddNewtonsoftJson(opt =>
                 {
-                    opt.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                    opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    opt.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
                     opt.SerializerSettings.Converters = new List<JsonConverter>
                     {
                         new StringEnumConverter(typeof(CamelCaseNamingStrategy))

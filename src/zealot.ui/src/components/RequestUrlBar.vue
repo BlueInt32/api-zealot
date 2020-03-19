@@ -16,6 +16,7 @@
         class="pure-input-1"
         type="text"
         :value="requestModule.endpointUrl"
+        @input="endpointUrlChanged"
         placeholder="Endpoint url"
       />
     </div>
@@ -52,6 +53,10 @@ export default class RequestUrlBar extends Vue {
     let strMethod = this.httpMethodsAvailable[event.target.selectedIndex];
     let enumValue = strMethod as keyof typeof HttpMethodEnum;
     this.requestModule.setHttpMethod(enumValue as HttpMethodEnum);
+  }
+
+  endpointUrlChanged(event: any) {
+    this.requestModule.setEndpointUrl(event.target.value);
   }
 
   clickSendHandler() {
