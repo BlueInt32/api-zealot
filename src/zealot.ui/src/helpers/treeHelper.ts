@@ -21,8 +21,8 @@ const buildTreeMapAndSetParentsIds = (
 };
 
 const prepareTreeBeforeSave = (node: Node) => {
-  node.type = NodeType.Pack;
   if (node.children) {
+    node.type = NodeType.Pack;
     node.children.forEach(child => {
       prepareTreeBeforeSave(child);
     });

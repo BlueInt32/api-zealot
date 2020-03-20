@@ -49,6 +49,7 @@ export default class RequestUrlBar extends Vue {
   created() {
     console.log(this.requestModule.endpointUrl);
   }
+
   updateHttpMethodHandler(event: any) {
     let strMethod = this.httpMethodsAvailable[event.target.selectedIndex];
     let enumValue = strMethod as keyof typeof HttpMethodEnum;
