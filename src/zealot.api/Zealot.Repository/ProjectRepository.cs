@@ -70,7 +70,10 @@ namespace Zealot.Repository
             project.Path = inputProject.Path;
 
             // 4. Persist the default project file 
-            var dumpResult = _projectFileConverter.Dump(project, Path.Combine(inputProject.Path, _configuration.DefaultProjectFileName));
+            var dumpResult = _projectFileConverter.Dump(
+                project,
+                Path.Combine(inputProject.Path, _configuration.DefaultProjectFileName)
+                );
 
             // 5. Persist the default annex request file
             var rootPack = project.Tree as PackNode;
@@ -156,7 +159,10 @@ namespace Zealot.Repository
                     },
                     inputProject);
             }
-            var dumpResult = _projectFileConverter.Dump(inputProject, Path.Combine(inputProject.Path, _configuration.DefaultProjectFileName));
+            var dumpResult = _projectFileConverter.Dump(
+                inputProject,
+                Path.Combine(inputProject.Path, _configuration.DefaultProjectFileName)
+                );
 
             return dumpResult;
         }

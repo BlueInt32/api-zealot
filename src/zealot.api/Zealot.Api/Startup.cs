@@ -12,6 +12,7 @@ using Zealot.Api.ApiHelpers;
 using Zealot.Api.Middlewares;
 using Zealot.Domain;
 using Zealot.Domain.Objects;
+using Zealot.Domain.Utilities;
 using Zealot.Repository;
 using Zealot.Repository.IO;
 using Zealot.Services;
@@ -49,8 +50,6 @@ namespace Zealot.Api
                 {
                     opt.EnableEndpointRouting = false;
                     opt.Filters.Add(typeof(ApiValidationFilterAttribute));
-                    // opt.OutputFormatters.Insert(0, new ProjectOutputFormatter());
-                    // opt.InputFormatters.Insert(0, new ProjectInputFormatter());
                 })
                 .AddNewtonsoftJson(opt =>
                 {
@@ -59,7 +58,8 @@ namespace Zealot.Api
                     opt.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
                     opt.SerializerSettings.Converters = new List<JsonConverter>
                     {
-                        new StringEnumConverter(typeof(CamelCaseNamingStrategy))
+                        new StringEnumConverter(typeof(CamelCaseNamingStrategy)),
+                        new NodeJsonConverter()
                     };
 
                 });

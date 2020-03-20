@@ -1,10 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Zealot.Domain.Models;
 
 namespace Zealot.Domain.Objects
 {
-    [JsonConverter(typeof(NodeJsonConverter))]
     public class Node
     {
         [JsonProperty("id")]

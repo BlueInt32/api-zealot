@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Zealot.Api.ApiHelpers;
-using Zealot.Api.Formatters;
 using Zealot.Domain;
 using Zealot.Domain.Objects;
 using Zealot.Domain.Utilities;
@@ -33,12 +32,6 @@ namespace Zealot.Api.Controllers
             return result.ToActionResult();
         }
 
-        /// <summary>
-        /// Get a project. 
-        /// Note that this uses <see cref="ProjectOutputFormatter"/> to populate types in JSON output
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
         [HttpGet]
         [Route("{projectId}")]
         public IActionResult GetProject(Guid? projectId)

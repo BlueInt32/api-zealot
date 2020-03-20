@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -21,8 +20,7 @@ namespace Zealot.Repository.Tests
         private Mock<IDirectoryInfoFactory> _directoryInfoFactoryMock;
         private Mock<IFileInfoFactory> _fileInfoFactoryMock;
         private Mock<IJsonFileConverter<Project>> _projectFileConverterMock;
-        private Mock<IJsonFileConverter<ProjectsConfigsList>> _projectConfigsListFileConverterMock;
-        private Mock<IMapper> _mapperMock;
+        private Mock<IJsonFileConverter<List<Project>>> _projectConfigsListFileConverterMock;
         private Mock<IAnnexFileConverter> _annexFileConverterMock;
         private Mock<IOptionsMonitor<ZealotConfiguration>> _zealotConfigurationMock;
 
@@ -42,8 +40,7 @@ namespace Zealot.Repository.Tests
             _directoryInfoFactoryMock = new Mock<IDirectoryInfoFactory>();
             _fileInfoFactoryMock = new Mock<IFileInfoFactory>();
             _projectFileConverterMock = new Mock<IJsonFileConverter<Project>>();
-            _projectConfigsListFileConverterMock = new Mock<IJsonFileConverter<ProjectsConfigsList>>();
-            _mapperMock = new Mock<IMapper>();
+            _projectConfigsListFileConverterMock = new Mock<IJsonFileConverter<List<Project>>>();
             _annexFileConverterMock = new Mock<IAnnexFileConverter>();
 
             _zealotConfigurationMock.Setup(m => m.CurrentValue).Returns(new ZealotConfiguration
@@ -63,9 +60,9 @@ namespace Zealot.Repository.Tests
 
             _projectConfigsListFileConverterMock
                 .Setup(m => m.Read(_projectsListFilePath))
-                .Returns(new OpResult<ProjectsConfigsList>
+                .Returns(new OpResult<List<Project>>
                 {
-                    Object = new ProjectsConfigsList
+                    Object = new List<Project>
                     {
                         new Project
                         {
@@ -97,7 +94,7 @@ namespace Zealot.Repository.Tests
             _projectConfigsListFileConverterMock
                 .Verify(m => m.Read(_projectsListFilePath), Times.Once);
             _projectConfigsListFileConverterMock
-                .Verify(m => m.Dump(It.Is<ProjectsConfigsList>(l =>
+                .Verify(m => m.Dump(It.Is<List<Project>>(l =>
                     l.Count(p => p.Name == "project Name" && p.Path == $@"{projectPath}\{_defaultProjectFileName}") == 1
                 ), _projectsListFilePath));
         }
@@ -229,7 +226,6 @@ namespace Zealot.Repository.Tests
             Assert.IsTrue(opResult.Success);
 
             _projectConfigsListFileConverterMock.Verify(m => m.Read(_projectsListFilePath));
-            _mapperMock.Verify(m => m.Map<Project>(model));
             _projectFileConverterMock.Verify(m => m.Dump(
                 It.Is<Project>(p =>
                    p.Name == "project Name"
@@ -285,7 +281,7 @@ namespace Zealot.Repository.Tests
                     It.Is<Node>(r =>
                         r.Name == "Request 1" && ((RequestNode)r).EndpointUrl == "http://test.com" && ((RequestNode)r).HttpMethod == "POST"),
                     It.Is<string>(s =>
-                        s.StartsWith($@"{updatedProjectPath}\project Name\")
+                        s.StartsWith($@"{updatedProjectPath}\")
                         && (new Regex(_guidRegex)).IsMatch(s)
                         && s.EndsWith(".yml")
                     )), Times.Once);
@@ -303,10 +299,10 @@ namespace Zealot.Repository.Tests
             var nestedRequest3Id = Guid.NewGuid();
             _projectConfigsListFileConverterMock
                 .Setup(m => m.Read(It.IsAny<string>()))
-                .Returns(new OpResult<ProjectsConfigsList>
+                .Returns(new OpResult<List<Project>>
                 {
                     Success = true,
-                    Object = new ProjectsConfigsList
+                    Object = new List<Project>
                     {
                         new Project { Id = projectId, Path = projectPath }
                     }
@@ -323,7 +319,7 @@ namespace Zealot.Repository.Tests
                 .Setup(m => m.Create(It.IsAny<string>()))
                 .Returns(fileInfoMock.Object);
             _projectFileConverterMock
-                .Setup(m => m.Read(projectPath))
+                .Setup(m => m.Read(It.IsAny<string>()))
                 .Returns(new OpResult<Project>
                 {
                     Success = true,
@@ -399,7 +395,7 @@ namespace Zealot.Repository.Tests
 
             // assert read is called on project file
             _projectFileConverterMock
-                .Verify(m => m.Read(projectPath), Times.Once);
+                .Verify(m => m.Read(Path.Combine(projectPath, _defaultProjectFileName)), Times.Once);
 
             // assert read methods are called for annex files
             _annexFileConverterMock.Verify(m => m.Read<RequestNode>(Path.Combine(projectPath, $"{nestedRequest1Id}.yml")), Times.Once);

@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using SystemWrap;
-using Zealot.Domain.Models;
 using Zealot.Domain.Utilities;
 
 namespace Zealot.Repository.IO
@@ -31,7 +30,7 @@ namespace Zealot.Repository.IO
                 inputObject,
                 Formatting.Indented,
                 new StringEnumConverter(typeof(CamelCaseNamingStrategy)),
-                new NodeJsonConverter()
+                new NodeJsonConverter(OutputDetailsLevel.ProjectStructure)
                 );
             _file.WriteAllText(path, json, Encoding.UTF8);
             return OpResult.Ok;
