@@ -14,7 +14,6 @@ import { Node, RequestNode } from '@/domain/Node';
 import { NodeType } from '@/domain/NodeType';
 import * as treeHelper from '@/helpers/treeHelper';
 import * as packContextService from '@/domain/packContextService';
-import { MutateNodeParams } from '@/domain/stateChangeParams/MutateNodeParams';
 import RequestModule from './RequestModule';
 
 const appService = new AppService();
@@ -76,8 +75,7 @@ export default class TreeModule extends VuexModule {
         const requestModule = getModule(RequestModule);
         const requestNode = node as RequestNode;
         console.log(requestNode);
-        requestModule.setHttpMethod(requestNode.httpMethod);
-        requestModule.setEndpointUrl(requestNode.endpointUrl);
+        requestModule.setcurrentNode(requestNode);
       }
     }
   }
@@ -117,25 +115,10 @@ export default class TreeModule extends VuexModule {
   }
 
   @Mutation
-  public setNodeInTree(nodeProperties: MutateNodeParams) {
+  public setNodeInTree(node: Node) {
     // retrieve node from the main Map
-    let node = this.nodesMap.get(nodeProperties.id);
+    let nodeInTree = this.nodesMap.get(node.id);
     // set new properties in place
-    Object.assign(node, nodeProperties);
-  }
-
-  @Mutation
-  public setNodeProperties(nodeProperties: MutateNodeParams) {
-    logMutation('[setNodeProperties]', nodeProperties);
-
-    // retrieve node from the main Map
-    let node = this.nodesMap.get(this.selectedNodeId);
-    if (node) {
-      // set new properties in place
-      Object.assign(node, nodeProperties);
-      // replace the selectedNode so that Vue recycles computed properties
-      this.selectedNodeId = node.id;
-      this.selectedNodeType = node.type;
-    }
+    Object.assign(nodeInTree, node);
   }
 }

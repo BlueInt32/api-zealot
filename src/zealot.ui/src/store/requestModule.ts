@@ -15,6 +15,8 @@ import { NodeType } from '@/domain/NodeType';
 import * as treeHelper from '@/helpers/treeHelper';
 import * as packContextService from '@/domain/packContextService';
 import { HttpMethodEnum } from '@/domain/HttpMethodEnum';
+import { ZealotError } from '@/domain/Errors/ZealotError';
+import TreeModule from './TreeModule';
 
 const appService = new AppService();
 
@@ -25,51 +27,43 @@ const appService = new AppService();
   store
 })
 export default class RequestModule extends VuexModule {
-  public endpointUrl: string = '';
-  public httpMethod: HttpMethodEnum = HttpMethodEnum.GET;
+  public currentNode: RequestNode | null = null;
   public requestResult: string = '';
 
   @Action({ rawError: true })
   public async sendRequest() {
     // TODO maybe could be a Mutation
-    logAction('Send Request', this.httpMethod, this.endpointUrl);
+    if (!this.currentNode) {
+      throw new ZealotError('[RequestModule] CURRENT_NODE_NOT_SET');
+    }
+    logAction(
+      'Send Request',
+      this.currentNode.httpMethod,
+      this.currentNode.endpointUrl
+    );
     const resultData = await appService.sendRequest({
-      httpMethod: this.httpMethod,
-      endpointUrl: this.endpointUrl,
+      httpMethod: this.currentNode.httpMethod,
+      endpointUrl: this.currentNode.endpointUrl,
       body: ''
     });
     this.context.commit('setRequestResult', { resultData });
     packContextService.setPackContext('a', { lastResult: resultData });
   }
 
-  @Action({ rawError: true })
-  public changeRequestUrl(endpointUrl: string) {
-    // TODO maybe could be a Mutation
-    logAction('[requestModule/setEndpointUrl]', endpointUrl);
-    this.context.commit('setEndpointUrl', endpointUrl);
-    this.context.commit(
-      'treeModule/setNodeProperties',
-      { endpointUrl, isPristine: false },
-      { root: true }
-    );
-  }
-
-  @Action({ rawError: true })
-  public changeHttpMethod(httpMethod: string) {
-    // TODO maybe could be a Mutation
-    logAction('[requestModule/setHttpMethod]', httpMethod);
-    this.context.commit('setHttpMethod', httpMethod);
-    this.context.commit(
-      'treeModule/setNodeProperties',
-      { httpMethod, isPristine: false },
-      { root: true }
-    );
+  @Mutation
+  public setcurrentNode(requestNode: RequestNode) {
+    this.currentNode = requestNode;
   }
 
   @Mutation
   public setHttpMethod(httpMethod: HttpMethodEnum) {
     logMutation('setHttpMethod', httpMethod);
-    this.httpMethod = httpMethod;
+    if (!this.currentNode) {
+      throw new ZealotError('[RequestModule] CURRENT_NODE_NOT_SET');
+    }
+    this.currentNode.httpMethod = httpMethod;
+    const treeModule = getModule(TreeModule);
+    treeModule.setNodeInTree(this.currentNode);
   }
 
   @Mutation
@@ -80,6 +74,11 @@ export default class RequestModule extends VuexModule {
   @Mutation
   public setEndpointUrl(endpointUrl: string) {
     logMutation('requestModule/endpointUrl', endpointUrl);
-    this.endpointUrl = endpointUrl;
+    if (!this.currentNode) {
+      throw new ZealotError('[RequestModule] CURRENT_NODE_NOT_SET');
+    }
+    this.currentNode.endpointUrl = endpointUrl;
+    const treeModule = getModule(TreeModule);
+    treeModule.setNodeInTree(this.currentNode);
   }
 }

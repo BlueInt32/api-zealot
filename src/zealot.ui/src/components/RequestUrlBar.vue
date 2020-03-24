@@ -5,17 +5,19 @@
         name="httpMethod"
         id="httpMethod"
         class="pure-input-1"
-        :value="requestModule.httpMethod"
+        :value="requestModule.currentNode.httpMethod"
         @input="updateHttpMethodHandler"
       >
-        <option v-for="method in httpMethodsAvailable" :key="method">{{ method }}</option>
+        <option v-for="method in httpMethodsAvailable" :key="method">{{
+          method
+        }}</option>
       </select>
     </div>
     <div class="pure-u-7-8">
       <input
         class="pure-input-1"
         type="text"
-        :value="requestModule.endpointUrl"
+        :value="requestModule.currentNode.endpointUrl"
         @input="endpointUrlChanged"
         placeholder="Endpoint url"
       />
@@ -26,7 +28,11 @@
         class="pure-button pure-input-1 pure-button-primary"
         @click="clickSendHandler"
       >
-        <font-awesome-icon class="typePrompt__icon" icon="play"></font-awesome-icon>Send request
+        <font-awesome-icon
+          class="typePrompt__icon"
+          icon="play"
+        ></font-awesome-icon
+        >Send request
       </button>
     </div>
   </form>
@@ -43,12 +49,6 @@ import { SendRequestParams } from '../domain/apiParams/SendRequestParams';
 export default class RequestUrlBar extends Vue {
   private requestModule = getModule(RequestModule);
   private httpMethodsAvailable = Object.keys(HttpMethodEnum);
-  // private selectedHttpMethod: string = '';
-  // private endpointUrl!: string;
-
-  created() {
-    console.log(this.requestModule.endpointUrl);
-  }
 
   updateHttpMethodHandler(event: any) {
     let strMethod = this.httpMethodsAvailable[event.target.selectedIndex];
