@@ -10,11 +10,12 @@ import AppService from '@/app.service';
 import { logAction, logMutation, log } from '../helpers/consoleHelpers';
 import Project from '@/domain/Project';
 import Guid from '@/helpers/Guid';
-import { Node, RequestNode } from '@/domain/Node';
+import { Node, RequestNode, ScriptNode } from '@/domain/Node';
 import { NodeType } from '@/domain/NodeType';
 import * as treeHelper from '@/helpers/treeHelper';
 import * as packContextService from '@/domain/packContextService';
 import RequestModule from './RequestModule';
+import ScriptModule from './ScriptModule';
 
 const appService = new AppService();
 
@@ -71,11 +72,21 @@ export default class TreeModule extends VuexModule {
     const node = this.nodesMap.get(nodeId);
     if (node) {
       this.context.commit('setSelectedNode', node);
-      if (node.type === 'request') {
-        const requestModule = getModule(RequestModule);
-        const requestNode = node as RequestNode;
-        console.log(requestNode);
-        requestModule.setcurrentNode(requestNode);
+      switch (node.type) {
+        case NodeType.Request:
+          const requestModule = getModule(RequestModule);
+          const requestNode = node as RequestNode;
+          console.log(requestNode);
+          requestModule.setcurrentNode(requestNode);
+          break;
+        case NodeType.Script:
+          const scriptModule = getModule(ScriptModule);
+          const scriptNode = node as ScriptNode;
+          console.log(scriptNode);
+          scriptModule.setCurrentNode(scriptNode);
+
+        default:
+          break;
       }
     }
   }

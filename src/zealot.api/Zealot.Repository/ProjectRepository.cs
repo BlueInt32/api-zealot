@@ -211,6 +211,15 @@ namespace Zealot.Repository
                     (context.ParentNode as PackNode).Children[context.ChildIndex] = readResult.Object;
                 }
             }
+            if (context.CurrentNode is ScriptNode)
+            {
+                var scriptNode = context.CurrentNode as ScriptNode;
+                var readResult = _annexFileConverter.Read<ScriptNode>(Path.Combine(context.Project.Path, scriptNode.Id.ToString()) + ".yml");
+                if (readResult.Success)
+                {
+                    (context.ParentNode as PackNode).Children[context.ChildIndex] = readResult.Object;
+                }
+            }
             return OpResult.Ok;
         }
     }

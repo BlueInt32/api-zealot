@@ -13,3 +13,7 @@ export class RequestNode extends Node {
   public httpMethod: HttpMethodEnum = HttpMethodEnum.GET;
   public endpointUrl: string = '';
 }
+
+export class ScriptNode extends Node {
+  public code: string = '';
+}

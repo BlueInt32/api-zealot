@@ -28,11 +28,7 @@
         class="pure-button pure-input-1 pure-button-primary"
         @click="clickSendHandler"
       >
-        <font-awesome-icon
-          class="typePrompt__icon"
-          icon="play"
-        ></font-awesome-icon
-        >Send request
+        > Send request
       </button>
     </div>
   </form>

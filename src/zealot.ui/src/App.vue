@@ -10,18 +10,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
 import Menu from '@/components/Menu.vue';
 
-// font-awesome dependencies
-import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faCaretRight,
-  faGlobeAmericas,
-  faPlay
-} from '@fortawesome/free-solid-svg-icons';
-import { faJsSquare } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-library.add(faCaretRight, faJsSquare, faGlobeAmericas, faPlay);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
-
 Vue.filter('capitalize', function(value: string) {
   if (!value) return '';
   value = value.toString();

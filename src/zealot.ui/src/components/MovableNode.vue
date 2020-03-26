@@ -19,28 +19,26 @@
         :class="{ nodeClicked: isFolder && open}"
         @click="openCloseClickHandler"></span> -->
       <span
-        class="treeview__node-icon"
+        class=""
         :class="{
           'treeview__pack-arrow': isFolder,
           'treeview__pack-arrow--open': isFolder && open
         }"
         @click="openCloseClickHandler"
       >
-        <font-awesome-icon
-          v-if="isFolder"
-          class="typePrompt__icon"
-          icon="caret-right"
-        ></font-awesome-icon>
-        <font-awesome-icon
-          v-if="model.type === 'code'"
-          class="typePrompt__icon"
+        <span v-if="isFolder" class="treeview__nodeType">P</span>
+        <span
+          v-if="model.type === scriptNodeType"
+          class="treeview__nodeType"
           :icon="['fab', 'js-square']"
-        ></font-awesome-icon>
-        <font-awesome-icon
-          v-if="model.type === 'request'"
-          class="typePrompt__icon"
+          >S</span
+        >
+        <span
+          v-if="model.type === requestNodeType"
+          class="treeview__nodeType"
           icon="globe-americas"
-        ></font-awesome-icon>
+          >R</span
+        >
       </span>
       <i
         v-if="!model.isPristine"
@@ -80,9 +78,14 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
 import { Node, RequestNode } from '@/domain/Node';
 import TreeModule from '@/store/TreeModule';
+import { NodeType } from '@/domain/NodeType';
 
 @Component({ components: { MovableNode } })
 export default class MovableNode extends Vue {
+  private PackNodeType = NodeType.Pack;
+  private requestNodeType = NodeType.Request;
+  private scriptNodeType = NodeType.Script;
+
   private open: boolean = true;
   private styleObj: { [key: string]: any } = { opacity: 1 };
   private styleObj2: { [key: string]: any } = {
@@ -225,5 +228,13 @@ export default class MovableNode extends Vue {
   width: 100%;
   pointer-events: none;
   z-index: 30;
+}
+.treeview__nodeType {
+  display: inline-block;
+  padding: 1px 3px;
+  background: grey;
+  color: white;
+  border-radius: 3px;
+  margin: 0 3px 0 0;
 }
 </style>
